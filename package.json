@@ -1,0 +1,46 @@
+{
+  "name": "redeux-todo",
+  "version": "1.0.0",
+  "description": "Redeux example todo app",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build && instant -p 6661",
+    "test": "node test.js",
+    "build": "browserify ./index.js -o ./bundle.js",
+    "watch": "watchify ./index.js -o ./bundle.js",
+    "dist": "browserify ./index.js | uglifyjs --compress --mangle --screw-ie8 > ./bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kristoferjoseph/redeux-todo.git"
+  },
+  "keywords": [
+    "redeux",
+    "flux",
+    "example",
+    "sample",
+    "demo",
+    "tutorial"
+  ],
+  "author": "@dam",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/kristoferjoseph/redeux-todo/issues"
+  },
+  "homepage": "https://github.com/kristoferjoseph/redeux-todo#readme",
+  "dependencies": {
+    "cxs": "^1.0.0-beta.11",
+    "hash-switch": "^2.1.3",
+    "kubby": "^1.2.0",
+    "redeux": "^2.0.1",
+    "tiny-uuid": "^1.0.0",
+    "yo-yo": "^1.2.2"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.1",
+    "deep-freeze": "0.0.1",
+    "instant-server": "^2.0.0",
+    "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
+    "watchify": "^3.7.0"
+  }
+}
