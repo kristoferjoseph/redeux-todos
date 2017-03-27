@@ -29,6 +29,7 @@ var inputClass = css`
 var labelClass = css`
 :host {
   display: flex;
+  min-height: 4.375rem;
   margin-bottom: 1px;
   border-bottom: 1px solid transparent;
 }

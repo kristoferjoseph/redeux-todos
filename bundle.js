@@ -1434,7 +1434,6 @@ module.exports = function store () {
       console.error('action.type must be a "string"')
     }
     var currentState = getState()
-    currentState = getState()
     reducers.forEach(function (r) {
       state[r.name] = r(currentState[r.name], action)
     })
@@ -1444,7 +1443,7 @@ module.exports = function store () {
   }
 
   function getState () {
-    return state
+    return Object.assign({}, state)
   }
 
   return {
@@ -1595,7 +1594,7 @@ var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
 var completeAll = actions.completeAll
-var classes = ((require('sheetify/insert')("._e0cc7f53 {\n  padding: 0.5rem;\n  border: 1px solid #ddd;\n  background: transparent;\n  border-radius: 2px;\n}\n._e0cc7f53:hover {\n  border-color: #ccc;\n}") || true) && "_e0cc7f53")
+var classes = ((null || true) && "_e0cc7f53")
 
 module.exports = function CompleteAllButton (opts) {
   opts = opts || {}
@@ -1620,7 +1619,7 @@ var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
 var deleteTodo = actions.deleteTodo
-var classes = ((require('sheetify/insert')("._752ff214 {\n  padding: 0.25rem;\n  fontSize: 0.85rem;\n  height: 100%;\n  color: red;\n  border: 1px solid red;\n  border-radius: 2px;\n  background: none;\n}") || true) && "_752ff214")
+var classes = ((null || true) && "_752ff214")
 
 module.exports = function Button (state, dispatch) {
 
@@ -1643,7 +1642,7 @@ var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
-var classes = ((require('sheetify/insert')("._0a92cfe3 {\n  min-width: 2rem;\n  width: 2rem;\n  height: 2rem;\n  min-height: 2rem;\n  margin-right: 1rem;\n}") || true) && "_0a92cfe3")
+var classes = ((null || true) && "_0a92cfe3")
 
 module.exports = function (state, dispatch) {
   state = state || {}
@@ -1669,7 +1668,7 @@ module.exports = function (state, dispatch) {
 var html = require('yo-yo')
 var css = 0
 var CompleteButton = require('./button-complete-all')
-var classes = ((require('sheetify/insert')("._931da189 {\n text-align: right;\n padding: 1rem;\n background: white;\n border-bottom-right-radius: 2px;\n border-bottom-left-radius: 2px;\n}") || true) && "_931da189")
+var classes = ((null || true) && "_931da189")
 
 module.exports = function Footer (state, dispatch) {
   return html`
@@ -1683,9 +1682,9 @@ module.exports = function Footer (state, dispatch) {
 var html = require('yo-yo')
 var createTodo = require('../actions/todos-actions').createTodo
 var css = 0
-var inputClass = ((require('sheetify/insert')("._fe9ae55d {\n  flex-grow: 0;\n  padding: 1rem;\n  padding-bottom: 0.5rem;\n  width: 100%;\n  font-size: 2rem;\n  font-weight: 100;\n  margin-bottom: 0.5rem;\n  color: #FFF;\n  border: none;\n  background: transparent;\n}\n._fe9ae55d:focus {\n  border: none;\n  outline: none;\n}\n._fe9ae55d::-webkit-input-placeholder {\n  color: #EEE;\n}\n._fe9ae55d::-moz-placeholder {\n  color: #EEE;\n}") || true) && "_fe9ae55d")
+var inputClass = ((null || true) && "_fe9ae55d")
 
-var labelClass = ((require('sheetify/insert')("._a9fb82ec {\n  display: flex;\n  margin-bottom: 1px;\n  border-bottom: 1px solid transparent;\n}") || true) && "_a9fb82ec")
+var labelClass = ((null || true) && "_09857901")
 
 module.exports = function (dispatch) {
 
@@ -1728,7 +1727,7 @@ var html = require('yo-yo')
 var css = 0
 var tid = require('tiny-uuid')
 var Todo = require('../components/todo')
-var classes = ((require('sheetify/insert')("._cf07c5ad > .todo:first-of-type {\n  border-top-right-radius: 2px;\n  border-top-left-radius: 2px;\n}") || true) && "_cf07c5ad")
+var classes = ((null || true) && "_cf07c5ad")
 var id = tid()
 
 module.exports = function TodoList (state, dispatch) {
@@ -1754,24 +1753,31 @@ var Checkbox = require('./checkbox')
 var Button = require('./button')
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
-var classes = ((require('sheetify/insert')("._d571195e {\n  display: flex;\n  padding: 1rem;\n  align-items: center;\n  margin-bottom: 1px;\n  border-bottom: 1px solid transparent;\n  background: white;\n}") || true) && "_d571195e")
-var inputClasses = ((require('sheetify/insert')("._5f219597 {\n    font-size: 1.5rem;\n    font-weight: 300;\n    color: #333;\n    border: none;\n  }") || true) && "_5f219597")
+var classes = ((null || true) && "_d571195e")
+var inputClasses = ((null || true) && "_5f219597")
 
 module.exports = function Todo (state, dispatch) {
   state = state || {}
   var id = state.id
   var editing = state.editing
   var title = state.title
-  var jsHandle = classes + '-js'
-  var jsClass = '.' + jsHandle
+  var inputHandle = id + '-input'
   var element
+
+  function getInput () {
+    return document.getElementById(inputHandle)
+  }
+
+  function copyTodo () {
+    return Object.assign({}, state)
+  }
 
   function keydown (e) {
     var newTodo
     var keyCode = e.keyCode
     // ESCAPE key to exit edit
     if (keyCode === 27) {
-      newTodo = Object.assign({}, state)
+      newTodo = copyTodo()
       newTodo.editing = false
       dispatch(updateTodo(newTodo))
     // Enter key to save
@@ -1782,20 +1788,20 @@ module.exports = function Todo (state, dispatch) {
   }
 
   function edit () {
-    var el = document.querySelector(jsClass)
+    var el = getInput()
     el && el.focus()
-    var newTodo = Object.assign({}, state)
+    var newTodo = copyTodo()
     newTodo.editing = true
     dispatch(updateTodo(newTodo))
   }
 
   function input () {
-    var el = document.querySelector(jsClass)
+    var el = getInput()
   }
 
   function submit () {
-    var el = document.querySelector(jsClass)
-    var newTodo = Object.assign({}, state)
+    var el = getInput()
+    var newTodo = copyTodo()
     newTodo.title = el.value
     newTodo.editing = false
     dispatch(updateTodo(newTodo))
@@ -1814,12 +1820,13 @@ module.exports = function Todo (state, dispatch) {
     return html`
       <li
         id=${id}
-        class="${classes} todo"
+        class=${classes}
         onclick=${edit}
       >
         ${Checkbox(state, dispatch)}
         <input
-          class="${jsHandle} ${inputClasses}"
+          id=${inputHandle}
+          class=${inputClasses}
           style='width: 100%; outline: none;'
           oninput=${input}
           onkeydown=${keydown}
@@ -1943,7 +1950,7 @@ var TitleInput = require('../components/title-input')
 var TodoList = require('../components/todo-list.js')
 var Footer = require('../components/footer')
 var CompleteButton = require('../components/button-complete-all')
-var classes = ((require('sheetify/insert')("._1268932d {\n  display: flex;\n  flex-direction: column;\n  max-width: 50rem;\n  height: 100%;\n  margin: 0 auto;\n}") || true) && "_1268932d")
+var classes = ((null || true) && "_1268932d")
 
 module.exports = function TodosCreate (store) {
   var state = store.getState()

@@ -28,16 +28,23 @@ module.exports = function Todo (state, dispatch) {
   var id = state.id
   var editing = state.editing
   var title = state.title
-  var jsHandle = classes + '-js'
-  var jsClass = '.' + jsHandle
+  var inputHandle = id + '-input'
   var element
+
+  function getInput () {
+    return document.getElementById(inputHandle)
+  }
+
+  function copyTodo () {
+    return Object.assign({}, state)
+  }
 
   function keydown (e) {
     var newTodo
     var keyCode = e.keyCode
     // ESCAPE key to exit edit
     if (keyCode === 27) {
-      newTodo = Object.assign({}, state)
+      newTodo = copyTodo()
       newTodo.editing = false
       dispatch(updateTodo(newTodo))
     // Enter key to save
@@ -48,20 +55,20 @@ module.exports = function Todo (state, dispatch) {
   }
 
   function edit () {
-    var el = document.querySelector(jsClass)
+    var el = getInput()
     el && el.focus()
-    var newTodo = Object.assign({}, state)
+    var newTodo = copyTodo()
     newTodo.editing = true
     dispatch(updateTodo(newTodo))
   }
 
   function input () {
-    var el = document.querySelector(jsClass)
+    var el = getInput()
   }
 
   function submit () {
-    var el = document.querySelector(jsClass)
-    var newTodo = Object.assign({}, state)
+    var el = getInput()
+    var newTodo = copyTodo()
     newTodo.title = el.value
     newTodo.editing = false
     dispatch(updateTodo(newTodo))
@@ -80,12 +87,13 @@ module.exports = function Todo (state, dispatch) {
     return html`
       <li
         id=${id}
-        class="${classes} todo"
+        class=${classes}
         onclick=${edit}
       >
         ${Checkbox(state, dispatch)}
         <input
-          class="${jsHandle} ${inputClasses}"
+          id=${inputHandle}
+          class=${inputClasses}
           style='width: 100%; outline: none;'
           oninput=${input}
           onkeydown=${keydown}
