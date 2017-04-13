@@ -15,14 +15,14 @@ var classes = css`
 `
 
 module.exports = function TodosCreate (store) {
-  var state = store.getState()
+  var state = store()
+  var subscribe = store.subscribe
   var dispatch = store.dispatch
   var unsubscribe
-  var todos = state.todos
   var element
 
   function load () {
-    unsubscribe = store.subscribe(update)
+    unsubscribe = subscribe(update)
   }
 
   function unload () {
@@ -39,7 +39,7 @@ module.exports = function TodosCreate (store) {
   }
 
   function create (state) {
-    var todos = state.todos
+    var todos = state && state.todos
     var showFooter = todos && todos.length
     return html`
       <div

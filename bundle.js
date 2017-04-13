@@ -1392,65 +1392,60 @@ function eachMutation (nodes, fn) {
 }
 
 },{"global/document":3,"global/window":4}],12:[function(require,module,exports){
-module.exports = function store () {
-  var state = {}
-  var listeners = []
-  var initialState
-  var reducers
+module.exports = function redeux () {
+  var state = {},
+    listeners = [],
+    name = '',
+    initialState,
+    reducers
 
-  if (typeof arguments[arguments.length - 1] === 'object') {
-    initialState = Array.prototype.pop.call(arguments)
-  }
+  'object' === typeof arguments[arguments.length - 1] &&
+   (initialState = Array.prototype.pop.call(arguments))
 
   reducers = Array.prototype.map.call(
     arguments,
     function (r) {
-      if (!r) {
-        return
+      if (r) {
+        name = r.name
+        return initialState ?
+          (initialState.hasOwnProperty(name) ||
+            console.warn('initialState.' + name + ' is missing.'),
+            state[name] = r(initialState[name])) :
+          state[name] = r(), r
       }
-      if (initialState) {
-        if (!initialState.hasOwnProperty(r.name)) {
-          console.warn('initialState.' + r.name + ' is missing.')
-        }
-        state[r.name] = r(initialState[r.name])
-      } else {
-        state[r.name] = r()
-      }
-      return r
     }
   )
 
-  function subscribe (listener) {
-    listeners.push(listener)
-    return unsubscribe
+  function store (func) {
+    return func ? func(state) : state
+  }
+
+  store.subscribe = function subscribe (listener) {
+    return 'function' === typeof listener ?
+      (listeners.push(listener), unsubscribe) :
+      console.error('listener must be a function')
   }
 
   function unsubscribe (listener) {
     return listeners.splice(listeners.indexOf(listener), 1)
   }
 
-  function dispatch (action) {
-    if (action && typeof action.type !== 'string') {
-      console.error('action.type must be a "string"')
-    }
-    var currentState = getState()
+  store.dispatch = function dispatch (action) {
+    var update
+    action &&
+    'string' !== typeof action.type &&
+    console.error('action.type must be a "string"')
     reducers.forEach(function (r) {
-      state[r.name] = r(currentState[r.name], action)
+      name = r.name
+      state[name] = r(state[name], action)
     })
+    update = store()
     listeners.forEach(function (l) {
-      l(state)
+      l(update)
     })
   }
 
-  function getState () {
-    return Object.assign({}, state)
-  }
-
-  return {
-    subscribe: subscribe,
-    dispatch: dispatch,
-    getState: getState
-  }
+  return store
 }
 
 },{}],13:[function(require,module,exports){
@@ -1883,7 +1878,7 @@ var stateMachine = hs(
 )
 
 function createTodo (state, data) {
-  var newState = state.concat()
+  var newState = state.slice()
   data.id = tid()
   data.done = false
   newState.push(data)
@@ -1910,7 +1905,7 @@ function updateTodo (state, data) {
 }
 
 function completeAll (state, data) {
-  var newState = state.concat()
+  var newState = state.slice()
   newState = newState.map(function (t) {
     var todo = Object.assign({}, t)
     todo.done = true
@@ -1921,7 +1916,7 @@ function completeAll (state, data) {
 }
 
 function deleteTodo (state, data) {
-  var newState = state.concat()
+  var newState = state.slice()
   newState = newState.filter(function (t) {
     return t.id !== data.id
   })
@@ -1953,14 +1948,14 @@ var CompleteButton = require('../components/button-complete-all')
 var classes = ((null || true) && "_1268932d")
 
 module.exports = function TodosCreate (store) {
-  var state = store.getState()
+  var state = store()
+  var subscribe = store.subscribe
   var dispatch = store.dispatch
   var unsubscribe
-  var todos = state.todos
   var element
 
   function load () {
-    unsubscribe = store.subscribe(update)
+    unsubscribe = subscribe(update)
   }
 
   function unload () {
@@ -1977,7 +1972,7 @@ module.exports = function TodosCreate (store) {
   }
 
   function create (state) {
-    var todos = state.todos
+    var todos = state && state.todos
     var showFooter = todos && todos.length
     return html`
       <div

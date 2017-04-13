@@ -23,7 +23,7 @@ var stateMachine = hs(
 )
 
 function createTodo (state, data) {
-  var newState = state.concat()
+  var newState = state.slice()
   data.id = tid()
   data.done = false
   newState.push(data)
@@ -50,7 +50,7 @@ function updateTodo (state, data) {
 }
 
 function completeAll (state, data) {
-  var newState = state.concat()
+  var newState = state.slice()
   newState = newState.map(function (t) {
     var todo = Object.assign({}, t)
     todo.done = true
@@ -61,7 +61,7 @@ function completeAll (state, data) {
 }
 
 function deleteTodo (state, data) {
-  var newState = state.concat()
+  var newState = state.slice()
   newState = newState.filter(function (t) {
     return t.id !== data.id
   })
