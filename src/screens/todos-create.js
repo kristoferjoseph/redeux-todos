@@ -11,6 +11,7 @@ var classes = css`
   max-width: 33.333rem;
   height: 100%;
   margin: 0 auto;
+  padding: 1rem;
 }
 `
 
@@ -30,12 +31,9 @@ module.exports = function TodosCreate (store) {
   }
 
   function render (state) {
-    if (!element) {
-      element = create(state)
-      return element
-    } else {
-      update(state)
-    }
+    return element ?
+      update(state) :
+      element = create(state), element
   }
 
   function create (state) {
@@ -50,13 +48,13 @@ module.exports = function TodosCreate (store) {
       >
         ${TitleInput(dispatch)}
         ${TodoList(state, dispatch)}
-        ${showFooter ? Footer(state, dispatch) : null}
+        ${showFooter ? Footer(todos, dispatch) : null}
       </div>
     `
   }
 
-  function update (newState) {
-    html.update(element, create(newState))
+  function update (state) {
+    html.update(element, create(state))
   }
 
   return render(state)

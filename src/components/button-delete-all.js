@@ -1,7 +1,7 @@
 var html = require('yo-yo')
 var css = require('sheetify')
 var actions = require('../actions/todos-actions')
-var completeAll = actions.completeAll
+var deleteAll = actions.deleteAll
 var classes = css`
 :host {
   padding: 0.5rem;
@@ -20,12 +20,12 @@ var classes = css`
 }
 `
 
-module.exports = function CompleteAllButton (opts) {
+module.exports = function DeleteAllButton (opts) {
   opts = opts || {}
   var dispatch = opts.dispatch || function () {}
 
   function click () {
-    dispatch(completeAll())
+    dispatch(deleteAll())
   }
 
   return html`
@@ -33,7 +33,7 @@ module.exports = function CompleteAllButton (opts) {
       class=${classes}
       onclick=${click}
     >
-      Complete All
+      Delete All
     </button>
   `
 }

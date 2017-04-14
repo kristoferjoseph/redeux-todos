@@ -1,18 +1,26 @@
 var html = require('yo-yo')
 var css = require('sheetify')
+var joinClasses = require('join-classes')
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
 var classes = css`
 :host {
-  position: relative;
   min-width: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
   min-height: 1.5rem;
   margin-right: 1rem;
-  border: 1px solid;
+  border: 1px solid grey;
   border-radius: 100%;
+  overflow: hidden;
   cursor: pointer;
+}
+:host:hover {
+  border-color: black;
+}
+:host:active {
+  border: none;
+  background: #ff0000;
 }
 `
 var inputClasses = css`
@@ -22,16 +30,14 @@ var inputClasses = css`
 }
 `
 
-var checkClasses = css`
+var doneClasses = css`
 :host {
-  position: absolute;
-  top: -0.955rem;
-  left: -0.05rem;
-  font-size: 2.55rem;
-  color: #ee0000;
+  border: none;
+  background: #ee0000;
 }
 :host:hover {
-  color: #ff0000;
+  border: none;
+  background: #ff0000;
 }
 `
 
@@ -45,17 +51,20 @@ module.exports = function (state, dispatch) {
     dispatch(updateTodo(newTodo))
   }
 
+  function getClasses () {
+    return done ?
+      joinClasses(classes, doneClasses) :
+      classes
+  }
+
   return html`
-    <label class=${classes}>
+    <label class=${getClasses()}>
       <input
         class=${inputClasses}
         type='checkbox'
         onchange=${change}
         checked=${done}
       />
-      <span class=${checkClasses}>
-        ${ done ? '●' : null }
-      </span>
     </label>
   `
 }

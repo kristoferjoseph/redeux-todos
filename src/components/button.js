@@ -17,6 +17,10 @@ var classes = css`
 :host:hover {
   background: #ff0000;
 }
+
+:host:active {
+  background: #ee0000;
+}
 `
 
 module.exports = function Button (state, dispatch) {

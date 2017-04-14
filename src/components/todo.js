@@ -10,7 +10,6 @@ var classes = css`
   display: flex;
   padding: 1rem;
   align-items: center;
-  border-bottom: 1px solid;
   background: white;
 }
 `
@@ -20,6 +19,7 @@ var inputClasses = css`
     font-size: 1.5rem;
     font-weight: 300;
     border: none;
+    text-overflow: ellipsis;
   }
 `
 
@@ -33,11 +33,11 @@ var doneClasses = css`
 module.exports = function Todo (state, dispatch) {
   state = state || {}
   var id = state.id
-  var inputHandle = id + '-input'
+  var inputHandle = 'input-' + id
   var element
 
   function getInput () {
-    return document.getElementById(inputHandle)
+    return document.querySelector('.'+inputHandle)
   }
 
   function copyTodo () {
@@ -88,6 +88,12 @@ module.exports = function Todo (state, dispatch) {
     element = create(state), element
   }
 
+  function getClasses (done) {
+    return done ?
+      joinClasses(inputHandle, inputClasses, doneClasses) :
+      joinClasses(inputHandle, inputClasses)
+  }
+
   function create (state) {
     state = state || {}
     var title = state.title
@@ -97,12 +103,10 @@ module.exports = function Todo (state, dispatch) {
       <li
         id=${id}
         class=${classes}
-        onclick=${edit}
       >
         ${Checkbox(state, dispatch)}
         <input
-          id=${inputHandle}
-          class=${done ? joinClasses(inputClasses, doneClasses) : inputClasses}
+          class=${getClasses(done)}
           oninput=${input}
           onkeydown=${keydown}
           disabled=${done}

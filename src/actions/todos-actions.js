@@ -33,11 +33,18 @@ function completeAll () {
   }
 }
 
+function deleteAll () {
+  return {
+    type: DELETE_ALL
+  }
+}
+
 module.exports = {
   createTodo: createTodo,
   updateTodo: updateTodo,
   deleteTodo: deleteTodo,
   completeAll: completeAll,
+  deleteAll: deleteAll,
   CREATE_TODO: CREATE_TODO,
   UPDATE_TODO: UPDATE_TODO,
   COMPLETE_ALL: COMPLETE_ALL,

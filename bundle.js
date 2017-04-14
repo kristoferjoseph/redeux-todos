@@ -1580,11 +1580,18 @@ function completeAll () {
   }
 }
 
+function deleteAll () {
+  return {
+    type: DELETE_ALL
+  }
+}
+
 module.exports = {
   createTodo: createTodo,
   updateTodo: updateTodo,
   deleteTodo: deleteTodo,
   completeAll: completeAll,
+  deleteAll: deleteAll,
   CREATE_TODO: CREATE_TODO,
   UPDATE_TODO: UPDATE_TODO,
   COMPLETE_ALL: COMPLETE_ALL,
@@ -1597,7 +1604,7 @@ var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
 var completeAll = actions.completeAll
-var classes = ((null || true) && "_a0bfdaf6")
+var classes = ((null || true) && "_df666def")
 
 module.exports = function CompleteAllButton (opts) {
   opts = opts || {}
@@ -1621,8 +1628,33 @@ module.exports = function CompleteAllButton (opts) {
 var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
+var deleteAll = actions.deleteAll
+var classes = ((null || true) && "_df666def")
+
+module.exports = function DeleteAllButton (opts) {
+  opts = opts || {}
+  var dispatch = opts.dispatch || function () {}
+
+  function click () {
+    dispatch(deleteAll())
+  }
+
+  return html`
+    <button
+      class=${classes}
+      onclick=${click}
+    >
+      Delete All
+    </button>
+  `
+}
+
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],21:[function(require,module,exports){
+var html = require('yo-yo')
+var css = 0
+var actions = require('../actions/todos-actions')
 var deleteTodo = actions.deleteTodo
-var classes = ((null || true) && "_3529b07a")
+var classes = ((null || true) && "_b0990f22")
 
 module.exports = function Button (state, dispatch) {
 
@@ -1640,15 +1672,16 @@ module.exports = function Button (state, dispatch) {
   `
 }
 
-},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],21:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],22:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
+var joinClasses = require('join-classes')
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
-var classes = ((null || true) && "_13b5f7db")
+var classes = ((null || true) && "_5ac97ca7")
 var inputClasses = ((null || true) && "_6e480868")
 
-var checkClasses = ((null || true) && "_1c7492d2")
+var doneClasses = ((null || true) && "_bdf2a6cd")
 
 module.exports = function (state, dispatch) {
   state = state || {}
@@ -1660,36 +1693,50 @@ module.exports = function (state, dispatch) {
     dispatch(updateTodo(newTodo))
   }
 
+  function getClasses () {
+    return done ?
+      joinClasses(classes, doneClasses) :
+      classes
+  }
+
   return html`
-    <label class=${classes}>
+    <label class=${getClasses()}>
       <input
         class=${inputClasses}
         type='checkbox'
         onchange=${change}
         checked=${done}
       />
-      <span class=${checkClasses}>
-        ${ done ? '●' : null }
-      </span>
     </label>
   `
 }
 
-},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],22:[function(require,module,exports){
+},{"../actions/todos-actions":18,"join-classes":9,"sheetify/insert":14,"yo-yo":16}],23:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var CompleteButton = require('./button-complete-all')
+var DeleteButton = require('./button-delete-all')
 var classes = ((null || true) && "_529104f8")
 
 module.exports = function Footer (state, dispatch) {
+  var active = state.filter(function (t) {
+    return !t.done
+  })
+
+  function getButton (todos) {
+    return todos ?
+    CompleteButton({dispatch: dispatch}) :
+    DeleteButton({dispatch: dispatch})
+  }
+
   return html`
     <footer class=${classes}>
-      ${CompleteButton({dispatch: dispatch})}
+      ${getButton(active && active.length)}
     </footer>
   `
 }
 
-},{"./button-complete-all":19,"sheetify/insert":14,"yo-yo":16}],23:[function(require,module,exports){
+},{"./button-complete-all":19,"./button-delete-all":20,"sheetify/insert":14,"yo-yo":16}],24:[function(require,module,exports){
 var html = require('yo-yo')
 var createTodo = require('../actions/todos-actions').createTodo
 var css = 0
@@ -1737,24 +1784,22 @@ module.exports = function (dispatch) {
   `
 }
 
-},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],24:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],25:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
-var tid = require('tiny-uuid')
 var Todo = require('../components/todo')
-var classes = ((null || true) && "_7bddfd15")
 var headingClasses = ((null || true) && "_b839b3f7")
-var id = tid()
+var congratsClasses = ((null || true) && "_cb384e03")
 
 module.exports = function TodoList (state, dispatch) {
   state = state || {}
-  var todos = state.todos || []
-  var active = todos.filter(function (t) {
-    return !t.done
-  })
-  var done = todos.filter(function (t) {
-    return t.done
-  })
+  var element
+
+  function render (state) {
+    return element ?
+      update(state) :
+      element = create(state), element
+  }
 
   function doneHeading () {
     return html`
@@ -1767,30 +1812,52 @@ module.exports = function TodoList (state, dispatch) {
     `
   }
 
-  return html`
-    <div>
-      <ul
-        id=${id}
-        class=${classes}
-      >
-        ${active.map(function (t) {
-          return Todo(t, dispatch)
-        })}
-      </ul>
-      ${done && done.length ? doneHeading() : null}
-      <ul
-        id=${id}
-        class=${classes}
-      >
-        ${done.map(function (t) {
-          return Todo(t, dispatch)
-        })}
-      </ul>
-    </div>
-  `
+  function congrats () {
+    return html`
+      <h1>
+        <div class=${congratsClasses}>
+          Well done 👏
+        </div>
+      </h1>
+    `
+  }
+
+  function create (state) {
+    state = state || {}
+    var todos = state.todos || []
+    var active = todos.filter(function (t) {
+      return !t.done
+    })
+    var done = todos.filter(function (t) {
+      return t.done
+    })
+
+    return html`
+      <div>
+        <ul>
+          ${active.map(function (t) {
+            return Todo(t, dispatch)
+          })}
+        </ul>
+        ${active && !active.length && done && done.length ? congrats() : null}
+        ${done && done.length ? doneHeading() : null}
+        <ul>
+          ${done.map(function (t) {
+            return Todo(t, dispatch)
+          })}
+        </ul>
+      </div>
+    `
+  }
+
+  function update (state) {
+    html.update(element, create(state))
+  }
+
+  return render(state)
 }
 
-},{"../components/todo":25,"sheetify/insert":14,"tiny-uuid":15,"yo-yo":16}],25:[function(require,module,exports){
+},{"../components/todo":26,"sheetify/insert":14,"yo-yo":16}],26:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var joinClasses = require('join-classes')
@@ -1798,19 +1865,19 @@ var Checkbox = require('./checkbox')
 var Button = require('./button')
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
-var classes = ((null || true) && "_469cca49")
-var inputClasses = ((null || true) && "_9e829db2")
+var classes = ((null || true) && "_76489e16")
+var inputClasses = ((null || true) && "_5991b9a1")
 
 var doneClasses = ((null || true) && "_bf30b541")
 
 module.exports = function Todo (state, dispatch) {
   state = state || {}
   var id = state.id
-  var inputHandle = id + '-input'
+  var inputHandle = 'input-' + id
   var element
 
   function getInput () {
-    return document.getElementById(inputHandle)
+    return document.querySelector('.'+inputHandle)
   }
 
   function copyTodo () {
@@ -1861,6 +1928,12 @@ module.exports = function Todo (state, dispatch) {
     element = create(state), element
   }
 
+  function getClasses (done) {
+    return done ?
+      joinClasses(inputHandle, inputClasses, doneClasses) :
+      joinClasses(inputHandle, inputClasses)
+  }
+
   function create (state) {
     state = state || {}
     var title = state.title
@@ -1870,12 +1943,10 @@ module.exports = function Todo (state, dispatch) {
       <li
         id=${id}
         class=${classes}
-        onclick=${edit}
       >
         ${Checkbox(state, dispatch)}
         <input
-          id=${inputHandle}
-          class=${done ? joinClasses(inputClasses, doneClasses) : inputClasses}
+          class=${getClasses(done)}
           oninput=${input}
           onkeydown=${keydown}
           disabled=${done}
@@ -1893,7 +1964,7 @@ module.exports = function Todo (state, dispatch) {
   return render(state)
 }
 
-},{"../actions/todos-actions":18,"./button":20,"./checkbox":21,"join-classes":9,"sheetify/insert":14,"yo-yo":16}],26:[function(require,module,exports){
+},{"../actions/todos-actions":18,"./button":21,"./checkbox":22,"join-classes":9,"sheetify/insert":14,"yo-yo":16}],27:[function(require,module,exports){
 var tid = require('tiny-uuid')
 var createStore = require('redeux')
 var kubby = require('kubby')()
@@ -1906,7 +1977,7 @@ var store = createStore(todos, localState)
 var todoCreate = TodoCreate(store)
 document.getElementById('root').appendChild(todoCreate)
 
-},{"./reducers/todos-reducer":27,"./screens/todos-create":28,"kubby":10,"redeux":13,"tiny-uuid":15}],27:[function(require,module,exports){
+},{"./reducers/todos-reducer":28,"./screens/todos-create":29,"kubby":10,"redeux":13,"tiny-uuid":15}],28:[function(require,module,exports){
 var tid = require('tiny-uuid')
 var hs = require('hash-switch')
 var kubby = require('kubby')()
@@ -1940,7 +2011,7 @@ module.exports = function todos (state, action) {
 
 function createTodo (state, data) {
   var newState = state.slice()
-  data.id = tid()
+  data.id = tid().substr(0, 7)
   data.done = false
   newState.push(data)
   kubby.set(TODOS_LABEL, newState)
@@ -1992,14 +2063,14 @@ function deleteAll (state, data) {
 }
 
 
-},{"../actions/todos-actions":18,"hash-switch":5,"kubby":10,"tiny-uuid":15}],28:[function(require,module,exports){
+},{"../actions/todos-actions":18,"hash-switch":5,"kubby":10,"tiny-uuid":15}],29:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var TitleInput = require('../components/title-input')
 var TodoList = require('../components/todo-list.js')
 var Footer = require('../components/footer')
 var CompleteButton = require('../components/button-complete-all')
-var classes = ((null || true) && "_cf04adb7")
+var classes = ((null || true) && "_137a3464")
 
 module.exports = function TodosCreate (store) {
   var state = store()
@@ -2017,12 +2088,9 @@ module.exports = function TodosCreate (store) {
   }
 
   function render (state) {
-    if (!element) {
-      element = create(state)
-      return element
-    } else {
-      update(state)
-    }
+    return element ?
+      update(state) :
+      element = create(state), element
   }
 
   function create (state) {
@@ -2037,16 +2105,16 @@ module.exports = function TodosCreate (store) {
       >
         ${TitleInput(dispatch)}
         ${TodoList(state, dispatch)}
-        ${showFooter ? Footer(state, dispatch) : null}
+        ${showFooter ? Footer(todos, dispatch) : null}
       </div>
     `
   }
 
-  function update (newState) {
-    html.update(element, create(newState))
+  function update (state) {
+    html.update(element, create(state))
   }
 
   return render(state)
 }
 
-},{"../components/button-complete-all":19,"../components/footer":22,"../components/title-input":23,"../components/todo-list.js":24,"sheetify/insert":14,"yo-yo":16}]},{},[26]);
+},{"../components/button-complete-all":19,"../components/footer":23,"../components/title-input":24,"../components/todo-list.js":25,"sheetify/insert":14,"yo-yo":16}]},{},[27]);

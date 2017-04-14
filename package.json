@@ -46,6 +46,7 @@
     "instant-server": "^2.0.0",
     "standard": "^9.0.2",
     "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "yo-yoify": "^3.7.0"
   }
 }

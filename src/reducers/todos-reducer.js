@@ -31,7 +31,7 @@ module.exports = function todos (state, action) {
 
 function createTodo (state, data) {
   var newState = state.slice()
-  data.id = tid()
+  data.id = tid().substr(0, 7)
   data.done = false
   newState.push(data)
   kubby.set(TODOS_LABEL, newState)
