@@ -1678,7 +1678,7 @@ var css = 0
 var joinClasses = require('join-classes')
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
-var classes = ((null || true) && "_5ac97ca7")
+var classes = ((null || true) && "_796d884b")
 var inputClasses = ((null || true) && "_6e480868")
 
 var doneClasses = ((null || true) && "_bdf2a6cd")
@@ -1816,7 +1816,7 @@ module.exports = function TodoList (state, dispatch) {
     return html`
       <h1>
         <div class=${congratsClasses}>
-          Well done 👏
+          Well done
         </div>
       </h1>
     `

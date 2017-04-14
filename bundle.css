@@ -46,22 +46,21 @@
 ._b0990f22:active {
   background: #ee0000;
 }
-._5ac97ca7 {
+._796d884b {
   min-width: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
   min-height: 1.5rem;
   margin-right: 1rem;
-  border: 1px solid grey;
+  border: 1px solid #ee0000;
   border-radius: 100%;
   overflow: hidden;
   cursor: pointer;
 }
-._5ac97ca7:hover {
-  border-color: black;
+._796d884b:hover {
+  border-color: #ff0000;
 }
-._5ac97ca7:active {
-  border: none;
+._796d884b:active {
   background: #ff0000;
 }
 ._6e480868 {

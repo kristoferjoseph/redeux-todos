@@ -4,11 +4,12 @@
   "description": "Redeux example todo app",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && echo 'http://localhost:6661' && instant -p 6661",
+    "start": "npm run build && npm run serve",
+    "serve": "echo 'http://localhost:6661' && instant -p 6661",
     "test": "node test.js",
-    "build": "browserify ./src/index.js -t [ sheetify/transform ] -p [ css-extract -o ./bundle.css ] -o ./bundle.js",
+    "build": "browserify ./src/index.js -t [ sheetify/transform ] -p [ css-extract -o ./bundle.css ] -g yo-yoify -o ./bundle.js",
     "watch": "watchify ./src/index.js -t [ sheetify/transform ] -p [ css-extract -o ./bundle.css ] -o ./bundle.js",
-    "dist": "browserify ./src/index.js | uglifyjs --compress --mangle --screw-ie8 > ./bundle.js",
+    "dist": "browserify ./src/index.js -t [ sheetify/transform ] -p [ css-extract -o ./bundle.css ] -g yo-yoify | uglifyjs --compress --screw-ie8 > ./bundle.js",
     "lint": "standard src/**/*.js",
     "fix": "standard --fix src/**/*.js"
   },

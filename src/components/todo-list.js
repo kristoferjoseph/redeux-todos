@@ -40,7 +40,7 @@ module.exports = function TodoList (state, dispatch) {
     return html`
       <h1>
         <div class=${congratsClasses}>
-          Well done 👏
+          Well done
         </div>
       </h1>
     `

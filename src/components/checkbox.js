@@ -10,16 +10,15 @@ var classes = css`
   height: 1.5rem;
   min-height: 1.5rem;
   margin-right: 1rem;
-  border: 1px solid grey;
+  border: 1px solid #ee0000;
   border-radius: 100%;
   overflow: hidden;
   cursor: pointer;
 }
 :host:hover {
-  border-color: black;
+  border-color: #ff0000;
 }
 :host:active {
-  border: none;
   background: #ff0000;
 }
 `
