@@ -949,11 +949,11 @@ function eachMutation (nodes, fn) {
 
 },{"global/document":2,"global/window":3}],10:[function(require,module,exports){
 module.exports = function redeux () {
-  var state = {},
-    listeners = [],
-    name = '',
-    initialState,
-    reducers
+  var state = {}
+  var listeners = []
+  var name = ''
+  var initialState
+  var reducers
 
   'object' === typeof arguments[arguments.length - 1] &&
    (initialState = Array.prototype.pop.call(arguments))
@@ -965,8 +965,8 @@ module.exports = function redeux () {
         name = r.name
         return initialState ?
           (initialState.hasOwnProperty(name) ||
-            console.warn('initialState.' + name + ' is missing.'),
-            state[name] = r(initialState[name])) :
+          console.warn('initialState.' + name + ' is missing.'),
+          state[name] = r(initialState[name])) :
           state[name] = r(), r
       }
     }
