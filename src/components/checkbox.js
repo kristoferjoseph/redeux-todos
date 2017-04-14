@@ -10,16 +10,17 @@ var classes = css`
   height: 1.5rem;
   min-height: 1.5rem;
   margin-right: 1rem;
-  border: 1px solid #ee0000;
+  border: 1px solid red;
   border-radius: 100%;
   overflow: hidden;
   cursor: pointer;
 }
 :host:hover {
-  border-color: #ff0000;
+  border-color: red;
+  border-width: 2px;
 }
 :host:active {
-  background: #ff0000;
+  border-width: 3px;
 }
 `
 var inputClasses = css`
@@ -31,12 +32,14 @@ var inputClasses = css`
 
 var doneClasses = css`
 :host {
-  border: none;
-  background: #ee0000;
+  border-color: grey;
 }
 :host:hover {
-  border: none;
-  background: #ff0000;
+  border-color: grey;
+  border-width: 2px;
+}
+:host:active {
+  border-width: 3px;
 }
 `
 

@@ -46,34 +46,37 @@
 ._b0990f22:active {
   background: #ee0000;
 }
-._796d884b {
+._cc3d6666 {
   min-width: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
   min-height: 1.5rem;
   margin-right: 1rem;
-  border: 1px solid #ee0000;
+  border: 1px solid red;
   border-radius: 100%;
   overflow: hidden;
   cursor: pointer;
 }
-._796d884b:hover {
-  border-color: #ff0000;
+._cc3d6666:hover {
+  border-color: red;
+  border-width: 2px;
 }
-._796d884b:active {
-  background: #ff0000;
+._cc3d6666:active {
+  border-width: 3px;
 }
 ._6e480868 {
   opacity: 0.0001;
   pointer-events: none;
 }
-._bdf2a6cd {
-  border: none;
-  background: #ee0000;
+._5c5561cc {
+  border-color: grey;
 }
-._bdf2a6cd:hover {
-  border: none;
-  background: #ff0000;
+._5c5561cc:hover {
+  border-color: grey;
+  border-width: 2px;
+}
+._5c5561cc:active {
+  border-width: 3px;
 }
 ._529104f8 {
  text-align: right;
