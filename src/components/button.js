@@ -4,13 +4,18 @@ var actions = require('../actions/todos-actions')
 var deleteTodo = actions.deleteTodo
 var classes = css`
 :host {
-  padding: 0.25rem;
-  fontSize: 0.85rem;
-  height: 100%;
-  color: red;
+  font-size: 1rem;
+  min-width: 1.5rem;
+  min-height: 1.52rem;
+  color: white;
   border: 1px solid red;
-  border-radius: 2px;
-  background: none;
+  border-radius: 100%;
+  background: #ee0000;
+  cursor: pointer;
+}
+
+:host:hover {
+  background: #ff0000;
 }
 `
 
@@ -25,7 +30,7 @@ module.exports = function Button (state, dispatch) {
       class=${classes}
       onclick=${destroy}
     >
-      delete
+      ✖︎
     </button>
   `
 }

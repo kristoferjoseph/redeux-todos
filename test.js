@@ -1,6 +1,6 @@
 var assert = require('assert')
 var deepFreeze = require('deep-freeze')
-var todosReducer = require('./reducers/todos-reducer')
+var todosReducer = require('./src/reducers/todos-reducer')
 
 function fail(msg) {
   console.error('  ✘ ' + msg)
@@ -40,7 +40,7 @@ module.exports = function() {
       data: { title: 'YOLO' }
     }
     deepFreeze(state)
-    assert.equal(todosReducer(action, state)[0].title, 'YOLO')
+    assert.equal(todosReducer(state, action)[0].title, 'YOLO')
   })
 
   test('should update todo', function() {
@@ -51,7 +51,7 @@ module.exports = function() {
       data: { id: 1, title: 'make beats' }
     }
     deepFreeze(state)
-    var state = todosReducer(action, state)
+    var state = todosReducer(state, action)
     assert.equal(state[0].title, 'make beats', 'todo not updated')
   })
 
@@ -63,7 +63,7 @@ module.exports = function() {
       data: todo
     }
     deepFreeze(state)
-    var state = todosReducer(action, state)
+    var state = todosReducer(state, action)
     assert.equal(state.length, 1, 'todo not deleted')
   })
 
@@ -106,7 +106,7 @@ module.exports = function() {
       type: 'COMPLETE_ALL'
     }
     deepFreeze(before)
-    var state = todosReducer(action, before)
+    var state = todosReducer(before, action)
     assert.deepEqual(state, after)
   })
 
@@ -119,7 +119,7 @@ module.exports = function() {
       type: 'DELETE_ALL'
     }
     deepFreeze(state)
-    var state = todosReducer(action, state)
+    var state = todosReducer(state, action)
     assert.equal(state.length, 0, 'todos not deleted')
   })
 

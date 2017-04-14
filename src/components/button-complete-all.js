@@ -5,12 +5,14 @@ var completeAll = actions.completeAll
 var classes = css`
 :host {
   padding: 0.5rem;
-  border: 1px solid #ddd;
-  background: transparent;
+  font-weight: 700;
+  color: white;
+  background: #ee0000;
+  border: none;
   border-radius: 2px;
 }
 :host:hover {
-  border-color: #ccc;
+  background: #ff0000;
 }
 `
 
@@ -27,7 +29,7 @@ module.exports = function CompleteAllButton (opts) {
       class=${classes}
       onclick=${click}
     >
-      complete all
+      Complete All
     </button>
   `
 }

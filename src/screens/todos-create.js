@@ -8,14 +8,14 @@ var classes = css`
 :host {
   display: flex;
   flex-direction: column;
-  max-width: 50rem;
+  max-width: 33.333rem;
   height: 100%;
   margin: 0 auto;
 }
 `
 
 module.exports = function TodosCreate (store) {
-  var state = store.getState()
+  var state = store()
   var dispatch = store.dispatch
   var unsubscribe
   var todos = state.todos
@@ -50,7 +50,7 @@ module.exports = function TodosCreate (store) {
       >
         ${TitleInput(dispatch)}
         ${TodoList(state, dispatch)}
-        ${showFooter? Footer(state, dispatch): null}
+        ${showFooter ? Footer(state, dispatch) : null}
       </div>
     `
   }

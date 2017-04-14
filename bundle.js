@@ -149,7 +149,7 @@ module.exports = hyperx(belCreateElement)
 module.exports.default = module.exports
 module.exports.createElement = belCreateElement
 
-},{"global/document":3,"hyperx":7,"on-load":11}],2:[function(require,module,exports){
+},{"global/document":3,"hyperx":7,"on-load":12}],2:[function(require,module,exports){
 
 },{}],3:[function(require,module,exports){
 (function (global){
@@ -572,6 +572,14 @@ module.exports = insertCss;
 module.exports.insertCss = insertCss;
 
 },{}],9:[function(require,module,exports){
+var filter = Array.prototype.filter
+module.exports = function joinClasses () {
+  return filter.call(arguments, function (s) {
+    return s && 'string' === typeof s
+  }).join(' ').trim()
+}
+
+},{}],10:[function(require,module,exports){
 module.exports = function kubby(options) {
   options = options || {}
   var noop = function(){}
@@ -627,7 +635,7 @@ module.exports = function kubby(options) {
   }
 }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 var range; // Create a range object for efficently rendering strings to elements.
@@ -1302,7 +1310,7 @@ var morphdom = morphdomFactory(morphAttrs);
 
 module.exports = morphdom;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /* global MutationObserver */
 var document = require('global/document')
 var window = require('global/window')
@@ -1391,75 +1399,70 @@ function eachMutation (nodes, fn) {
   }
 }
 
-},{"global/document":3,"global/window":4}],12:[function(require,module,exports){
-module.exports = function store () {
-  var state = {}
-  var listeners = []
-  var initialState
-  var reducers
+},{"global/document":3,"global/window":4}],13:[function(require,module,exports){
+module.exports = function redeux () {
+  var state = {},
+    listeners = [],
+    name = '',
+    initialState,
+    reducers
 
-  if (typeof arguments[arguments.length - 1] === 'object') {
-    initialState = Array.prototype.pop.call(arguments)
-  }
+  'object' === typeof arguments[arguments.length - 1] &&
+   (initialState = Array.prototype.pop.call(arguments))
 
   reducers = Array.prototype.map.call(
     arguments,
     function (r) {
-      if (!r) {
-        return
+      if (r) {
+        name = r.name
+        return initialState ?
+          (initialState.hasOwnProperty(name) ||
+            console.warn('initialState.' + name + ' is missing.'),
+            state[name] = r(initialState[name])) :
+          state[name] = r(), r
       }
-      if (initialState) {
-        if (!initialState.hasOwnProperty(r.name)) {
-          console.warn('initialState.' + r.name + ' is missing.')
-        }
-        state[r.name] = r(initialState[r.name])
-      } else {
-        state[r.name] = r()
-      }
-      return r
     }
   )
 
-  function subscribe (listener) {
-    listeners.push(listener)
-    return unsubscribe
+  function store (func) {
+    return func ? func(state) : state
+  }
+
+  store.subscribe = function subscribe (listener) {
+    return 'function' === typeof listener ?
+      (listeners.push(listener), unsubscribe) :
+      console.error('listener must be a function')
   }
 
   function unsubscribe (listener) {
     return listeners.splice(listeners.indexOf(listener), 1)
   }
 
-  function dispatch (action) {
-    if (action && typeof action.type !== 'string') {
-      console.error('action.type must be a "string"')
-    }
-    var currentState = getState()
+  store.dispatch = function dispatch (action) {
+    var update
+    action &&
+    'string' !== typeof action.type &&
+    console.error('action.type must be a "string"')
     reducers.forEach(function (r) {
-      state[r.name] = r(currentState[r.name], action)
+      name = r.name
+      state[name] = r(state[name], action)
     })
+    update = store()
     listeners.forEach(function (l) {
-      l(state)
+      l(update)
     })
   }
 
-  function getState () {
-    return Object.assign({}, state)
-  }
-
-  return {
-    subscribe: subscribe,
-    dispatch: dispatch,
-    getState: getState
-  }
+  return store
 }
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = require('insert-css')
 
-},{"insert-css":8}],14:[function(require,module,exports){
+},{"insert-css":8}],15:[function(require,module,exports){
 module.exports = function(a,b){for(b=a='';a++<36;b+=a*51&52?(a^15?8^Math.random()*(a^20?16:4):4).toString(16):'-');return b};
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var bel = require('bel') // turns template tag into DOM elements
 var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
 var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
@@ -1503,7 +1506,7 @@ module.exports.update = function (fromNode, toNode, opts) {
   }
 }
 
-},{"./update-events.js":16,"bel":1,"morphdom":10}],16:[function(require,module,exports){
+},{"./update-events.js":17,"bel":1,"morphdom":11}],17:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
@@ -1541,7 +1544,7 @@ module.exports = [
   'onfocusout'
 ]
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var CREATE_TODO = 'CREATE_TODO'
 var UPDATE_TODO = 'UPDATE_TODO'
 var COMPLETE_ALL = 'COMPLETE_ALL'
@@ -1589,12 +1592,12 @@ module.exports = {
   DELETE_ALL: DELETE_ALL
 }
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
 var completeAll = actions.completeAll
-var classes = ((null || true) && "_e0cc7f53")
+var classes = ((null || true) && "_a0bfdaf6")
 
 module.exports = function CompleteAllButton (opts) {
   opts = opts || {}
@@ -1609,17 +1612,17 @@ module.exports = function CompleteAllButton (opts) {
       class=${classes}
       onclick=${click}
     >
-      complete all
+      Complete All
     </button>
   `
 }
 
-},{"../actions/todos-actions":17,"sheetify/insert":13,"yo-yo":15}],19:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],20:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
 var deleteTodo = actions.deleteTodo
-var classes = ((null || true) && "_752ff214")
+var classes = ((null || true) && "_3529b07a")
 
 module.exports = function Button (state, dispatch) {
 
@@ -1632,17 +1635,20 @@ module.exports = function Button (state, dispatch) {
       class=${classes}
       onclick=${destroy}
     >
-      delete
+      ✖︎
     </button>
   `
 }
 
-},{"../actions/todos-actions":17,"sheetify/insert":13,"yo-yo":15}],20:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],21:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
-var classes = ((null || true) && "_0a92cfe3")
+var classes = ((null || true) && "_13b5f7db")
+var inputClasses = ((null || true) && "_6e480868")
+
+var checkClasses = ((null || true) && "_1c7492d2")
 
 module.exports = function (state, dispatch) {
   state = state || {}
@@ -1655,20 +1661,25 @@ module.exports = function (state, dispatch) {
   }
 
   return html`
-    <input
-      class=${classes}
-      type='checkbox'
-      onchange=${change}
-      checked=${done}
-    />
+    <label class=${classes}>
+      <input
+        class=${inputClasses}
+        type='checkbox'
+        onchange=${change}
+        checked=${done}
+      />
+      <span class=${checkClasses}>
+        ${ done ? '●' : null }
+      </span>
+    </label>
   `
 }
 
-},{"../actions/todos-actions":17,"sheetify/insert":13,"yo-yo":15}],21:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],22:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var CompleteButton = require('./button-complete-all')
-var classes = ((null || true) && "_931da189")
+var classes = ((null || true) && "_529104f8")
 
 module.exports = function Footer (state, dispatch) {
   return html`
@@ -1678,15 +1689,19 @@ module.exports = function Footer (state, dispatch) {
   `
 }
 
-},{"./button-complete-all":18,"sheetify/insert":13,"yo-yo":15}],22:[function(require,module,exports){
+},{"./button-complete-all":19,"sheetify/insert":14,"yo-yo":16}],23:[function(require,module,exports){
 var html = require('yo-yo')
 var createTodo = require('../actions/todos-actions').createTodo
 var css = 0
-var inputClass = ((null || true) && "_fe9ae55d")
+var inputClass = ((null || true) && "_03191de4")
 
 var labelClass = ((null || true) && "_09857901")
 
 module.exports = function (dispatch) {
+
+  function getTitle () {
+    return document.getElementById('title')
+  }
 
   function keyup (e) {
     var keyCode = e.keyCode
@@ -1697,7 +1712,7 @@ module.exports = function (dispatch) {
   }
 
   function submit () {
-    var input = document.getElementById('title')
+    var input = getTitle()
     var title = input && input.value
     if (title) {
       input.value = ''
@@ -1722,45 +1737,75 @@ module.exports = function (dispatch) {
   `
 }
 
-},{"../actions/todos-actions":17,"sheetify/insert":13,"yo-yo":15}],23:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],24:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var tid = require('tiny-uuid')
 var Todo = require('../components/todo')
-var classes = ((null || true) && "_cf07c5ad")
+var classes = ((null || true) && "_7bddfd15")
+var headingClasses = ((null || true) && "_b839b3f7")
 var id = tid()
 
 module.exports = function TodoList (state, dispatch) {
   state = state || {}
-  var todos = state.todos
+  var todos = state.todos || []
+  var active = todos.filter(function (t) {
+    return !t.done
+  })
+  var done = todos.filter(function (t) {
+    return t.done
+  })
+
+  function doneHeading () {
+    return html`
+      <h3>
+        <div class=${headingClasses}>
+          Completed
+        </div>
+        <hr>
+      </h3>
+    `
+  }
 
   return html`
-    <ul
-      id=${id}
-      class=${classes}
-    >
-      ${todos.map(function (t) {
-        return Todo(t, dispatch)
-      })}
-    </ul>
+    <div>
+      <ul
+        id=${id}
+        class=${classes}
+      >
+        ${active.map(function (t) {
+          return Todo(t, dispatch)
+        })}
+      </ul>
+      ${done && done.length ? doneHeading() : null}
+      <ul
+        id=${id}
+        class=${classes}
+      >
+        ${done.map(function (t) {
+          return Todo(t, dispatch)
+        })}
+      </ul>
+    </div>
   `
 }
 
-},{"../components/todo":24,"sheetify/insert":13,"tiny-uuid":14,"yo-yo":15}],24:[function(require,module,exports){
+},{"../components/todo":25,"sheetify/insert":14,"tiny-uuid":15,"yo-yo":16}],25:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
+var joinClasses = require('join-classes')
 var Checkbox = require('./checkbox')
 var Button = require('./button')
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
-var classes = ((null || true) && "_d571195e")
-var inputClasses = ((null || true) && "_5f219597")
+var classes = ((null || true) && "_469cca49")
+var inputClasses = ((null || true) && "_9e829db2")
+
+var doneClasses = ((null || true) && "_bf30b541")
 
 module.exports = function Todo (state, dispatch) {
   state = state || {}
   var id = state.id
-  var editing = state.editing
-  var title = state.title
   var inputHandle = id + '-input'
   var element
 
@@ -1795,8 +1840,11 @@ module.exports = function Todo (state, dispatch) {
     dispatch(updateTodo(newTodo))
   }
 
-  function input () {
-    var el = getInput()
+  function input (e) {
+    e &&
+    e.target &&
+    e.target.value &&
+    submit()
   }
 
   function submit () {
@@ -1808,15 +1856,16 @@ module.exports = function Todo (state, dispatch) {
   }
 
   function render (state) {
-    if (!element) {
-      element = create(state)
-      return element
-    } else {
-      update(state)
-    }
+    return element ?
+    update(state) :
+    element = create(state), element
   }
 
   function create (state) {
+    state = state || {}
+    var title = state.title
+    var done = state.done
+    var editing = state.editing
     return html`
       <li
         id=${id}
@@ -1826,25 +1875,25 @@ module.exports = function Todo (state, dispatch) {
         ${Checkbox(state, dispatch)}
         <input
           id=${inputHandle}
-          class=${inputClasses}
-          style='width: 100%; outline: none;'
+          class=${done ? joinClasses(inputClasses, doneClasses) : inputClasses}
           oninput=${input}
           onkeydown=${keydown}
+          disabled=${done}
           value=${title}
         >
-        ${editing ? Button(state, dispatch) : null}
+        ${done && editing ? Button(state, dispatch) : null}
       </li>
     `
   }
 
-  function update (newState) {
-    html.update(element, create(newState))
+  function update (state) {
+    html.update(element, create(state))
   }
 
   return render(state)
 }
 
-},{"../actions/todos-actions":17,"./button":19,"./checkbox":20,"sheetify/insert":13,"yo-yo":15}],25:[function(require,module,exports){
+},{"../actions/todos-actions":18,"./button":20,"./checkbox":21,"join-classes":9,"sheetify/insert":14,"yo-yo":16}],26:[function(require,module,exports){
 var tid = require('tiny-uuid')
 var createStore = require('redeux')
 var kubby = require('kubby')()
@@ -1857,7 +1906,7 @@ var store = createStore(todos, localState)
 var todoCreate = TodoCreate(store)
 document.getElementById('root').appendChild(todoCreate)
 
-},{"./reducers/todos-reducer":26,"./screens/todos-create":27,"kubby":9,"redeux":12,"tiny-uuid":14}],26:[function(require,module,exports){
+},{"./reducers/todos-reducer":27,"./screens/todos-create":28,"kubby":10,"redeux":13,"tiny-uuid":15}],27:[function(require,module,exports){
 var tid = require('tiny-uuid')
 var hs = require('hash-switch')
 var kubby = require('kubby')()
@@ -1868,7 +1917,6 @@ var COMPLETE_ALL = actions.COMPLETE_ALL
 var DELETE_TODO = actions.DELETE_TODO
 var DELETE_ALL = actions.DELETE_ALL
 var TODOS_LABEL = 'redeux-todos'
-
 var stateMachine = hs(
   {
     CREATE_TODO: createTodo,
@@ -1881,6 +1929,14 @@ var stateMachine = hs(
     return state
   }
 )
+
+module.exports = function todos (state, action) {
+  state = state || []
+  var type = action && action.type || ''
+  var data = action && action.data
+  var newState = stateMachine(type, state, data)
+  return newState
+}
 
 function createTodo (state, data) {
   var newState = state.concat()
@@ -1935,25 +1991,18 @@ function deleteAll (state, data) {
   return newState
 }
 
-module.exports = function todos (state, action) {
-  state = state || []
-  var type = action && action.type || ''
-  var data = action && action.data
-  var newState = stateMachine(type, state, data)
-  return newState
-}
 
-},{"../actions/todos-actions":17,"hash-switch":5,"kubby":9,"tiny-uuid":14}],27:[function(require,module,exports){
+},{"../actions/todos-actions":18,"hash-switch":5,"kubby":10,"tiny-uuid":15}],28:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var TitleInput = require('../components/title-input')
 var TodoList = require('../components/todo-list.js')
 var Footer = require('../components/footer')
 var CompleteButton = require('../components/button-complete-all')
-var classes = ((null || true) && "_1268932d")
+var classes = ((null || true) && "_cf04adb7")
 
 module.exports = function TodosCreate (store) {
-  var state = store.getState()
+  var state = store()
   var dispatch = store.dispatch
   var unsubscribe
   var todos = state.todos
@@ -1988,7 +2037,7 @@ module.exports = function TodosCreate (store) {
       >
         ${TitleInput(dispatch)}
         ${TodoList(state, dispatch)}
-        ${showFooter? Footer(state, dispatch): null}
+        ${showFooter ? Footer(state, dispatch) : null}
       </div>
     `
   }
@@ -2000,4 +2049,4 @@ module.exports = function TodosCreate (store) {
   return render(state)
 }
 
-},{"../components/button-complete-all":18,"../components/footer":21,"../components/title-input":22,"../components/todo-list.js":23,"sheetify/insert":13,"yo-yo":15}]},{},[25]);
+},{"../components/button-complete-all":19,"../components/footer":22,"../components/title-input":23,"../components/todo-list.js":24,"sheetify/insert":14,"yo-yo":16}]},{},[26]);

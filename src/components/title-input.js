@@ -5,24 +5,24 @@ var inputClass = css`
 :host {
   flex-grow: 0;
   padding: 1rem;
-  padding-bottom: 0.5rem;
+  padding-top: 2rem;
   width: 100%;
   font-size: 2rem;
-  font-weight: 100;
-  margin-bottom: 0.5rem;
-  color: #FFF;
+  font-weight: 700;
   border: none;
+  border-bottom: 1px solid;
   background: transparent;
 }
 :host:focus {
   border: none;
+  border-bottom: 1px solid;
   outline: none;
 }
 :host::-webkit-input-placeholder {
-  color: #EEE;
+  color: black;
 }
 :host::-moz-placeholder {
-  color: #EEE;
+  color: black;
 }
 `
 
@@ -37,6 +37,10 @@ var labelClass = css`
 
 module.exports = function (dispatch) {
 
+  function getTitle () {
+    return document.getElementById('title')
+  }
+
   function keyup (e) {
     var keyCode = e.keyCode
     // Enter key to save
@@ -46,7 +50,7 @@ module.exports = function (dispatch) {
   }
 
   function submit () {
-    var input = document.getElementById('title')
+    var input = getTitle()
     var title = input && input.value
     if (title) {
       input.value = ''

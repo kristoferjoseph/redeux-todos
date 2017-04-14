@@ -1,5 +1,6 @@
 var html = require('yo-yo')
 var css = require('sheetify')
+var joinClasses = require('join-classes')
 var Checkbox = require('./checkbox')
 var Button = require('./button')
 var actions = require('../actions/todos-actions')
@@ -9,25 +10,29 @@ var classes = css`
   display: flex;
   padding: 1rem;
   align-items: center;
-  margin-bottom: 1px;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid;
   background: white;
 }
 `
 var inputClasses = css`
   :host {
+    width: 100%;
     font-size: 1.5rem;
     font-weight: 300;
-    color: #333;
     border: none;
   }
+`
+
+var doneClasses = css`
+:host {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
 `
 
 module.exports = function Todo (state, dispatch) {
   state = state || {}
   var id = state.id
-  var editing = state.editing
-  var title = state.title
   var inputHandle = id + '-input'
   var element
 
@@ -62,8 +67,11 @@ module.exports = function Todo (state, dispatch) {
     dispatch(updateTodo(newTodo))
   }
 
-  function input () {
-    var el = getInput()
+  function input (e) {
+    e &&
+    e.target &&
+    e.target.value &&
+    submit()
   }
 
   function submit () {
@@ -75,15 +83,16 @@ module.exports = function Todo (state, dispatch) {
   }
 
   function render (state) {
-    if (!element) {
-      element = create(state)
-      return element
-    } else {
-      update(state)
-    }
+    return element ?
+    update(state) :
+    element = create(state), element
   }
 
   function create (state) {
+    state = state || {}
+    var title = state.title
+    var done = state.done
+    var editing = state.editing
     return html`
       <li
         id=${id}
@@ -93,19 +102,19 @@ module.exports = function Todo (state, dispatch) {
         ${Checkbox(state, dispatch)}
         <input
           id=${inputHandle}
-          class=${inputClasses}
-          style='width: 100%; outline: none;'
+          class=${done ? joinClasses(inputClasses, doneClasses) : inputClasses}
           oninput=${input}
           onkeydown=${keydown}
+          disabled=${done}
           value=${title}
         >
-        ${editing ? Button(state, dispatch) : null}
+        ${done && editing ? Button(state, dispatch) : null}
       </li>
     `
   }
 
-  function update (newState) {
-    html.update(element, create(newState))
+  function update (state) {
+    html.update(element, create(state))
   }
 
   return render(state)
