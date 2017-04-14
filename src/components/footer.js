@@ -4,10 +4,7 @@ var CompleteButton = require('./button-complete-all')
 var classes = css`
 :host {
  text-align: right;
- padding: 1rem;
- background: white;
- border-bottom-right-radius: 2px;
- border-bottom-left-radius: 2px;
+ padding: 1rem 0;
 }
 `
 

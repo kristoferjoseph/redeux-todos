@@ -4,11 +4,34 @@ var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
 var classes = css`
 :host {
-  min-width: 2rem;
-  width: 2rem;
-  height: 2rem;
-  min-height: 2rem;
+  position: relative;
+  min-width: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-height: 1.5rem;
   margin-right: 1rem;
+  border: 1px solid;
+  border-radius: 100%;
+  cursor: pointer;
+}
+`
+var inputClasses = css`
+:host {
+  opacity: 0.0001;
+  pointer-events: none;
+}
+`
+
+var checkClasses = css`
+:host {
+  position: absolute;
+  top: -0.955rem;
+  left: -0.05rem;
+  font-size: 2.55rem;
+  color: #ee0000;
+}
+:host:hover {
+  color: #ff0000;
 }
 `
 
@@ -23,11 +46,16 @@ module.exports = function (state, dispatch) {
   }
 
   return html`
-    <input
-      class=${classes}
-      type='checkbox'
-      onchange=${change}
-      checked=${done}
-    />
+    <label class=${classes}>
+      <input
+        class=${inputClasses}
+        type='checkbox'
+        onchange=${change}
+        checked=${done}
+      />
+      <span class=${checkClasses}>
+        ${ done ? '●' : null }
+      </span>
+    </label>
   `
 }

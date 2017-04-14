@@ -8,7 +8,6 @@ var COMPLETE_ALL = actions.COMPLETE_ALL
 var DELETE_TODO = actions.DELETE_TODO
 var DELETE_ALL = actions.DELETE_ALL
 var TODOS_LABEL = 'redeux-todos'
-
 var stateMachine = hs(
   {
     CREATE_TODO: createTodo,
@@ -21,6 +20,14 @@ var stateMachine = hs(
     return state
   }
 )
+
+module.exports = function todos (state, action) {
+  state = state || []
+  var type = action && action.type || ''
+  var data = action && action.data
+  var newState = stateMachine(type, state, data)
+  return newState
+}
 
 function createTodo (state, data) {
   var newState = state.slice()
@@ -75,10 +82,3 @@ function deleteAll (state, data) {
   return newState
 }
 
-module.exports = function todos (state, action) {
-  state = state || []
-  var type = action && action.type || ''
-  var data = action && action.data
-  var newState = stateMachine(type, state, data)
-  return newState
-}
