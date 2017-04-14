@@ -50,10 +50,10 @@ module.exports = function TodoList (state, dispatch) {
     state = state || {}
     var todos = state.todos || []
     var active = todos.filter(function (t) {
-      return !t.done
+      return t && !t.done
     })
     var done = todos.filter(function (t) {
-      return t.done
+      return t && t.done
     })
 
     return html`
