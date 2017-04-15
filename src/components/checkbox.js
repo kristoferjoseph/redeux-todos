@@ -5,6 +5,7 @@ var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
 var classes = css`
 :host {
+  position: relative;
   min-width: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
@@ -25,6 +26,8 @@ var classes = css`
 `
 var inputClasses = css`
 :host {
+  position: absolute;
+  left: -1000;
   opacity: 0.0001;
   border: none;
   background: transparent;
