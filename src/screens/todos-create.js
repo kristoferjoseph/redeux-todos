@@ -12,6 +12,7 @@ var classes = css`
   height: 100%;
   margin: 0 auto;
   padding: 1rem;
+  padding-top: 2rem;
   overflow: hidden;
 }
 `

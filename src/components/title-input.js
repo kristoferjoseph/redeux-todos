@@ -5,8 +5,6 @@ var labelClass = css`
 :host {
   height: 4rem;
   min-height: 4rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
   border-bottom: 1px solid;
   background: transparent;
 }
@@ -14,7 +12,7 @@ var labelClass = css`
 var inputClass = css`
 :host {
   width: 100%;
-  margin-top: 1rem;
+  height: 4rem;
   padding: 0 1rem;
   font-size: 2rem;
   font-weight: 700;

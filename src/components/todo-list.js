@@ -7,6 +7,11 @@ var classes = css`
   -webkit-overflow-scrolling: touch;
 }
 `
+var listClasses = css`
+:host {
+  margin-top: 1rem;
+}
+`
 var headingClasses = css`
 :host {
   padding: 1rem;
@@ -16,6 +21,7 @@ var headingClasses = css`
 `
 var congratsClasses = css`
 :host {
+  margin-bottom: 1rem;
   padding: 3rem;
   font-size: 3.5rem;
   text-align: center;
@@ -64,14 +70,14 @@ module.exports = function TodoList (state, dispatch) {
 
     return html`
       <div class=${classes}>
-        <ul>
+        <ul class=${listClasses}>
           ${active.map(function (t) {
             return Todo(t, dispatch)
           })}
         </ul>
         ${active && !active.length && done && done.length ? congrats() : null}
         ${done && done.length ? doneHeading() : null}
-        <ul>
+        <ul class=${listClasses}>
           ${done.map(function (t) {
             return Todo(t, dispatch)
           })}

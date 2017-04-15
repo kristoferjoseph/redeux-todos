@@ -26,6 +26,8 @@ var classes = css`
 var inputClasses = css`
 :host {
   opacity: 0.0001;
+  border: none;
+  background: transparent;
   pointer-events: none;
 }
 `
