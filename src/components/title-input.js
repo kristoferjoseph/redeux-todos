@@ -1,21 +1,28 @@
 var html = require('yo-yo')
 var createTodo = require('../actions/todos-actions').createTodo
 var css = require('sheetify')
+var labelClass = css`
+:host {
+  height: 4rem;
+  min-height: 4rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid;
+  background: transparent;
+}
+`
 var inputClass = css`
 :host {
-  flex-grow: 0;
-  padding: 1rem;
-  padding-top: 2rem;
   width: 100%;
+  margin-top: 1rem;
+  padding: 0 1rem;
   font-size: 2rem;
   font-weight: 700;
   border: none;
-  border-bottom: 1px solid;
   background: transparent;
 }
 :host:focus {
   border: none;
-  border-bottom: 1px solid;
   outline: none;
 }
 :host::-webkit-input-placeholder {
@@ -23,15 +30,6 @@ var inputClass = css`
 }
 :host::-moz-placeholder {
   color: black;
-}
-`
-
-var labelClass = css`
-:host {
-  display: flex;
-  min-height: 4.375rem;
-  margin-bottom: 1px;
-  border-bottom: 1px solid transparent;
 }
 `
 

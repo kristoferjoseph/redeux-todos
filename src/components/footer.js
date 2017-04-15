@@ -6,6 +6,8 @@ var classes = css`
 :host {
  text-align: right;
  padding: 1rem 0;
+ margin-top: 1rem;
+ border-top: 1px solid;
 }
 `
 

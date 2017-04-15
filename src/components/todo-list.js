@@ -1,6 +1,12 @@
 var html = require('yo-yo')
 var css = require('sheetify')
 var Todo = require('../components/todo')
+var classes = css`
+:host {
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+`
 var headingClasses = css`
 :host {
   padding: 1rem;
@@ -10,7 +16,7 @@ var headingClasses = css`
 var congratsClasses = css`
 :host {
   padding: 3rem;
-  font-size: 5rem;
+  font-size: 3.5rem;
   text-align: center;
 }
 `
@@ -57,7 +63,7 @@ module.exports = function TodoList (state, dispatch) {
     })
 
     return html`
-      <div>
+      <div class=${classes}>
         <ul>
           ${active.map(function (t) {
             return Todo(t, dispatch)

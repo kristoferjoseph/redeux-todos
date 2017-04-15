@@ -1,6 +1,157 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var document = require('global/document')
+var hyperx = require('hyperx')
+var onload = require('on-load')
 
-},{}],2:[function(require,module,exports){
+var SVGNS = 'http://www.w3.org/2000/svg'
+var XLINKNS = 'http://www.w3.org/1999/xlink'
+
+var BOOL_PROPS = {
+  autofocus: 1,
+  checked: 1,
+  defaultchecked: 1,
+  disabled: 1,
+  formnovalidate: 1,
+  indeterminate: 1,
+  readonly: 1,
+  required: 1,
+  selected: 1,
+  willvalidate: 1
+}
+var SVG_TAGS = [
+  'svg',
+  'altGlyph', 'altGlyphDef', 'altGlyphItem', 'animate', 'animateColor',
+  'animateMotion', 'animateTransform', 'circle', 'clipPath', 'color-profile',
+  'cursor', 'defs', 'desc', 'ellipse', 'feBlend', 'feColorMatrix',
+  'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting',
+  'feDisplacementMap', 'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB',
+  'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode',
+  'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting',
+  'feSpotLight', 'feTile', 'feTurbulence', 'filter', 'font', 'font-face',
+  'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri',
+  'foreignObject', 'g', 'glyph', 'glyphRef', 'hkern', 'image', 'line',
+  'linearGradient', 'marker', 'mask', 'metadata', 'missing-glyph', 'mpath',
+  'path', 'pattern', 'polygon', 'polyline', 'radialGradient', 'rect',
+  'set', 'stop', 'switch', 'symbol', 'text', 'textPath', 'title', 'tref',
+  'tspan', 'use', 'view', 'vkern'
+]
+
+function belCreateElement (tag, props, children) {
+  var el
+
+  // If an svg tag, it needs a namespace
+  if (SVG_TAGS.indexOf(tag) !== -1) {
+    props.namespace = SVGNS
+  }
+
+  // If we are using a namespace
+  var ns = false
+  if (props.namespace) {
+    ns = props.namespace
+    delete props.namespace
+  }
+
+  // Create the element
+  if (ns) {
+    el = document.createElementNS(ns, tag)
+  } else {
+    el = document.createElement(tag)
+  }
+
+  // If adding onload events
+  if (props.onload || props.onunload) {
+    var load = props.onload || function () {}
+    var unload = props.onunload || function () {}
+    onload(el, function belOnload () {
+      load(el)
+    }, function belOnunload () {
+      unload(el)
+    },
+    // We have to use non-standard `caller` to find who invokes `belCreateElement`
+    belCreateElement.caller.caller.caller)
+    delete props.onload
+    delete props.onunload
+  }
+
+  // Create the properties
+  for (var p in props) {
+    if (props.hasOwnProperty(p)) {
+      var key = p.toLowerCase()
+      var val = props[p]
+      // Normalize className
+      if (key === 'classname') {
+        key = 'class'
+        p = 'class'
+      }
+      // The for attribute gets transformed to htmlFor, but we just set as for
+      if (p === 'htmlFor') {
+        p = 'for'
+      }
+      // If a property is boolean, set itself to the key
+      if (BOOL_PROPS[key]) {
+        if (val === 'true') val = key
+        else if (val === 'false') continue
+      }
+      // If a property prefers being set directly vs setAttribute
+      if (key.slice(0, 2) === 'on') {
+        el[p] = val
+      } else {
+        if (ns) {
+          if (p === 'xlink:href') {
+            el.setAttributeNS(XLINKNS, p, val)
+          } else if (/^xmlns($|:)/i.test(p)) {
+            // skip xmlns definitions
+          } else {
+            el.setAttributeNS(null, p, val)
+          }
+        } else {
+          el.setAttribute(p, val)
+        }
+      }
+    }
+  }
+
+  function appendChild (childs) {
+    if (!Array.isArray(childs)) return
+    for (var i = 0; i < childs.length; i++) {
+      var node = childs[i]
+      if (Array.isArray(node)) {
+        appendChild(node)
+        continue
+      }
+
+      if (typeof node === 'number' ||
+        typeof node === 'boolean' ||
+        node instanceof Date ||
+        node instanceof RegExp) {
+        node = node.toString()
+      }
+
+      if (typeof node === 'string') {
+        if (el.lastChild && el.lastChild.nodeName === '#text') {
+          el.lastChild.nodeValue += node
+          continue
+        }
+        node = document.createTextNode(node)
+      }
+
+      if (node && node.nodeType) {
+        el.appendChild(node)
+      }
+    }
+  }
+  appendChild(children)
+
+  return el
+}
+
+module.exports = hyperx(belCreateElement)
+module.exports.default = module.exports
+module.exports.createElement = belCreateElement
+
+},{"global/document":3,"hyperx":7,"on-load":12}],2:[function(require,module,exports){
+
+},{}],3:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -19,7 +170,7 @@ if (typeof document !== 'undefined') {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":1}],3:[function(require,module,exports){
+},{"min-document":2}],4:[function(require,module,exports){
 (function (global){
 if (typeof window !== "undefined") {
     module.exports = window;
@@ -32,7 +183,7 @@ if (typeof window !== "undefined") {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var DEFAULT_CALLBACK = 'DEFAULT_CALLBACK'
 
 module.exports = function(actions, defaultCallback){
@@ -59,7 +210,308 @@ module.exports = function(actions, defaultCallback){
 }
 
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+module.exports = attributeToProperty
+
+var transform = {
+  'class': 'className',
+  'for': 'htmlFor',
+  'http-equiv': 'httpEquiv'
+}
+
+function attributeToProperty (h) {
+  return function (tagName, attrs, children) {
+    for (var attr in attrs) {
+      if (attr in transform) {
+        attrs[transform[attr]] = attrs[attr]
+        delete attrs[attr]
+      }
+    }
+    return h(tagName, attrs, children)
+  }
+}
+
+},{}],7:[function(require,module,exports){
+var attrToProp = require('hyperscript-attribute-to-property')
+
+var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
+var ATTR_KEY = 5, ATTR_KEY_W = 6
+var ATTR_VALUE_W = 7, ATTR_VALUE = 8
+var ATTR_VALUE_SQ = 9, ATTR_VALUE_DQ = 10
+var ATTR_EQ = 11, ATTR_BREAK = 12
+var COMMENT = 13
+
+module.exports = function (h, opts) {
+  if (!opts) opts = {}
+  var concat = opts.concat || function (a, b) {
+    return String(a) + String(b)
+  }
+  if (opts.attrToProp !== false) {
+    h = attrToProp(h)
+  }
+
+  return function (strings) {
+    var state = TEXT, reg = ''
+    var arglen = arguments.length
+    var parts = []
+
+    for (var i = 0; i < strings.length; i++) {
+      if (i < arglen - 1) {
+        var arg = arguments[i+1]
+        var p = parse(strings[i])
+        var xstate = state
+        if (xstate === ATTR_VALUE_DQ) xstate = ATTR_VALUE
+        if (xstate === ATTR_VALUE_SQ) xstate = ATTR_VALUE
+        if (xstate === ATTR_VALUE_W) xstate = ATTR_VALUE
+        if (xstate === ATTR) xstate = ATTR_KEY
+        p.push([ VAR, xstate, arg ])
+        parts.push.apply(parts, p)
+      } else parts.push.apply(parts, parse(strings[i]))
+    }
+
+    var tree = [null,{},[]]
+    var stack = [[tree,-1]]
+    for (var i = 0; i < parts.length; i++) {
+      var cur = stack[stack.length-1][0]
+      var p = parts[i], s = p[0]
+      if (s === OPEN && /^\//.test(p[1])) {
+        var ix = stack[stack.length-1][1]
+        if (stack.length > 1) {
+          stack.pop()
+          stack[stack.length-1][0][2][ix] = h(
+            cur[0], cur[1], cur[2].length ? cur[2] : undefined
+          )
+        }
+      } else if (s === OPEN) {
+        var c = [p[1],{},[]]
+        cur[2].push(c)
+        stack.push([c,cur[2].length-1])
+      } else if (s === ATTR_KEY || (s === VAR && p[1] === ATTR_KEY)) {
+        var key = ''
+        var copyKey
+        for (; i < parts.length; i++) {
+          if (parts[i][0] === ATTR_KEY) {
+            key = concat(key, parts[i][1])
+          } else if (parts[i][0] === VAR && parts[i][1] === ATTR_KEY) {
+            if (typeof parts[i][2] === 'object' && !key) {
+              for (copyKey in parts[i][2]) {
+                if (parts[i][2].hasOwnProperty(copyKey) && !cur[1][copyKey]) {
+                  cur[1][copyKey] = parts[i][2][copyKey]
+                }
+              }
+            } else {
+              key = concat(key, parts[i][2])
+            }
+          } else break
+        }
+        if (parts[i][0] === ATTR_EQ) i++
+        var j = i
+        for (; i < parts.length; i++) {
+          if (parts[i][0] === ATTR_VALUE || parts[i][0] === ATTR_KEY) {
+            if (!cur[1][key]) cur[1][key] = strfn(parts[i][1])
+            else cur[1][key] = concat(cur[1][key], parts[i][1])
+          } else if (parts[i][0] === VAR
+          && (parts[i][1] === ATTR_VALUE || parts[i][1] === ATTR_KEY)) {
+            if (!cur[1][key]) cur[1][key] = strfn(parts[i][2])
+            else cur[1][key] = concat(cur[1][key], parts[i][2])
+          } else {
+            if (key.length && !cur[1][key] && i === j
+            && (parts[i][0] === CLOSE || parts[i][0] === ATTR_BREAK)) {
+              // https://html.spec.whatwg.org/multipage/infrastructure.html#boolean-attributes
+              // empty string is falsy, not well behaved value in browser
+              cur[1][key] = key.toLowerCase()
+            }
+            break
+          }
+        }
+      } else if (s === ATTR_KEY) {
+        cur[1][p[1]] = true
+      } else if (s === VAR && p[1] === ATTR_KEY) {
+        cur[1][p[2]] = true
+      } else if (s === CLOSE) {
+        if (selfClosing(cur[0]) && stack.length) {
+          var ix = stack[stack.length-1][1]
+          stack.pop()
+          stack[stack.length-1][0][2][ix] = h(
+            cur[0], cur[1], cur[2].length ? cur[2] : undefined
+          )
+        }
+      } else if (s === VAR && p[1] === TEXT) {
+        if (p[2] === undefined || p[2] === null) p[2] = ''
+        else if (!p[2]) p[2] = concat('', p[2])
+        if (Array.isArray(p[2][0])) {
+          cur[2].push.apply(cur[2], p[2])
+        } else {
+          cur[2].push(p[2])
+        }
+      } else if (s === TEXT) {
+        cur[2].push(p[1])
+      } else if (s === ATTR_EQ || s === ATTR_BREAK) {
+        // no-op
+      } else {
+        throw new Error('unhandled: ' + s)
+      }
+    }
+
+    if (tree[2].length > 1 && /^\s*$/.test(tree[2][0])) {
+      tree[2].shift()
+    }
+
+    if (tree[2].length > 2
+    || (tree[2].length === 2 && /\S/.test(tree[2][1]))) {
+      throw new Error(
+        'multiple root elements must be wrapped in an enclosing tag'
+      )
+    }
+    if (Array.isArray(tree[2][0]) && typeof tree[2][0][0] === 'string'
+    && Array.isArray(tree[2][0][2])) {
+      tree[2][0] = h(tree[2][0][0], tree[2][0][1], tree[2][0][2])
+    }
+    return tree[2][0]
+
+    function parse (str) {
+      var res = []
+      if (state === ATTR_VALUE_W) state = ATTR
+      for (var i = 0; i < str.length; i++) {
+        var c = str.charAt(i)
+        if (state === TEXT && c === '<') {
+          if (reg.length) res.push([TEXT, reg])
+          reg = ''
+          state = OPEN
+        } else if (c === '>' && !quot(state) && state !== COMMENT) {
+          if (state === OPEN) {
+            res.push([OPEN,reg])
+          } else if (state === ATTR_KEY) {
+            res.push([ATTR_KEY,reg])
+          } else if (state === ATTR_VALUE && reg.length) {
+            res.push([ATTR_VALUE,reg])
+          }
+          res.push([CLOSE])
+          reg = ''
+          state = TEXT
+        } else if (state === COMMENT && /-$/.test(reg) && c === '-') {
+          if (opts.comments) {
+            res.push([ATTR_VALUE,reg.substr(0, reg.length - 1)],[CLOSE])
+          }
+          reg = ''
+          state = TEXT
+        } else if (state === OPEN && /^!--$/.test(reg)) {
+          if (opts.comments) {
+            res.push([OPEN, reg],[ATTR_KEY,'comment'],[ATTR_EQ])
+          }
+          reg = c
+          state = COMMENT
+        } else if (state === TEXT || state === COMMENT) {
+          reg += c
+        } else if (state === OPEN && /\s/.test(c)) {
+          res.push([OPEN, reg])
+          reg = ''
+          state = ATTR
+        } else if (state === OPEN) {
+          reg += c
+        } else if (state === ATTR && /[^\s"'=/]/.test(c)) {
+          state = ATTR_KEY
+          reg = c
+        } else if (state === ATTR && /\s/.test(c)) {
+          if (reg.length) res.push([ATTR_KEY,reg])
+          res.push([ATTR_BREAK])
+        } else if (state === ATTR_KEY && /\s/.test(c)) {
+          res.push([ATTR_KEY,reg])
+          reg = ''
+          state = ATTR_KEY_W
+        } else if (state === ATTR_KEY && c === '=') {
+          res.push([ATTR_KEY,reg],[ATTR_EQ])
+          reg = ''
+          state = ATTR_VALUE_W
+        } else if (state === ATTR_KEY) {
+          reg += c
+        } else if ((state === ATTR_KEY_W || state === ATTR) && c === '=') {
+          res.push([ATTR_EQ])
+          state = ATTR_VALUE_W
+        } else if ((state === ATTR_KEY_W || state === ATTR) && !/\s/.test(c)) {
+          res.push([ATTR_BREAK])
+          if (/[\w-]/.test(c)) {
+            reg += c
+            state = ATTR_KEY
+          } else state = ATTR
+        } else if (state === ATTR_VALUE_W && c === '"') {
+          state = ATTR_VALUE_DQ
+        } else if (state === ATTR_VALUE_W && c === "'") {
+          state = ATTR_VALUE_SQ
+        } else if (state === ATTR_VALUE_DQ && c === '"') {
+          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
+          reg = ''
+          state = ATTR
+        } else if (state === ATTR_VALUE_SQ && c === "'") {
+          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
+          reg = ''
+          state = ATTR
+        } else if (state === ATTR_VALUE_W && !/\s/.test(c)) {
+          state = ATTR_VALUE
+          i--
+        } else if (state === ATTR_VALUE && /\s/.test(c)) {
+          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
+          reg = ''
+          state = ATTR
+        } else if (state === ATTR_VALUE || state === ATTR_VALUE_SQ
+        || state === ATTR_VALUE_DQ) {
+          reg += c
+        }
+      }
+      if (state === TEXT && reg.length) {
+        res.push([TEXT,reg])
+        reg = ''
+      } else if (state === ATTR_VALUE && reg.length) {
+        res.push([ATTR_VALUE,reg])
+        reg = ''
+      } else if (state === ATTR_VALUE_DQ && reg.length) {
+        res.push([ATTR_VALUE,reg])
+        reg = ''
+      } else if (state === ATTR_VALUE_SQ && reg.length) {
+        res.push([ATTR_VALUE,reg])
+        reg = ''
+      } else if (state === ATTR_KEY) {
+        res.push([ATTR_KEY,reg])
+        reg = ''
+      }
+      return res
+    }
+  }
+
+  function strfn (x) {
+    if (typeof x === 'function') return x
+    else if (typeof x === 'string') return x
+    else if (x && typeof x === 'object') return x
+    else return concat('', x)
+  }
+}
+
+function quot (state) {
+  return state === ATTR_VALUE_SQ || state === ATTR_VALUE_DQ
+}
+
+var hasOwn = Object.prototype.hasOwnProperty
+function has (obj, key) { return hasOwn.call(obj, key) }
+
+var closeRE = RegExp('^(' + [
+  'area', 'base', 'basefont', 'bgsound', 'br', 'col', 'command', 'embed',
+  'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param',
+  'source', 'track', 'wbr', '!--',
+  // SVG TAGS
+  'animate', 'animateTransform', 'circle', 'cursor', 'desc', 'ellipse',
+  'feBlend', 'feColorMatrix', 'feComposite',
+  'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap',
+  'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR',
+  'feGaussianBlur', 'feImage', 'feMergeNode', 'feMorphology',
+  'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight', 'feTile',
+  'feTurbulence', 'font-face-format', 'font-face-name', 'font-face-uri',
+  'glyph', 'glyphRef', 'hkern', 'image', 'line', 'missing-glyph', 'mpath',
+  'path', 'polygon', 'polyline', 'rect', 'set', 'stop', 'tref', 'use', 'view',
+  'vkern'
+].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
+function selfClosing (tag) { return closeRE.test(tag) }
+
+},{"hyperscript-attribute-to-property":6}],8:[function(require,module,exports){
 var containers = []; // will store container HTMLElement references
 var styleElements = []; // will store {prepend: HTMLElement, append: HTMLElement}
 
@@ -119,7 +571,7 @@ function createStyleElement() {
 module.exports = insertCss;
 module.exports.insertCss = insertCss;
 
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var filter = Array.prototype.filter
 module.exports = function joinClasses () {
   return filter.call(arguments, function (s) {
@@ -127,7 +579,7 @@ module.exports = function joinClasses () {
   }).join(' ').trim()
 }
 
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = function kubby(options) {
   options = options || {}
   var noop = function(){}
@@ -183,7 +635,7 @@ module.exports = function kubby(options) {
   }
 }
 
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 var range; // Create a range object for efficently rendering strings to elements.
@@ -858,7 +1310,7 @@ var morphdom = morphdomFactory(morphAttrs);
 
 module.exports = morphdom;
 
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /* global MutationObserver */
 var document = require('global/document')
 var window = require('global/window')
@@ -947,7 +1399,7 @@ function eachMutation (nodes, fn) {
   }
 }
 
-},{"global/document":2,"global/window":3}],10:[function(require,module,exports){
+},{"global/document":3,"global/window":4}],13:[function(require,module,exports){
 module.exports = function redeux () {
   var state = {}
   var listeners = []
@@ -1004,14 +1456,14 @@ module.exports = function redeux () {
   return store
 }
 
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = require('insert-css')
 
-},{"insert-css":5}],12:[function(require,module,exports){
+},{"insert-css":8}],15:[function(require,module,exports){
 module.exports = function(a,b){for(b=a='';a++<36;b+=a*51&52?(a^15?8^Math.random()*(a^20?16:4):4).toString(16):'-');return b};
 
-},{}],13:[function(require,module,exports){
-var bel = {} // turns template tag into DOM elements
+},{}],16:[function(require,module,exports){
+var bel = require('bel') // turns template tag into DOM elements
 var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
 var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
 
@@ -1054,7 +1506,7 @@ module.exports.update = function (fromNode, toNode, opts) {
   }
 }
 
-},{"./update-events.js":14,"morphdom":8}],14:[function(require,module,exports){
+},{"./update-events.js":17,"bel":1,"morphdom":11}],17:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
@@ -1092,34 +1544,7 @@ module.exports = [
   'onfocusout'
 ]
 
-},{}],15:[function(require,module,exports){
-module.exports = function yoyoifyAppendChild (el, childs) {
-  for (var i = 0; i < childs.length; i++) {
-    var node = childs[i]
-    if (Array.isArray(node)) {
-      yoyoifyAppendChild(el, node)
-      continue
-    }
-    if (typeof node === 'number' ||
-      typeof node === 'boolean' ||
-      node instanceof Date ||
-      node instanceof RegExp) {
-      node = node.toString()
-    }
-    if (typeof node === 'string') {
-      if (el.lastChild && el.lastChild.nodeName === '#text') {
-        el.lastChild.nodeValue += node
-        continue
-      }
-      node = document.createTextNode(node)
-    }
-    if (node && node.nodeType) {
-      el.appendChild(node)
-    }
-  }
-}
-
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var CREATE_TODO = 'CREATE_TODO'
 var UPDATE_TODO = 'UPDATE_TODO'
 var COMPLETE_ALL = 'COMPLETE_ALL'
@@ -1174,7 +1599,7 @@ module.exports = {
   DELETE_ALL: DELETE_ALL
 }
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
@@ -1189,18 +1614,17 @@ module.exports = function CompleteAllButton (opts) {
     dispatch(completeAll())
   }
 
-  return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("button")
-bel0["onclick"] = arguments[0]
-bel0.setAttribute("class", arguments[1])
-ac(bel0, ["\n      Complete All\n    "])
-      return bel0
-    }(click,classes))
+  return html`
+    <button
+      class=${classes}
+      onclick=${click}
+    >
+      Complete All
+    </button>
+  `
 }
 
-},{"../actions/todos-actions":16,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":15,"sheetify/insert":11,"yo-yo":13}],18:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],20:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
@@ -1215,18 +1639,17 @@ module.exports = function DeleteAllButton (opts) {
     dispatch(deleteAll())
   }
 
-  return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("button")
-bel0["onclick"] = arguments[0]
-bel0.setAttribute("class", arguments[1])
-ac(bel0, ["\n      Delete All\n    "])
-      return bel0
-    }(click,classes))
+  return html`
+    <button
+      class=${classes}
+      onclick=${click}
+    >
+      Delete All
+    </button>
+  `
 }
 
-},{"../actions/todos-actions":16,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":15,"sheetify/insert":11,"yo-yo":13}],19:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],21:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var actions = require('../actions/todos-actions')
@@ -1239,18 +1662,17 @@ module.exports = function Button (state, dispatch) {
     dispatch(deleteTodo(state))
   }
 
-  return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("button")
-bel0["onclick"] = arguments[0]
-bel0.setAttribute("class", arguments[1])
-ac(bel0, ["\n      ✖︎\n    "])
-      return bel0
-    }(destroy,classes))
+  return html`
+    <button
+      class=${classes}
+      onclick=${destroy}
+    >
+      ✖︎
+    </button>
+  `
 }
 
-},{"../actions/todos-actions":16,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":15,"sheetify/insert":11,"yo-yo":13}],20:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],22:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var joinClasses = require('join-classes')
@@ -1277,27 +1699,24 @@ module.exports = function (state, dispatch) {
       classes
   }
 
-  return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("label")
-bel1.setAttribute("class", arguments[3])
-var bel0 = document.createElement("input")
-bel0.setAttribute("type", "checkbox")
-bel0["onchange"] = arguments[0]
-if (arguments[1]) bel0.setAttribute("checked", "checked")
-bel0.setAttribute("class", arguments[2])
-ac(bel1, ["\n      ",bel0,"\n    "])
-      return bel1
-    }(change,done,inputClasses,getClasses()))
+  return html`
+    <label class=${getClasses()}>
+      <input
+        class=${inputClasses}
+        type='checkbox'
+        onchange=${change}
+        checked=${done}
+      />
+    </label>
+  `
 }
 
-},{"../actions/todos-actions":16,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":15,"join-classes":6,"sheetify/insert":11,"yo-yo":13}],21:[function(require,module,exports){
+},{"../actions/todos-actions":18,"join-classes":9,"sheetify/insert":14,"yo-yo":16}],23:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var CompleteButton = require('./button-complete-all')
 var DeleteButton = require('./button-delete-all')
-var classes = ((null || true) && "_529104f8")
+var classes = ((null || true) && "_5a8dfa4e")
 
 module.exports = function Footer (state, dispatch) {
   var active = state.filter(function (t) {
@@ -1310,23 +1729,19 @@ module.exports = function Footer (state, dispatch) {
     DeleteButton({dispatch: dispatch})
   }
 
-  return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("footer")
-bel0.setAttribute("class", arguments[0])
-ac(bel0, ["\n      ",arguments[1],"\n    "])
-      return bel0
-    }(classes,getButton(active && active.length)))
+  return html`
+    <footer class=${classes}>
+      ${getButton(active && active.length)}
+    </footer>
+  `
 }
 
-},{"./button-complete-all":17,"./button-delete-all":18,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":15,"sheetify/insert":11,"yo-yo":13}],22:[function(require,module,exports){
+},{"./button-complete-all":19,"./button-delete-all":20,"sheetify/insert":14,"yo-yo":16}],24:[function(require,module,exports){
 var html = require('yo-yo')
 var createTodo = require('../actions/todos-actions').createTodo
 var css = 0
-var inputClass = ((null || true) && "_03191de4")
-
-var labelClass = ((null || true) && "_09857901")
+var labelClass = ((null || true) && "_50af6310")
+var inputClass = ((null || true) && "_15e17321")
 
 module.exports = function (dispatch) {
 
@@ -1351,30 +1766,30 @@ module.exports = function (dispatch) {
     }
   }
 
-  return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("label")
-bel1.setAttribute("htmlFor", "title")
-bel1.setAttribute("class", arguments[2])
-var bel0 = document.createElement("input")
-bel0.setAttribute("autofocus", "autofocus")
-bel0.setAttribute("id", "title")
-bel0.setAttribute("name", "title")
-bel0["onkeyup"] = arguments[0]
-bel0.setAttribute("placeholder", "Enter todo")
-bel0.setAttribute("class", arguments[1])
-ac(bel1, ["\n      ",bel0,"\n    "])
-      return bel1
-    }(keyup,inputClass,labelClass))
+  return html`
+    <label
+      for='title'
+      class=${labelClass}
+    >
+      <input
+        class=${inputClass}
+        autofocus
+        id='title'
+        name='title'
+        onkeyup=${keyup}
+        placeholder='Enter todo'
+      />
+    </label>
+  `
 }
 
-},{"../actions/todos-actions":16,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":15,"sheetify/insert":11,"yo-yo":13}],23:[function(require,module,exports){
+},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],25:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var Todo = require('../components/todo')
+var classes = ((null || true) && "_f3a026ad")
 var headingClasses = ((null || true) && "_b839b3f7")
-var congratsClasses = ((null || true) && "_cb384e03")
+var congratsClasses = ((null || true) && "_c31db776")
 
 module.exports = function TodoList (state, dispatch) {
   state = state || {}
@@ -1387,30 +1802,24 @@ module.exports = function TodoList (state, dispatch) {
   }
 
   function doneHeading () {
-    return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel2 = document.createElement("h3")
-var bel0 = document.createElement("div")
-bel0.setAttribute("class", arguments[0])
-ac(bel0, ["\n          Completed\n        "])
-var bel1 = document.createElement("hr")
-ac(bel2, ["\n        ",bel0,"\n        ",bel1,"\n      "])
-      return bel2
-    }(headingClasses))
+    return html`
+      <h3>
+        <div class=${headingClasses}>
+          Completed
+        </div>
+        <hr>
+      </h3>
+    `
   }
 
   function congrats () {
-    return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h1")
-var bel0 = document.createElement("div")
-bel0.setAttribute("class", arguments[0])
-ac(bel0, ["\n          Well done\n        "])
-ac(bel1, ["\n        ",bel0,"\n      "])
-      return bel1
-    }(congratsClasses))
+    return html`
+      <h1>
+        <div class=${congratsClasses}>
+          Well done
+        </div>
+      </h1>
+    `
   }
 
   function create (state) {
@@ -1423,21 +1832,22 @@ ac(bel1, ["\n        ",bel0,"\n      "])
       return t && t.done
     })
 
-    return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel2 = document.createElement("div")
-var bel0 = document.createElement("ul")
-ac(bel0, ["\n          ",arguments[0],"\n        "])
-var bel1 = document.createElement("ul")
-ac(bel1, ["\n          ",arguments[1],"\n        "])
-ac(bel2, ["\n        ",bel0,"\n        ",arguments[2],"\n        ",arguments[3],"\n        ",bel1,"\n      "])
-      return bel2
-    }(active.map(function (t) {
+    return html`
+      <div class=${classes}>
+        <ul>
+          ${active.map(function (t) {
             return Todo(t, dispatch)
-          }),done.map(function (t) {
+          })}
+        </ul>
+        ${active && !active.length && done && done.length ? congrats() : null}
+        ${done && done.length ? doneHeading() : null}
+        <ul>
+          ${done.map(function (t) {
             return Todo(t, dispatch)
-          }),active && !active.length && done && done.length ? congrats() : null,done && done.length ? doneHeading() : null))
+          })}
+        </ul>
+      </div>
+    `
   }
 
   function update (state) {
@@ -1447,7 +1857,7 @@ ac(bel2, ["\n        ",bel0,"\n        ",arguments[2],"\n        ",arguments[3],
   return render(state)
 }
 
-},{"../components/todo":24,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":15,"sheetify/insert":11,"yo-yo":13}],24:[function(require,module,exports){
+},{"../components/todo":26,"sheetify/insert":14,"yo-yo":16}],26:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var joinClasses = require('join-classes')
@@ -1529,21 +1939,22 @@ module.exports = function Todo (state, dispatch) {
     var title = state.title
     var done = state.done
     var editing = state.editing
-    return (function () {
-      
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("li")
-bel1.setAttribute("id", arguments[5])
-bel1.setAttribute("class", arguments[6])
-var bel0 = document.createElement("input")
-bel0["oninput"] = arguments[0]
-bel0["onkeydown"] = arguments[1]
-if (arguments[2]) bel0.setAttribute("disabled", "disabled")
-bel0.setAttribute("value", arguments[3])
-bel0.setAttribute("class", arguments[4])
-ac(bel1, ["\n        ",arguments[7],"\n        ",bel0,"\n        ",arguments[8],"\n      "])
-      return bel1
-    }(input,keydown,done,title,getClasses(done),id,classes,Checkbox(state, dispatch),done && editing ? Button(state, dispatch) : null))
+    return html`
+      <li
+        id=${id}
+        class=${classes}
+      >
+        ${Checkbox(state, dispatch)}
+        <input
+          class=${getClasses(done)}
+          oninput=${input}
+          onkeydown=${keydown}
+          disabled=${done}
+          value=${title}
+        >
+        ${done && editing ? Button(state, dispatch) : null}
+      </li>
+    `
   }
 
   function update (state) {
@@ -1553,7 +1964,7 @@ ac(bel1, ["\n        ",arguments[7],"\n        ",bel0,"\n        ",arguments[8],
   return render(state)
 }
 
-},{"../actions/todos-actions":16,"./button":19,"./checkbox":20,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":15,"join-classes":6,"sheetify/insert":11,"yo-yo":13}],25:[function(require,module,exports){
+},{"../actions/todos-actions":18,"./button":21,"./checkbox":22,"join-classes":9,"sheetify/insert":14,"yo-yo":16}],27:[function(require,module,exports){
 var tid = require('tiny-uuid')
 var createStore = require('redeux')
 var kubby = require('kubby')()
@@ -1566,7 +1977,7 @@ var store = createStore(todos, localState)
 var todoCreate = TodoCreate(store)
 document.getElementById('root').appendChild(todoCreate)
 
-},{"./reducers/todos-reducer":26,"./screens/todos-create":27,"kubby":7,"redeux":10,"tiny-uuid":12}],26:[function(require,module,exports){
+},{"./reducers/todos-reducer":28,"./screens/todos-create":29,"kubby":10,"redeux":13,"tiny-uuid":15}],28:[function(require,module,exports){
 var tid = require('tiny-uuid')
 var hs = require('hash-switch')
 var kubby = require('kubby')()
@@ -1652,14 +2063,14 @@ function deleteAll (state, data) {
 }
 
 
-},{"../actions/todos-actions":16,"hash-switch":4,"kubby":7,"tiny-uuid":12}],27:[function(require,module,exports){
+},{"../actions/todos-actions":18,"hash-switch":5,"kubby":10,"tiny-uuid":15}],29:[function(require,module,exports){
 var html = require('yo-yo')
 var css = 0
 var TitleInput = require('../components/title-input')
 var TodoList = require('../components/todo-list.js')
 var Footer = require('../components/footer')
 var CompleteButton = require('../components/button-complete-all')
-var classes = ((null || true) && "_137a3464")
+var classes = ((null || true) && "_fce58daa")
 
 module.exports = function TodosCreate (store) {
   var state = store()
@@ -1685,21 +2096,18 @@ module.exports = function TodosCreate (store) {
   function create (state) {
     var todos = state && state.todos
     var showFooter = todos && todos.length
-    return (function () {
-      var onload = require('/Users/kj/Documents/work/redeux-todos/node_modules/on-load/index.js')
-      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("div")
-var args = arguments
-      onload(bel0, function bel_onload () {
-        args[0](bel0)
-      }, function bel_onunload () {
-        args[1](bel0)
-      }, "o0")
-bel0.setAttribute("id", arguments[2])
-bel0.setAttribute("class", arguments[3])
-ac(bel0, ["\n        ",arguments[4],"\n        ",arguments[5],"\n        ",arguments[6],"\n      "])
-      return bel0
-    }(load,unload,classes,classes,TitleInput(dispatch),TodoList(state, dispatch),showFooter ? Footer(todos, dispatch) : null))
+    return html`
+      <div
+        id=${classes}
+        class=${classes}
+        onload=${load}
+        onunload=${unload}
+      >
+        ${TitleInput(dispatch)}
+        ${TodoList(state, dispatch)}
+        ${showFooter ? Footer(todos, dispatch) : null}
+      </div>
+    `
   }
 
   function update (state) {
@@ -1709,4 +2117,4 @@ ac(bel0, ["\n        ",arguments[4],"\n        ",arguments[5],"\n        ",argum
   return render(state)
 }
 
-},{"../components/button-complete-all":17,"../components/footer":21,"../components/title-input":22,"../components/todo-list.js":23,"/Users/kj/Documents/work/redeux-todos/node_modules/on-load/index.js":9,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":15,"sheetify/insert":11,"yo-yo":13}]},{},[25]);
+},{"../components/button-complete-all":19,"../components/footer":23,"../components/title-input":24,"../components/todo-list.js":25,"sheetify/insert":14,"yo-yo":16}]},{},[27]);
