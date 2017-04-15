@@ -11,6 +11,7 @@ var headingClasses = css`
 :host {
   padding: 1rem;
   padding-top: 2rem;
+  border-bottom: 1px solid;
 }
 `
 var congratsClasses = css`
@@ -37,7 +38,6 @@ module.exports = function TodoList (state, dispatch) {
         <div class=${headingClasses}>
           Completed
         </div>
-        <hr>
       </h3>
     `
   }

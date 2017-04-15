@@ -115,9 +115,10 @@
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
 }
-._b839b3f7 {
+._3c9f36e5 {
   padding: 1rem;
   padding-top: 2rem;
+  border-bottom: 1px solid;
 }
 ._c31db776 {
   padding: 3rem;
