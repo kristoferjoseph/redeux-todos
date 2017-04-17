@@ -16,6 +16,27 @@ var classes = css`
   overflow: hidden;
 }
 `
+var contentClasses = css`
+:host {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+`
+var headingClasses = css`
+:host {
+  padding: 1rem;
+  padding-top: 2rem;
+  border-bottom: 1px solid;
+}
+`
+var congratsClasses = css`
+:host {
+  margin-bottom: 1rem;
+  padding: 3rem;
+  font-size: 3.5rem;
+  text-align: center;
+}
+`
 
 module.exports = function TodosCreate (store) {
   var state = store()
@@ -32,6 +53,22 @@ module.exports = function TodosCreate (store) {
     unsubscribe(update)
   }
 
+  function doneHeading () {
+    return html`
+      <h3 class=${headingClasses}>
+        Completed
+      </h3>
+    `
+  }
+
+  function congrats () {
+    return html`
+      <h1 class=${congratsClasses}>
+        Well done
+      </h1>
+    `
+  }
+
   function render (state) {
     return element ?
       update(state) :
@@ -40,6 +77,12 @@ module.exports = function TodosCreate (store) {
 
   function create (state) {
     var todos = state && state.todos
+    var active = todos.filter(function (t) {
+      return t && !t.done
+    })
+    var done = todos.filter(function (t) {
+      return t && t.done
+    })
     var showFooter = todos && todos.length
     return html`
       <div
@@ -49,7 +92,12 @@ module.exports = function TodosCreate (store) {
         onunload=${unload}
       >
         ${TitleInput(dispatch)}
-        ${TodoList(state, dispatch)}
+        <div class=${contentClasses}>
+          ${TodoList(active, dispatch)}
+          ${active && !active.length && done && done.length ? congrats() : null}
+          ${done && done.length ? doneHeading() : null}
+          ${TodoList(done, dispatch)}
+        </div>
         ${showFooter ? Footer(todos, dispatch) : null}
       </div>
     `

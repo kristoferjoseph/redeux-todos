@@ -114,23 +114,8 @@
 ._f28962d1::-moz-placeholder {
   color: black;
 }
-._f3a026ad {
-  overflow: scroll;
-  -webkit-overflow-scrolling: touch;
-}
 ._fbf62c13 {
   margin-top: 1rem;
-}
-._3c9f36e5 {
-  padding: 1rem;
-  padding-top: 2rem;
-  border-bottom: 1px solid;
-}
-._9cf46706 {
-  margin-bottom: 1rem;
-  padding: 3rem;
-  font-size: 3.5rem;
-  text-align: center;
 }
 ._76489e16 {
   display: flex;
@@ -158,4 +143,19 @@
   padding: 1rem;
   padding-top: 2rem;
   overflow: hidden;
+}
+._cf95d9bd {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+._3c9f36e5 {
+  padding: 1rem;
+  padding-top: 2rem;
+  border-bottom: 1px solid;
+}
+._9cf46706 {
+  margin-bottom: 1rem;
+  padding: 3rem;
+  font-size: 3.5rem;
+  text-align: center;
 }
