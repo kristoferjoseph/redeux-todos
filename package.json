@@ -37,7 +37,7 @@
     "join-classes": "^1.0.0",
     "kubby": "^1.2.0",
     "nanomorph": "^4.0.4",
-    "redeux": "https://github.com/kristoferjoseph/redeux.git#queue",
+    "redeux": "^4.2.1",
     "sheetify": "^6.0.1",
     "tiny-uuid": "^1.0.0"
   },
