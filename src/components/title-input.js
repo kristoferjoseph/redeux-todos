@@ -1,4 +1,4 @@
-var html = require('yo-yo')
+var html = require('bel')
 var createTodo = require('../actions/todos-actions').createTodo
 var css = require('sheetify')
 var labelClass = css`

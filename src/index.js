@@ -1,4 +1,3 @@
-var tid = require('tiny-uuid')
 var createStore = require('redeux')
 var kubby = require('kubby')()
 var todos = require('./reducers/todos-reducer')

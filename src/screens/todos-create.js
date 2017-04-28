@@ -1,4 +1,5 @@
-var html = require('yo-yo')
+var html = require('bel')
+var morph = require('nanomorph')
 var css = require('sheetify')
 var TitleInput = require('../components/title-input')
 var TodoList = require('../components/todo-list.js')
@@ -104,7 +105,7 @@ module.exports = function TodosCreate (store) {
   }
 
   function update (state) {
-    html.update(element, create(state))
+    morph(element, create(state))
   }
 
   return render(state)

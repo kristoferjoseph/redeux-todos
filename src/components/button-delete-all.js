@@ -1,4 +1,4 @@
-var html = require('yo-yo')
+var html = require('bel')
 var css = require('sheetify')
 var actions = require('../actions/todos-actions')
 var deleteAll = actions.deleteAll

@@ -1,4 +1,4 @@
-var html = require('yo-yo')
+var html = require('bel')
 var css = require('sheetify')
 var CompleteButton = require('./button-complete-all')
 var DeleteButton = require('./button-delete-all')

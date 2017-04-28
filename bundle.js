@@ -1,517 +1,739 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var document = require('global/document')
-var hyperx = require('hyperx')
-var onload = require('on-load')
+(function (global){
+'use strict';
 
-var SVGNS = 'http://www.w3.org/2000/svg'
-var XLINKNS = 'http://www.w3.org/1999/xlink'
+// compare and isBuffer taken from https://github.com/feross/buffer/blob/680e9e5e488f22aac27599a57dc844a6315928dd/index.js
+// original notice:
 
-var BOOL_PROPS = {
-  autofocus: 1,
-  checked: 1,
-  defaultchecked: 1,
-  disabled: 1,
-  formnovalidate: 1,
-  indeterminate: 1,
-  readonly: 1,
-  required: 1,
-  selected: 1,
-  willvalidate: 1
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+function compare(a, b) {
+  if (a === b) {
+    return 0;
+  }
+
+  var x = a.length;
+  var y = b.length;
+
+  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
+    if (a[i] !== b[i]) {
+      x = a[i];
+      y = b[i];
+      break;
+    }
+  }
+
+  if (x < y) {
+    return -1;
+  }
+  if (y < x) {
+    return 1;
+  }
+  return 0;
 }
-var SVG_TAGS = [
-  'svg',
-  'altGlyph', 'altGlyphDef', 'altGlyphItem', 'animate', 'animateColor',
-  'animateMotion', 'animateTransform', 'circle', 'clipPath', 'color-profile',
-  'cursor', 'defs', 'desc', 'ellipse', 'feBlend', 'feColorMatrix',
-  'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting',
-  'feDisplacementMap', 'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB',
-  'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode',
-  'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting',
-  'feSpotLight', 'feTile', 'feTurbulence', 'filter', 'font', 'font-face',
-  'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri',
-  'foreignObject', 'g', 'glyph', 'glyphRef', 'hkern', 'image', 'line',
-  'linearGradient', 'marker', 'mask', 'metadata', 'missing-glyph', 'mpath',
-  'path', 'pattern', 'polygon', 'polyline', 'radialGradient', 'rect',
-  'set', 'stop', 'switch', 'symbol', 'text', 'textPath', 'title', 'tref',
-  'tspan', 'use', 'view', 'vkern'
-]
-
-function belCreateElement (tag, props, children) {
-  var el
-
-  // If an svg tag, it needs a namespace
-  if (SVG_TAGS.indexOf(tag) !== -1) {
-    props.namespace = SVGNS
+function isBuffer(b) {
+  if (global.Buffer && typeof global.Buffer.isBuffer === 'function') {
+    return global.Buffer.isBuffer(b);
   }
+  return !!(b != null && b._isBuffer);
+}
 
-  // If we are using a namespace
-  var ns = false
-  if (props.namespace) {
-    ns = props.namespace
-    delete props.namespace
+// based on node assert, original notice:
+
+// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
+//
+// THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
+//
+// Originally from narwhal.js (http://narwhaljs.org)
+// Copyright (c) 2009 Thomas Robinson <280north.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the 'Software'), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var util = require('util/');
+var hasOwn = Object.prototype.hasOwnProperty;
+var pSlice = Array.prototype.slice;
+var functionsHaveNames = (function () {
+  return function foo() {}.name === 'foo';
+}());
+function pToString (obj) {
+  return Object.prototype.toString.call(obj);
+}
+function isView(arrbuf) {
+  if (isBuffer(arrbuf)) {
+    return false;
   }
+  if (typeof global.ArrayBuffer !== 'function') {
+    return false;
+  }
+  if (typeof ArrayBuffer.isView === 'function') {
+    return ArrayBuffer.isView(arrbuf);
+  }
+  if (!arrbuf) {
+    return false;
+  }
+  if (arrbuf instanceof DataView) {
+    return true;
+  }
+  if (arrbuf.buffer && arrbuf.buffer instanceof ArrayBuffer) {
+    return true;
+  }
+  return false;
+}
+// 1. The assert module provides functions that throw
+// AssertionError's when particular conditions are not met. The
+// assert module must conform to the following interface.
 
-  // Create the element
-  if (ns) {
-    el = document.createElementNS(ns, tag)
+var assert = module.exports = ok;
+
+// 2. The AssertionError is defined in assert.
+// new assert.AssertionError({ message: message,
+//                             actual: actual,
+//                             expected: expected })
+
+var regex = /\s*function\s+([^\(\s]*)\s*/;
+// based on https://github.com/ljharb/function.prototype.name/blob/adeeeec8bfcc6068b187d7d9fb3d5bb1d3a30899/implementation.js
+function getName(func) {
+  if (!util.isFunction(func)) {
+    return;
+  }
+  if (functionsHaveNames) {
+    return func.name;
+  }
+  var str = func.toString();
+  var match = str.match(regex);
+  return match && match[1];
+}
+assert.AssertionError = function AssertionError(options) {
+  this.name = 'AssertionError';
+  this.actual = options.actual;
+  this.expected = options.expected;
+  this.operator = options.operator;
+  if (options.message) {
+    this.message = options.message;
+    this.generatedMessage = false;
   } else {
-    el = document.createElement(tag)
+    this.message = getMessage(this);
+    this.generatedMessage = true;
   }
+  var stackStartFunction = options.stackStartFunction || fail;
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, stackStartFunction);
+  } else {
+    // non v8 browsers so we can have a stacktrace
+    var err = new Error();
+    if (err.stack) {
+      var out = err.stack;
 
-  // If adding onload events
-  if (props.onload || props.onunload) {
-    var load = props.onload || function () {}
-    var unload = props.onunload || function () {}
-    onload(el, function belOnload () {
-      load(el)
-    }, function belOnunload () {
-      unload(el)
-    },
-    // We have to use non-standard `caller` to find who invokes `belCreateElement`
-    belCreateElement.caller.caller.caller)
-    delete props.onload
-    delete props.onunload
-  }
+      // try to strip useless frames
+      var fn_name = getName(stackStartFunction);
+      var idx = out.indexOf('\n' + fn_name);
+      if (idx >= 0) {
+        // once we have located the function frame
+        // we need to strip out everything before it (and its line)
+        var next_line = out.indexOf('\n', idx + 1);
+        out = out.substring(next_line + 1);
+      }
 
-  // Create the properties
-  for (var p in props) {
-    if (props.hasOwnProperty(p)) {
-      var key = p.toLowerCase()
-      var val = props[p]
-      // Normalize className
-      if (key === 'classname') {
-        key = 'class'
-        p = 'class'
-      }
-      // The for attribute gets transformed to htmlFor, but we just set as for
-      if (p === 'htmlFor') {
-        p = 'for'
-      }
-      // If a property is boolean, set itself to the key
-      if (BOOL_PROPS[key]) {
-        if (val === 'true') val = key
-        else if (val === 'false') continue
-      }
-      // If a property prefers being set directly vs setAttribute
-      if (key.slice(0, 2) === 'on') {
-        el[p] = val
-      } else {
-        if (ns) {
-          if (p === 'xlink:href') {
-            el.setAttributeNS(XLINKNS, p, val)
-          } else if (/^xmlns($|:)/i.test(p)) {
-            // skip xmlns definitions
-          } else {
-            el.setAttributeNS(null, p, val)
-          }
-        } else {
-          el.setAttribute(p, val)
-        }
-      }
+      this.stack = out;
     }
   }
+};
 
-  function appendChild (childs) {
-    if (!Array.isArray(childs)) return
-    for (var i = 0; i < childs.length; i++) {
-      var node = childs[i]
-      if (Array.isArray(node)) {
-        appendChild(node)
-        continue
-      }
+// assert.AssertionError instanceof Error
+util.inherits(assert.AssertionError, Error);
 
-      if (typeof node === 'number' ||
-        typeof node === 'boolean' ||
-        node instanceof Date ||
-        node instanceof RegExp) {
-        node = node.toString()
-      }
-
-      if (typeof node === 'string') {
-        if (el.lastChild && el.lastChild.nodeName === '#text') {
-          el.lastChild.nodeValue += node
-          continue
-        }
-        node = document.createTextNode(node)
-      }
-
-      if (node && node.nodeType) {
-        el.appendChild(node)
-      }
-    }
+function truncate(s, n) {
+  if (typeof s === 'string') {
+    return s.length < n ? s : s.slice(0, n);
+  } else {
+    return s;
   }
-  appendChild(children)
-
-  return el
+}
+function inspect(something) {
+  if (functionsHaveNames || !util.isFunction(something)) {
+    return util.inspect(something);
+  }
+  var rawname = getName(something);
+  var name = rawname ? ': ' + rawname : '';
+  return '[Function' +  name + ']';
+}
+function getMessage(self) {
+  return truncate(inspect(self.actual), 128) + ' ' +
+         self.operator + ' ' +
+         truncate(inspect(self.expected), 128);
 }
 
-module.exports = hyperx(belCreateElement)
-module.exports.default = module.exports
-module.exports.createElement = belCreateElement
+// At present only the three keys mentioned above are used and
+// understood by the spec. Implementations or sub modules can pass
+// other keys to the AssertionError's constructor - they will be
+// ignored.
 
-},{"global/document":3,"hyperx":7,"on-load":12}],2:[function(require,module,exports){
+// 3. All of the following functions must throw an AssertionError
+// when a corresponding condition is not met, with a message that
+// may be undefined if not provided.  All assertion methods provide
+// both the actual and expected values to the assertion error for
+// display purposes.
+
+function fail(actual, expected, message, operator, stackStartFunction) {
+  throw new assert.AssertionError({
+    message: message,
+    actual: actual,
+    expected: expected,
+    operator: operator,
+    stackStartFunction: stackStartFunction
+  });
+}
+
+// EXTENSION! allows for well behaved errors defined elsewhere.
+assert.fail = fail;
+
+// 4. Pure assertion tests whether a value is truthy, as determined
+// by !!guard.
+// assert.ok(guard, message_opt);
+// This statement is equivalent to assert.equal(true, !!guard,
+// message_opt);. To test strictly for the value true, use
+// assert.strictEqual(true, guard, message_opt);.
+
+function ok(value, message) {
+  if (!value) fail(value, true, message, '==', assert.ok);
+}
+assert.ok = ok;
+
+// 5. The equality assertion tests shallow, coercive equality with
+// ==.
+// assert.equal(actual, expected, message_opt);
+
+assert.equal = function equal(actual, expected, message) {
+  if (actual != expected) fail(actual, expected, message, '==', assert.equal);
+};
+
+// 6. The non-equality assertion tests for whether two objects are not equal
+// with != assert.notEqual(actual, expected, message_opt);
+
+assert.notEqual = function notEqual(actual, expected, message) {
+  if (actual == expected) {
+    fail(actual, expected, message, '!=', assert.notEqual);
+  }
+};
+
+// 7. The equivalence assertion tests a deep equality relation.
+// assert.deepEqual(actual, expected, message_opt);
+
+assert.deepEqual = function deepEqual(actual, expected, message) {
+  if (!_deepEqual(actual, expected, false)) {
+    fail(actual, expected, message, 'deepEqual', assert.deepEqual);
+  }
+};
+
+assert.deepStrictEqual = function deepStrictEqual(actual, expected, message) {
+  if (!_deepEqual(actual, expected, true)) {
+    fail(actual, expected, message, 'deepStrictEqual', assert.deepStrictEqual);
+  }
+};
+
+function _deepEqual(actual, expected, strict, memos) {
+  // 7.1. All identical values are equivalent, as determined by ===.
+  if (actual === expected) {
+    return true;
+  } else if (isBuffer(actual) && isBuffer(expected)) {
+    return compare(actual, expected) === 0;
+
+  // 7.2. If the expected value is a Date object, the actual value is
+  // equivalent if it is also a Date object that refers to the same time.
+  } else if (util.isDate(actual) && util.isDate(expected)) {
+    return actual.getTime() === expected.getTime();
+
+  // 7.3 If the expected value is a RegExp object, the actual value is
+  // equivalent if it is also a RegExp object with the same source and
+  // properties (`global`, `multiline`, `lastIndex`, `ignoreCase`).
+  } else if (util.isRegExp(actual) && util.isRegExp(expected)) {
+    return actual.source === expected.source &&
+           actual.global === expected.global &&
+           actual.multiline === expected.multiline &&
+           actual.lastIndex === expected.lastIndex &&
+           actual.ignoreCase === expected.ignoreCase;
+
+  // 7.4. Other pairs that do not both pass typeof value == 'object',
+  // equivalence is determined by ==.
+  } else if ((actual === null || typeof actual !== 'object') &&
+             (expected === null || typeof expected !== 'object')) {
+    return strict ? actual === expected : actual == expected;
+
+  // If both values are instances of typed arrays, wrap their underlying
+  // ArrayBuffers in a Buffer each to increase performance
+  // This optimization requires the arrays to have the same type as checked by
+  // Object.prototype.toString (aka pToString). Never perform binary
+  // comparisons for Float*Arrays, though, since e.g. +0 === -0 but their
+  // bit patterns are not identical.
+  } else if (isView(actual) && isView(expected) &&
+             pToString(actual) === pToString(expected) &&
+             !(actual instanceof Float32Array ||
+               actual instanceof Float64Array)) {
+    return compare(new Uint8Array(actual.buffer),
+                   new Uint8Array(expected.buffer)) === 0;
+
+  // 7.5 For all other Object pairs, including Array objects, equivalence is
+  // determined by having the same number of owned properties (as verified
+  // with Object.prototype.hasOwnProperty.call), the same set of keys
+  // (although not necessarily the same order), equivalent values for every
+  // corresponding key, and an identical 'prototype' property. Note: this
+  // accounts for both named and indexed properties on Arrays.
+  } else if (isBuffer(actual) !== isBuffer(expected)) {
+    return false;
+  } else {
+    memos = memos || {actual: [], expected: []};
+
+    var actualIndex = memos.actual.indexOf(actual);
+    if (actualIndex !== -1) {
+      if (actualIndex === memos.expected.indexOf(expected)) {
+        return true;
+      }
+    }
+
+    memos.actual.push(actual);
+    memos.expected.push(expected);
+
+    return objEquiv(actual, expected, strict, memos);
+  }
+}
+
+function isArguments(object) {
+  return Object.prototype.toString.call(object) == '[object Arguments]';
+}
+
+function objEquiv(a, b, strict, actualVisitedObjects) {
+  if (a === null || a === undefined || b === null || b === undefined)
+    return false;
+  // if one is a primitive, the other must be same
+  if (util.isPrimitive(a) || util.isPrimitive(b))
+    return a === b;
+  if (strict && Object.getPrototypeOf(a) !== Object.getPrototypeOf(b))
+    return false;
+  var aIsArgs = isArguments(a);
+  var bIsArgs = isArguments(b);
+  if ((aIsArgs && !bIsArgs) || (!aIsArgs && bIsArgs))
+    return false;
+  if (aIsArgs) {
+    a = pSlice.call(a);
+    b = pSlice.call(b);
+    return _deepEqual(a, b, strict);
+  }
+  var ka = objectKeys(a);
+  var kb = objectKeys(b);
+  var key, i;
+  // having the same number of owned properties (keys incorporates
+  // hasOwnProperty)
+  if (ka.length !== kb.length)
+    return false;
+  //the same set of keys (although not necessarily the same order),
+  ka.sort();
+  kb.sort();
+  //~~~cheap key test
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] !== kb[i])
+      return false;
+  }
+  //equivalent values for every corresponding key, and
+  //~~~possibly expensive deep test
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!_deepEqual(a[key], b[key], strict, actualVisitedObjects))
+      return false;
+  }
+  return true;
+}
+
+// 8. The non-equivalence assertion tests for any deep inequality.
+// assert.notDeepEqual(actual, expected, message_opt);
+
+assert.notDeepEqual = function notDeepEqual(actual, expected, message) {
+  if (_deepEqual(actual, expected, false)) {
+    fail(actual, expected, message, 'notDeepEqual', assert.notDeepEqual);
+  }
+};
+
+assert.notDeepStrictEqual = notDeepStrictEqual;
+function notDeepStrictEqual(actual, expected, message) {
+  if (_deepEqual(actual, expected, true)) {
+    fail(actual, expected, message, 'notDeepStrictEqual', notDeepStrictEqual);
+  }
+}
+
+
+// 9. The strict equality assertion tests strict equality, as determined by ===.
+// assert.strictEqual(actual, expected, message_opt);
+
+assert.strictEqual = function strictEqual(actual, expected, message) {
+  if (actual !== expected) {
+    fail(actual, expected, message, '===', assert.strictEqual);
+  }
+};
+
+// 10. The strict non-equality assertion tests for strict inequality, as
+// determined by !==.  assert.notStrictEqual(actual, expected, message_opt);
+
+assert.notStrictEqual = function notStrictEqual(actual, expected, message) {
+  if (actual === expected) {
+    fail(actual, expected, message, '!==', assert.notStrictEqual);
+  }
+};
+
+function expectedException(actual, expected) {
+  if (!actual || !expected) {
+    return false;
+  }
+
+  if (Object.prototype.toString.call(expected) == '[object RegExp]') {
+    return expected.test(actual);
+  }
+
+  try {
+    if (actual instanceof expected) {
+      return true;
+    }
+  } catch (e) {
+    // Ignore.  The instanceof check doesn't work for arrow functions.
+  }
+
+  if (Error.isPrototypeOf(expected)) {
+    return false;
+  }
+
+  return expected.call({}, actual) === true;
+}
+
+function _tryBlock(block) {
+  var error;
+  try {
+    block();
+  } catch (e) {
+    error = e;
+  }
+  return error;
+}
+
+function _throws(shouldThrow, block, expected, message) {
+  var actual;
+
+  if (typeof block !== 'function') {
+    throw new TypeError('"block" argument must be a function');
+  }
+
+  if (typeof expected === 'string') {
+    message = expected;
+    expected = null;
+  }
+
+  actual = _tryBlock(block);
+
+  message = (expected && expected.name ? ' (' + expected.name + ').' : '.') +
+            (message ? ' ' + message : '.');
+
+  if (shouldThrow && !actual) {
+    fail(actual, expected, 'Missing expected exception' + message);
+  }
+
+  var userProvidedMessage = typeof message === 'string';
+  var isUnwantedException = !shouldThrow && util.isError(actual);
+  var isUnexpectedException = !shouldThrow && actual && !expected;
+
+  if ((isUnwantedException &&
+      userProvidedMessage &&
+      expectedException(actual, expected)) ||
+      isUnexpectedException) {
+    fail(actual, expected, 'Got unwanted exception' + message);
+  }
+
+  if ((shouldThrow && actual && expected &&
+      !expectedException(actual, expected)) || (!shouldThrow && actual)) {
+    throw actual;
+  }
+}
+
+// 11. Expected to throw an error:
+// assert.throws(block, Error_opt, message_opt);
+
+assert.throws = function(block, /*optional*/error, /*optional*/message) {
+  _throws(true, block, error, message);
+};
+
+// EXTENSION! This is annoying to write outside this module.
+assert.doesNotThrow = function(block, /*optional*/error, /*optional*/message) {
+  _throws(false, block, error, message);
+};
+
+assert.ifError = function(err) { if (err) throw err; };
+
+var objectKeys = Object.keys || function (obj) {
+  var keys = [];
+  for (var key in obj) {
+    if (hasOwn.call(obj, key)) keys.push(key);
+  }
+  return keys;
+};
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"util/":19}],2:[function(require,module,exports){
 
 },{}],3:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],4:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
 var minDoc = require('min-document');
 
+var doccy;
+
 if (typeof document !== 'undefined') {
-    module.exports = document;
+    doccy = document;
 } else {
-    var doccy = topLevel['__GLOBAL_DOCUMENT_CACHE@4'];
+    doccy = topLevel['__GLOBAL_DOCUMENT_CACHE@4'];
 
     if (!doccy) {
         doccy = topLevel['__GLOBAL_DOCUMENT_CACHE@4'] = minDoc;
     }
-
-    module.exports = doccy;
 }
 
+module.exports = doccy;
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":2}],4:[function(require,module,exports){
+},{"min-document":2}],5:[function(require,module,exports){
 (function (global){
+var win;
+
 if (typeof window !== "undefined") {
-    module.exports = window;
+    win = window;
 } else if (typeof global !== "undefined") {
-    module.exports = global;
+    win = global;
 } else if (typeof self !== "undefined"){
-    module.exports = self;
+    win = self;
 } else {
-    module.exports = {};
+    win = {};
 }
+
+module.exports = win;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(require,module,exports){
-var DEFAULT_CALLBACK = 'DEFAULT_CALLBACK'
-
-module.exports = function(actions, defaultCallback){
-  var hash = {}
-  hash[DEFAULT_CALLBACK] = defaultCallback || function() {}  
-  if (actions) {
-    Object.keys(actions).forEach(function(action) {
-      if (typeof action === 'string' &&
-          typeof actions[action] === 'function') {
-        hash[action] = actions[action]
-      } else {
-        throw Error('Actions Object requires string keys and function values')
-      }
-    })
-  }
-  return function(action) {
-     if (typeof action === 'string') {
-       var args = [].slice.call(arguments, 1)
-       return (hash[action] || hash[DEFAULT_CALLBACK]).apply(this, args)
-     } else {
-       throw Error('requires an action string')
-     }
-  }
-}
-
-
 },{}],6:[function(require,module,exports){
-module.exports = attributeToProperty
-
-var transform = {
-  'class': 'className',
-  'for': 'htmlFor',
-  'http-equiv': 'httpEquiv'
-}
-
-function attributeToProperty (h) {
-  return function (tagName, attrs, children) {
-    for (var attr in attrs) {
-      if (attr in transform) {
-        attrs[transform[attr]] = attrs[attr]
-        delete attrs[attr]
-      }
-    }
-    return h(tagName, attrs, children)
+module.exports = function hashswitch (actions, defaultCallback){
+  var hash = {}
+  hash.DEFAULT_CALLBACK = defaultCallback || function () {}
+  actions && Object.keys(actions).forEach(function (action) {
+    ('string' === typeof action && 'function' === typeof actions[action]) ?
+    (hash[action] = actions[action]) :
+    console.log(action + ' should be a string and ' + actions[action] + ' should be a function.')
+  })
+  return function exectue (action) {
+   'string' !== typeof action && console.error(action + ' should be a string')
+    return (hash[action] || hash.DEFAULT_CALLBACK).apply(this, [].slice.call(arguments, 1))
   }
 }
 
 },{}],7:[function(require,module,exports){
-var attrToProp = require('hyperscript-attribute-to-property')
-
-var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
-var ATTR_KEY = 5, ATTR_KEY_W = 6
-var ATTR_VALUE_W = 7, ATTR_VALUE = 8
-var ATTR_VALUE_SQ = 9, ATTR_VALUE_DQ = 10
-var ATTR_EQ = 11, ATTR_BREAK = 12
-var COMMENT = 13
-
-module.exports = function (h, opts) {
-  if (!opts) opts = {}
-  var concat = opts.concat || function (a, b) {
-    return String(a) + String(b)
-  }
-  if (opts.attrToProp !== false) {
-    h = attrToProp(h)
-  }
-
-  return function (strings) {
-    var state = TEXT, reg = ''
-    var arglen = arguments.length
-    var parts = []
-
-    for (var i = 0; i < strings.length; i++) {
-      if (i < arglen - 1) {
-        var arg = arguments[i+1]
-        var p = parse(strings[i])
-        var xstate = state
-        if (xstate === ATTR_VALUE_DQ) xstate = ATTR_VALUE
-        if (xstate === ATTR_VALUE_SQ) xstate = ATTR_VALUE
-        if (xstate === ATTR_VALUE_W) xstate = ATTR_VALUE
-        if (xstate === ATTR) xstate = ATTR_KEY
-        p.push([ VAR, xstate, arg ])
-        parts.push.apply(parts, p)
-      } else parts.push.apply(parts, parse(strings[i]))
-    }
-
-    var tree = [null,{},[]]
-    var stack = [[tree,-1]]
-    for (var i = 0; i < parts.length; i++) {
-      var cur = stack[stack.length-1][0]
-      var p = parts[i], s = p[0]
-      if (s === OPEN && /^\//.test(p[1])) {
-        var ix = stack[stack.length-1][1]
-        if (stack.length > 1) {
-          stack.pop()
-          stack[stack.length-1][0][2][ix] = h(
-            cur[0], cur[1], cur[2].length ? cur[2] : undefined
-          )
-        }
-      } else if (s === OPEN) {
-        var c = [p[1],{},[]]
-        cur[2].push(c)
-        stack.push([c,cur[2].length-1])
-      } else if (s === ATTR_KEY || (s === VAR && p[1] === ATTR_KEY)) {
-        var key = ''
-        var copyKey
-        for (; i < parts.length; i++) {
-          if (parts[i][0] === ATTR_KEY) {
-            key = concat(key, parts[i][1])
-          } else if (parts[i][0] === VAR && parts[i][1] === ATTR_KEY) {
-            if (typeof parts[i][2] === 'object' && !key) {
-              for (copyKey in parts[i][2]) {
-                if (parts[i][2].hasOwnProperty(copyKey) && !cur[1][copyKey]) {
-                  cur[1][copyKey] = parts[i][2][copyKey]
-                }
-              }
-            } else {
-              key = concat(key, parts[i][2])
-            }
-          } else break
-        }
-        if (parts[i][0] === ATTR_EQ) i++
-        var j = i
-        for (; i < parts.length; i++) {
-          if (parts[i][0] === ATTR_VALUE || parts[i][0] === ATTR_KEY) {
-            if (!cur[1][key]) cur[1][key] = strfn(parts[i][1])
-            else cur[1][key] = concat(cur[1][key], parts[i][1])
-          } else if (parts[i][0] === VAR
-          && (parts[i][1] === ATTR_VALUE || parts[i][1] === ATTR_KEY)) {
-            if (!cur[1][key]) cur[1][key] = strfn(parts[i][2])
-            else cur[1][key] = concat(cur[1][key], parts[i][2])
-          } else {
-            if (key.length && !cur[1][key] && i === j
-            && (parts[i][0] === CLOSE || parts[i][0] === ATTR_BREAK)) {
-              // https://html.spec.whatwg.org/multipage/infrastructure.html#boolean-attributes
-              // empty string is falsy, not well behaved value in browser
-              cur[1][key] = key.toLowerCase()
-            }
-            break
-          }
-        }
-      } else if (s === ATTR_KEY) {
-        cur[1][p[1]] = true
-      } else if (s === VAR && p[1] === ATTR_KEY) {
-        cur[1][p[2]] = true
-      } else if (s === CLOSE) {
-        if (selfClosing(cur[0]) && stack.length) {
-          var ix = stack[stack.length-1][1]
-          stack.pop()
-          stack[stack.length-1][0][2][ix] = h(
-            cur[0], cur[1], cur[2].length ? cur[2] : undefined
-          )
-        }
-      } else if (s === VAR && p[1] === TEXT) {
-        if (p[2] === undefined || p[2] === null) p[2] = ''
-        else if (!p[2]) p[2] = concat('', p[2])
-        if (Array.isArray(p[2][0])) {
-          cur[2].push.apply(cur[2], p[2])
-        } else {
-          cur[2].push(p[2])
-        }
-      } else if (s === TEXT) {
-        cur[2].push(p[1])
-      } else if (s === ATTR_EQ || s === ATTR_BREAK) {
-        // no-op
-      } else {
-        throw new Error('unhandled: ' + s)
-      }
-    }
-
-    if (tree[2].length > 1 && /^\s*$/.test(tree[2][0])) {
-      tree[2].shift()
-    }
-
-    if (tree[2].length > 2
-    || (tree[2].length === 2 && /\S/.test(tree[2][1]))) {
-      throw new Error(
-        'multiple root elements must be wrapped in an enclosing tag'
-      )
-    }
-    if (Array.isArray(tree[2][0]) && typeof tree[2][0][0] === 'string'
-    && Array.isArray(tree[2][0][2])) {
-      tree[2][0] = h(tree[2][0][0], tree[2][0][1], tree[2][0][2])
-    }
-    return tree[2][0]
-
-    function parse (str) {
-      var res = []
-      if (state === ATTR_VALUE_W) state = ATTR
-      for (var i = 0; i < str.length; i++) {
-        var c = str.charAt(i)
-        if (state === TEXT && c === '<') {
-          if (reg.length) res.push([TEXT, reg])
-          reg = ''
-          state = OPEN
-        } else if (c === '>' && !quot(state) && state !== COMMENT) {
-          if (state === OPEN) {
-            res.push([OPEN,reg])
-          } else if (state === ATTR_KEY) {
-            res.push([ATTR_KEY,reg])
-          } else if (state === ATTR_VALUE && reg.length) {
-            res.push([ATTR_VALUE,reg])
-          }
-          res.push([CLOSE])
-          reg = ''
-          state = TEXT
-        } else if (state === COMMENT && /-$/.test(reg) && c === '-') {
-          if (opts.comments) {
-            res.push([ATTR_VALUE,reg.substr(0, reg.length - 1)],[CLOSE])
-          }
-          reg = ''
-          state = TEXT
-        } else if (state === OPEN && /^!--$/.test(reg)) {
-          if (opts.comments) {
-            res.push([OPEN, reg],[ATTR_KEY,'comment'],[ATTR_EQ])
-          }
-          reg = c
-          state = COMMENT
-        } else if (state === TEXT || state === COMMENT) {
-          reg += c
-        } else if (state === OPEN && /\s/.test(c)) {
-          res.push([OPEN, reg])
-          reg = ''
-          state = ATTR
-        } else if (state === OPEN) {
-          reg += c
-        } else if (state === ATTR && /[^\s"'=/]/.test(c)) {
-          state = ATTR_KEY
-          reg = c
-        } else if (state === ATTR && /\s/.test(c)) {
-          if (reg.length) res.push([ATTR_KEY,reg])
-          res.push([ATTR_BREAK])
-        } else if (state === ATTR_KEY && /\s/.test(c)) {
-          res.push([ATTR_KEY,reg])
-          reg = ''
-          state = ATTR_KEY_W
-        } else if (state === ATTR_KEY && c === '=') {
-          res.push([ATTR_KEY,reg],[ATTR_EQ])
-          reg = ''
-          state = ATTR_VALUE_W
-        } else if (state === ATTR_KEY) {
-          reg += c
-        } else if ((state === ATTR_KEY_W || state === ATTR) && c === '=') {
-          res.push([ATTR_EQ])
-          state = ATTR_VALUE_W
-        } else if ((state === ATTR_KEY_W || state === ATTR) && !/\s/.test(c)) {
-          res.push([ATTR_BREAK])
-          if (/[\w-]/.test(c)) {
-            reg += c
-            state = ATTR_KEY
-          } else state = ATTR
-        } else if (state === ATTR_VALUE_W && c === '"') {
-          state = ATTR_VALUE_DQ
-        } else if (state === ATTR_VALUE_W && c === "'") {
-          state = ATTR_VALUE_SQ
-        } else if (state === ATTR_VALUE_DQ && c === '"') {
-          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
-          reg = ''
-          state = ATTR
-        } else if (state === ATTR_VALUE_SQ && c === "'") {
-          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
-          reg = ''
-          state = ATTR
-        } else if (state === ATTR_VALUE_W && !/\s/.test(c)) {
-          state = ATTR_VALUE
-          i--
-        } else if (state === ATTR_VALUE && /\s/.test(c)) {
-          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
-          reg = ''
-          state = ATTR
-        } else if (state === ATTR_VALUE || state === ATTR_VALUE_SQ
-        || state === ATTR_VALUE_DQ) {
-          reg += c
-        }
-      }
-      if (state === TEXT && reg.length) {
-        res.push([TEXT,reg])
-        reg = ''
-      } else if (state === ATTR_VALUE && reg.length) {
-        res.push([ATTR_VALUE,reg])
-        reg = ''
-      } else if (state === ATTR_VALUE_DQ && reg.length) {
-        res.push([ATTR_VALUE,reg])
-        reg = ''
-      } else if (state === ATTR_VALUE_SQ && reg.length) {
-        res.push([ATTR_VALUE,reg])
-        reg = ''
-      } else if (state === ATTR_KEY) {
-        res.push([ATTR_KEY,reg])
-        reg = ''
-      }
-      return res
-    }
-  }
-
-  function strfn (x) {
-    if (typeof x === 'function') return x
-    else if (typeof x === 'string') return x
-    else if (x && typeof x === 'object') return x
-    else return concat('', x)
-  }
-}
-
-function quot (state) {
-  return state === ATTR_VALUE_SQ || state === ATTR_VALUE_DQ
-}
-
-var hasOwn = Object.prototype.hasOwnProperty
-function has (obj, key) { return hasOwn.call(obj, key) }
-
-var closeRE = RegExp('^(' + [
-  'area', 'base', 'basefont', 'bgsound', 'br', 'col', 'command', 'embed',
-  'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param',
-  'source', 'track', 'wbr', '!--',
-  // SVG TAGS
-  'animate', 'animateTransform', 'circle', 'cursor', 'desc', 'ellipse',
-  'feBlend', 'feColorMatrix', 'feComposite',
-  'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap',
-  'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR',
-  'feGaussianBlur', 'feImage', 'feMergeNode', 'feMorphology',
-  'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight', 'feTile',
-  'feTurbulence', 'font-face-format', 'font-face-name', 'font-face-uri',
-  'glyph', 'glyphRef', 'hkern', 'image', 'line', 'missing-glyph', 'mpath',
-  'path', 'polygon', 'polyline', 'rect', 'set', 'stop', 'tref', 'use', 'view',
-  'vkern'
-].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
-function selfClosing (tag) { return closeRE.test(tag) }
-
-},{"hyperscript-attribute-to-property":6}],8:[function(require,module,exports){
 var containers = []; // will store container HTMLElement references
 var styleElements = []; // will store {prepend: HTMLElement, append: HTMLElement}
 
@@ -571,7 +793,7 @@ function createStyleElement() {
 module.exports = insertCss;
 module.exports.insertCss = insertCss;
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var filter = Array.prototype.filter
 module.exports = function joinClasses () {
   return filter.call(arguments, function (s) {
@@ -579,7 +801,7 @@ module.exports = function joinClasses () {
   }).join(' ').trim()
 }
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = function kubby(options) {
   options = options || {}
   var noop = function(){}
@@ -635,682 +857,315 @@ module.exports = function kubby(options) {
   }
 }
 
-},{}],11:[function(require,module,exports){
-'use strict';
+},{}],10:[function(require,module,exports){
+var assert = require('assert')
+var morph = require('./lib/morph')
+var rootLabelRegex = /^data-onloadid/
 
-var range; // Create a range object for efficently rendering strings to elements.
-var NS_XHTML = 'http://www.w3.org/1999/xhtml';
+var ELEMENT_NODE = 1
 
-var doc = typeof document === 'undefined' ? undefined : document;
+module.exports = nanomorph
 
-var testEl = doc ?
-    doc.body || doc.createElement('div') :
-    {};
+// morph one tree into another tree
+// (obj, obj) -> obj
+// no parent
+//   -> same: diff and walk children
+//   -> not same: replace and return
+// old node doesn't exist
+//   -> insert new node
+// new node doesn't exist
+//   -> delete old node
+// nodes are not the same
+//   -> diff nodes and apply patch to old node
+// nodes are the same
+//   -> walk all child nodes and append to old node
+function nanomorph (oldTree, newTree) {
+  assert.equal(typeof oldTree, 'object', 'nanomorph: oldTree should be an object')
+  assert.equal(typeof newTree, 'object', 'nanomorph: newTree should be an object')
 
-// Fixes <https://github.com/patrick-steele-idem/morphdom/issues/32>
-// (IE7+ support) <=IE7 does not support el.hasAttribute(name)
-var actualHasAttributeNS;
-
-if (testEl.hasAttributeNS) {
-    actualHasAttributeNS = function(el, namespaceURI, name) {
-        return el.hasAttributeNS(namespaceURI, name);
-    };
-} else if (testEl.hasAttribute) {
-    actualHasAttributeNS = function(el, namespaceURI, name) {
-        return el.hasAttribute(name);
-    };
-} else {
-    actualHasAttributeNS = function(el, namespaceURI, name) {
-        return el.getAttributeNode(namespaceURI, name) != null;
-    };
+  persistStatefulRoot(newTree, oldTree)
+  var tree = walk(newTree, oldTree)
+  return tree
 }
 
-var hasAttributeNS = actualHasAttributeNS;
-
-
-function toElement(str) {
-    if (!range && doc.createRange) {
-        range = doc.createRange();
-        range.selectNode(doc.body);
-    }
-
-    var fragment;
-    if (range && range.createContextualFragment) {
-        fragment = range.createContextualFragment(str);
-    } else {
-        fragment = doc.createElement('body');
-        fragment.innerHTML = str;
-    }
-    return fragment.childNodes[0];
+// walk and morph a dom tree
+// (obj, obj) -> obj
+function walk (newNode, oldNode) {
+  if (!oldNode) {
+    return newNode
+  } else if (!newNode) {
+    return null
+  } else if (newNode.isSameNode && newNode.isSameNode(oldNode)) {
+    return oldNode
+  } else if (newNode.tagName !== oldNode.tagName) {
+    return newNode
+  } else {
+    morph(newNode, oldNode)
+    updateChildren(newNode, oldNode)
+    return oldNode
+  }
 }
 
-/**
- * Returns true if two node's names are the same.
- *
- * NOTE: We don't bother checking `namespaceURI` because you will never find two HTML elements with the same
- *       nodeName and different namespace URIs.
- *
- * @param {Element} a
- * @param {Element} b The target element
- * @return {boolean}
- */
-function compareNodeNames(fromEl, toEl) {
-    var fromNodeName = fromEl.nodeName;
-    var toNodeName = toEl.nodeName;
+// update the children of elements
+// (obj, obj) -> null
+function updateChildren (newNode, oldNode) {
+  if (!newNode.childNodes || !oldNode.childNodes) return
 
-    if (fromNodeName === toNodeName) {
-        return true;
-    }
+  var newLength = newNode.childNodes.length
+  var oldLength = oldNode.childNodes.length
+  var length = Math.max(oldLength, newLength)
 
-    if (toEl.actualize &&
-        fromNodeName.charCodeAt(0) < 91 && /* from tag name is upper case */
-        toNodeName.charCodeAt(0) > 90 /* target tag name is lower case */) {
-        // If the target element is a virtual DOM node then we may need to normalize the tag name
-        // before comparing. Normal HTML elements that are in the "http://www.w3.org/1999/xhtml"
-        // are converted to upper case
-        return fromNodeName === toNodeName.toUpperCase();
-    } else {
-        return false;
+  var iNew = 0
+  var iOld = 0
+  for (var i = 0; i < length; i++, iNew++, iOld++) {
+    var newChildNode = newNode.childNodes[iNew]
+    var oldChildNode = oldNode.childNodes[iOld]
+    var retChildNode = walk(newChildNode, oldChildNode)
+    if (!retChildNode) {
+      if (oldChildNode) {
+        oldNode.removeChild(oldChildNode)
+        iOld--
+      }
+    } else if (!oldChildNode) {
+      if (retChildNode) {
+        oldNode.appendChild(retChildNode)
+        iNew--
+      }
+    } else if (retChildNode !== oldChildNode) {
+      oldNode.replaceChild(retChildNode, oldChildNode)
+      iNew--
     }
+  }
 }
 
-/**
- * Create an element, optionally with a known namespace URI.
- *
- * @param {string} name the element name, e.g. 'div' or 'svg'
- * @param {string} [namespaceURI] the element's namespace URI, i.e. the value of
- * its `xmlns` attribute or its inferred namespace.
- *
- * @return {Element}
- */
-function createElementNS(name, namespaceURI) {
-    return !namespaceURI || namespaceURI === NS_XHTML ?
-        doc.createElement(name) :
-        doc.createElementNS(namespaceURI, name);
-}
-
-/**
- * Copies the children of one DOM element to another DOM element
- */
-function moveChildren(fromEl, toEl) {
-    var curChild = fromEl.firstChild;
-    while (curChild) {
-        var nextChild = curChild.nextSibling;
-        toEl.appendChild(curChild);
-        curChild = nextChild;
+function persistStatefulRoot (newNode, oldNode) {
+  if (!newNode || !oldNode || oldNode.nodeType !== ELEMENT_NODE || newNode.nodeType !== ELEMENT_NODE) return
+  var oldAttrs = oldNode.attributes
+  var attr, name
+  for (var i = 0, len = oldAttrs.length; i < len; i++) {
+    attr = oldAttrs[i]
+    name = attr.name
+    if (rootLabelRegex.test(name)) {
+      newNode.setAttribute(name, attr.value)
+      break
     }
-    return toEl;
+  }
 }
 
-function morphAttrs(fromNode, toNode) {
-    var attrs = toNode.attributes;
-    var i;
-    var attr;
-    var attrName;
-    var attrNamespaceURI;
-    var attrValue;
-    var fromValue;
-
-    for (i = attrs.length - 1; i >= 0; --i) {
-        attr = attrs[i];
-        attrName = attr.name;
-        attrNamespaceURI = attr.namespaceURI;
-        attrValue = attr.value;
-
-        if (attrNamespaceURI) {
-            attrName = attr.localName || attrName;
-            fromValue = fromNode.getAttributeNS(attrNamespaceURI, attrName);
-
-            if (fromValue !== attrValue) {
-                fromNode.setAttributeNS(attrNamespaceURI, attrName, attrValue);
-            }
-        } else {
-            fromValue = fromNode.getAttribute(attrName);
-
-            if (fromValue !== attrValue) {
-                fromNode.setAttribute(attrName, attrValue);
-            }
-        }
-    }
-
-    // Remove any extra attributes found on the original DOM element that
-    // weren't found on the target element.
-    attrs = fromNode.attributes;
-
-    for (i = attrs.length - 1; i >= 0; --i) {
-        attr = attrs[i];
-        if (attr.specified !== false) {
-            attrName = attr.name;
-            attrNamespaceURI = attr.namespaceURI;
-
-            if (attrNamespaceURI) {
-                attrName = attr.localName || attrName;
-
-                if (!hasAttributeNS(toNode, attrNamespaceURI, attrName)) {
-                    fromNode.removeAttributeNS(attrNamespaceURI, attrName);
-                }
-            } else {
-                if (!hasAttributeNS(toNode, null, attrName)) {
-                    fromNode.removeAttribute(attrName);
-                }
-            }
-        }
-    }
-}
-
-function syncBooleanAttrProp(fromEl, toEl, name) {
-    if (fromEl[name] !== toEl[name]) {
-        fromEl[name] = toEl[name];
-        if (fromEl[name]) {
-            fromEl.setAttribute(name, '');
-        } else {
-            fromEl.removeAttribute(name, '');
-        }
-    }
-}
-
-var specialElHandlers = {
-    /**
-     * Needed for IE. Apparently IE doesn't think that "selected" is an
-     * attribute when reading over the attributes using selectEl.attributes
-     */
-    OPTION: function(fromEl, toEl) {
-        syncBooleanAttrProp(fromEl, toEl, 'selected');
-    },
-    /**
-     * The "value" attribute is special for the <input> element since it sets
-     * the initial value. Changing the "value" attribute without changing the
-     * "value" property will have no effect since it is only used to the set the
-     * initial value.  Similar for the "checked" attribute, and "disabled".
-     */
-    INPUT: function(fromEl, toEl) {
-        syncBooleanAttrProp(fromEl, toEl, 'checked');
-        syncBooleanAttrProp(fromEl, toEl, 'disabled');
-
-        if (fromEl.value !== toEl.value) {
-            fromEl.value = toEl.value;
-        }
-
-        if (!hasAttributeNS(toEl, null, 'value')) {
-            fromEl.removeAttribute('value');
-        }
-    },
-
-    TEXTAREA: function(fromEl, toEl) {
-        var newValue = toEl.value;
-        if (fromEl.value !== newValue) {
-            fromEl.value = newValue;
-        }
-
-        if (fromEl.firstChild) {
-            // Needed for IE. Apparently IE sets the placeholder as the
-            // node value and vise versa. This ignores an empty update.
-            if (newValue === '' && fromEl.firstChild.nodeValue === fromEl.placeholder) {
-                return;
-            }
-
-            fromEl.firstChild.nodeValue = newValue;
-        }
-    },
-    SELECT: function(fromEl, toEl) {
-        if (!hasAttributeNS(toEl, null, 'multiple')) {
-            var selectedIndex = -1;
-            var i = 0;
-            var curChild = toEl.firstChild;
-            while(curChild) {
-                var nodeName = curChild.nodeName;
-                if (nodeName && nodeName.toUpperCase() === 'OPTION') {
-                    if (hasAttributeNS(curChild, null, 'selected')) {
-                        selectedIndex = i;
-                        break;
-                    }
-                    i++;
-                }
-                curChild = curChild.nextSibling;
-            }
-
-            fromEl.selectedIndex = i;
-        }
-    }
-};
-
-var ELEMENT_NODE = 1;
-var TEXT_NODE = 3;
-var COMMENT_NODE = 8;
-
-function noop() {}
-
-function defaultGetNodeKey(node) {
-    return node.id;
-}
-
-function morphdomFactory(morphAttrs) {
-
-    return function morphdom(fromNode, toNode, options) {
-        if (!options) {
-            options = {};
-        }
-
-        if (typeof toNode === 'string') {
-            if (fromNode.nodeName === '#document' || fromNode.nodeName === 'HTML') {
-                var toNodeHtml = toNode;
-                toNode = doc.createElement('html');
-                toNode.innerHTML = toNodeHtml;
-            } else {
-                toNode = toElement(toNode);
-            }
-        }
-
-        var getNodeKey = options.getNodeKey || defaultGetNodeKey;
-        var onBeforeNodeAdded = options.onBeforeNodeAdded || noop;
-        var onNodeAdded = options.onNodeAdded || noop;
-        var onBeforeElUpdated = options.onBeforeElUpdated || noop;
-        var onElUpdated = options.onElUpdated || noop;
-        var onBeforeNodeDiscarded = options.onBeforeNodeDiscarded || noop;
-        var onNodeDiscarded = options.onNodeDiscarded || noop;
-        var onBeforeElChildrenUpdated = options.onBeforeElChildrenUpdated || noop;
-        var childrenOnly = options.childrenOnly === true;
-
-        // This object is used as a lookup to quickly find all keyed elements in the original DOM tree.
-        var fromNodesLookup = {};
-        var keyedRemovalList;
-
-        function addKeyedRemoval(key) {
-            if (keyedRemovalList) {
-                keyedRemovalList.push(key);
-            } else {
-                keyedRemovalList = [key];
-            }
-        }
-
-        function walkDiscardedChildNodes(node, skipKeyedNodes) {
-            if (node.nodeType === ELEMENT_NODE) {
-                var curChild = node.firstChild;
-                while (curChild) {
-
-                    var key = undefined;
-
-                    if (skipKeyedNodes && (key = getNodeKey(curChild))) {
-                        // If we are skipping keyed nodes then we add the key
-                        // to a list so that it can be handled at the very end.
-                        addKeyedRemoval(key);
-                    } else {
-                        // Only report the node as discarded if it is not keyed. We do this because
-                        // at the end we loop through all keyed elements that were unmatched
-                        // and then discard them in one final pass.
-                        onNodeDiscarded(curChild);
-                        if (curChild.firstChild) {
-                            walkDiscardedChildNodes(curChild, skipKeyedNodes);
-                        }
-                    }
-
-                    curChild = curChild.nextSibling;
-                }
-            }
-        }
-
-        /**
-         * Removes a DOM node out of the original DOM
-         *
-         * @param  {Node} node The node to remove
-         * @param  {Node} parentNode The nodes parent
-         * @param  {Boolean} skipKeyedNodes If true then elements with keys will be skipped and not discarded.
-         * @return {undefined}
-         */
-        function removeNode(node, parentNode, skipKeyedNodes) {
-            if (onBeforeNodeDiscarded(node) === false) {
-                return;
-            }
-
-            if (parentNode) {
-                parentNode.removeChild(node);
-            }
-
-            onNodeDiscarded(node);
-            walkDiscardedChildNodes(node, skipKeyedNodes);
-        }
-
-        // // TreeWalker implementation is no faster, but keeping this around in case this changes in the future
-        // function indexTree(root) {
-        //     var treeWalker = document.createTreeWalker(
-        //         root,
-        //         NodeFilter.SHOW_ELEMENT);
-        //
-        //     var el;
-        //     while((el = treeWalker.nextNode())) {
-        //         var key = getNodeKey(el);
-        //         if (key) {
-        //             fromNodesLookup[key] = el;
-        //         }
-        //     }
-        // }
-
-        // // NodeIterator implementation is no faster, but keeping this around in case this changes in the future
-        //
-        // function indexTree(node) {
-        //     var nodeIterator = document.createNodeIterator(node, NodeFilter.SHOW_ELEMENT);
-        //     var el;
-        //     while((el = nodeIterator.nextNode())) {
-        //         var key = getNodeKey(el);
-        //         if (key) {
-        //             fromNodesLookup[key] = el;
-        //         }
-        //     }
-        // }
-
-        function indexTree(node) {
-            if (node.nodeType === ELEMENT_NODE) {
-                var curChild = node.firstChild;
-                while (curChild) {
-                    var key = getNodeKey(curChild);
-                    if (key) {
-                        fromNodesLookup[key] = curChild;
-                    }
-
-                    // Walk recursively
-                    indexTree(curChild);
-
-                    curChild = curChild.nextSibling;
-                }
-            }
-        }
-
-        indexTree(fromNode);
-
-        function handleNodeAdded(el) {
-            onNodeAdded(el);
-
-            var curChild = el.firstChild;
-            while (curChild) {
-                var nextSibling = curChild.nextSibling;
-
-                var key = getNodeKey(curChild);
-                if (key) {
-                    var unmatchedFromEl = fromNodesLookup[key];
-                    if (unmatchedFromEl && compareNodeNames(curChild, unmatchedFromEl)) {
-                        curChild.parentNode.replaceChild(unmatchedFromEl, curChild);
-                        morphEl(unmatchedFromEl, curChild);
-                    }
-                }
-
-                handleNodeAdded(curChild);
-                curChild = nextSibling;
-            }
-        }
-
-        function morphEl(fromEl, toEl, childrenOnly) {
-            var toElKey = getNodeKey(toEl);
-            var curFromNodeKey;
-
-            if (toElKey) {
-                // If an element with an ID is being morphed then it is will be in the final
-                // DOM so clear it out of the saved elements collection
-                delete fromNodesLookup[toElKey];
-            }
-
-            if (toNode.isSameNode && toNode.isSameNode(fromNode)) {
-                return;
-            }
-
-            if (!childrenOnly) {
-                if (onBeforeElUpdated(fromEl, toEl) === false) {
-                    return;
-                }
-
-                morphAttrs(fromEl, toEl);
-                onElUpdated(fromEl);
-
-                if (onBeforeElChildrenUpdated(fromEl, toEl) === false) {
-                    return;
-                }
-            }
-
-            if (fromEl.nodeName !== 'TEXTAREA') {
-                var curToNodeChild = toEl.firstChild;
-                var curFromNodeChild = fromEl.firstChild;
-                var curToNodeKey;
-
-                var fromNextSibling;
-                var toNextSibling;
-                var matchingFromEl;
-
-                outer: while (curToNodeChild) {
-                    toNextSibling = curToNodeChild.nextSibling;
-                    curToNodeKey = getNodeKey(curToNodeChild);
-
-                    while (curFromNodeChild) {
-                        fromNextSibling = curFromNodeChild.nextSibling;
-
-                        if (curToNodeChild.isSameNode && curToNodeChild.isSameNode(curFromNodeChild)) {
-                            curToNodeChild = toNextSibling;
-                            curFromNodeChild = fromNextSibling;
-                            continue outer;
-                        }
-
-                        curFromNodeKey = getNodeKey(curFromNodeChild);
-
-                        var curFromNodeType = curFromNodeChild.nodeType;
-
-                        var isCompatible = undefined;
-
-                        if (curFromNodeType === curToNodeChild.nodeType) {
-                            if (curFromNodeType === ELEMENT_NODE) {
-                                // Both nodes being compared are Element nodes
-
-                                if (curToNodeKey) {
-                                    // The target node has a key so we want to match it up with the correct element
-                                    // in the original DOM tree
-                                    if (curToNodeKey !== curFromNodeKey) {
-                                        // The current element in the original DOM tree does not have a matching key so
-                                        // let's check our lookup to see if there is a matching element in the original
-                                        // DOM tree
-                                        if ((matchingFromEl = fromNodesLookup[curToNodeKey])) {
-                                            if (curFromNodeChild.nextSibling === matchingFromEl) {
-                                                // Special case for single element removals. To avoid removing the original
-                                                // DOM node out of the tree (since that can break CSS transitions, etc.),
-                                                // we will instead discard the current node and wait until the next
-                                                // iteration to properly match up the keyed target element with its matching
-                                                // element in the original tree
-                                                isCompatible = false;
-                                            } else {
-                                                // We found a matching keyed element somewhere in the original DOM tree.
-                                                // Let's moving the original DOM node into the current position and morph
-                                                // it.
-
-                                                // NOTE: We use insertBefore instead of replaceChild because we want to go through
-                                                // the `removeNode()` function for the node that is being discarded so that
-                                                // all lifecycle hooks are correctly invoked
-                                                fromEl.insertBefore(matchingFromEl, curFromNodeChild);
-
-                                                fromNextSibling = curFromNodeChild.nextSibling;
-
-                                                if (curFromNodeKey) {
-                                                    // Since the node is keyed it might be matched up later so we defer
-                                                    // the actual removal to later
-                                                    addKeyedRemoval(curFromNodeKey);
-                                                } else {
-                                                    // NOTE: we skip nested keyed nodes from being removed since there is
-                                                    //       still a chance they will be matched up later
-                                                    removeNode(curFromNodeChild, fromEl, true /* skip keyed nodes */);
-                                                }
-
-                                                curFromNodeChild = matchingFromEl;
-                                            }
-                                        } else {
-                                            // The nodes are not compatible since the "to" node has a key and there
-                                            // is no matching keyed node in the source tree
-                                            isCompatible = false;
-                                        }
-                                    }
-                                } else if (curFromNodeKey) {
-                                    // The original has a key
-                                    isCompatible = false;
-                                }
-
-                                isCompatible = isCompatible !== false && compareNodeNames(curFromNodeChild, curToNodeChild);
-                                if (isCompatible) {
-                                    // We found compatible DOM elements so transform
-                                    // the current "from" node to match the current
-                                    // target DOM node.
-                                    morphEl(curFromNodeChild, curToNodeChild);
-                                }
-
-                            } else if (curFromNodeType === TEXT_NODE || curFromNodeType == COMMENT_NODE) {
-                                // Both nodes being compared are Text or Comment nodes
-                                isCompatible = true;
-                                // Simply update nodeValue on the original node to
-                                // change the text value
-                                curFromNodeChild.nodeValue = curToNodeChild.nodeValue;
-                            }
-                        }
-
-                        if (isCompatible) {
-                            // Advance both the "to" child and the "from" child since we found a match
-                            curToNodeChild = toNextSibling;
-                            curFromNodeChild = fromNextSibling;
-                            continue outer;
-                        }
-
-                        // No compatible match so remove the old node from the DOM and continue trying to find a
-                        // match in the original DOM. However, we only do this if the from node is not keyed
-                        // since it is possible that a keyed node might match up with a node somewhere else in the
-                        // target tree and we don't want to discard it just yet since it still might find a
-                        // home in the final DOM tree. After everything is done we will remove any keyed nodes
-                        // that didn't find a home
-                        if (curFromNodeKey) {
-                            // Since the node is keyed it might be matched up later so we defer
-                            // the actual removal to later
-                            addKeyedRemoval(curFromNodeKey);
-                        } else {
-                            // NOTE: we skip nested keyed nodes from being removed since there is
-                            //       still a chance they will be matched up later
-                            removeNode(curFromNodeChild, fromEl, true /* skip keyed nodes */);
-                        }
-
-                        curFromNodeChild = fromNextSibling;
-                    }
-
-                    // If we got this far then we did not find a candidate match for
-                    // our "to node" and we exhausted all of the children "from"
-                    // nodes. Therefore, we will just append the current "to" node
-                    // to the end
-                    if (curToNodeKey && (matchingFromEl = fromNodesLookup[curToNodeKey]) && compareNodeNames(matchingFromEl, curToNodeChild)) {
-                        fromEl.appendChild(matchingFromEl);
-                        morphEl(matchingFromEl, curToNodeChild);
-                    } else {
-                        var onBeforeNodeAddedResult = onBeforeNodeAdded(curToNodeChild);
-                        if (onBeforeNodeAddedResult !== false) {
-                            if (onBeforeNodeAddedResult) {
-                                curToNodeChild = onBeforeNodeAddedResult;
-                            }
-
-                            if (curToNodeChild.actualize) {
-                                curToNodeChild = curToNodeChild.actualize(fromEl.ownerDocument || doc);
-                            }
-                            fromEl.appendChild(curToNodeChild);
-                            handleNodeAdded(curToNodeChild);
-                        }
-                    }
-
-                    curToNodeChild = toNextSibling;
-                    curFromNodeChild = fromNextSibling;
-                }
-
-                // We have processed all of the "to nodes". If curFromNodeChild is
-                // non-null then we still have some from nodes left over that need
-                // to be removed
-                while (curFromNodeChild) {
-                    fromNextSibling = curFromNodeChild.nextSibling;
-                    if ((curFromNodeKey = getNodeKey(curFromNodeChild))) {
-                        // Since the node is keyed it might be matched up later so we defer
-                        // the actual removal to later
-                        addKeyedRemoval(curFromNodeKey);
-                    } else {
-                        // NOTE: we skip nested keyed nodes from being removed since there is
-                        //       still a chance they will be matched up later
-                        removeNode(curFromNodeChild, fromEl, true /* skip keyed nodes */);
-                    }
-                    curFromNodeChild = fromNextSibling;
-                }
-            }
-
-            var specialElHandler = specialElHandlers[fromEl.nodeName];
-            if (specialElHandler) {
-                specialElHandler(fromEl, toEl);
-            }
-        } // END: morphEl(...)
-
-        var morphedNode = fromNode;
-        var morphedNodeType = morphedNode.nodeType;
-        var toNodeType = toNode.nodeType;
-
-        if (!childrenOnly) {
-            // Handle the case where we are given two DOM nodes that are not
-            // compatible (e.g. <div> --> <span> or <div> --> TEXT)
-            if (morphedNodeType === ELEMENT_NODE) {
-                if (toNodeType === ELEMENT_NODE) {
-                    if (!compareNodeNames(fromNode, toNode)) {
-                        onNodeDiscarded(fromNode);
-                        morphedNode = moveChildren(fromNode, createElementNS(toNode.nodeName, toNode.namespaceURI));
-                    }
-                } else {
-                    // Going from an element node to a text node
-                    morphedNode = toNode;
-                }
-            } else if (morphedNodeType === TEXT_NODE || morphedNodeType === COMMENT_NODE) { // Text or comment node
-                if (toNodeType === morphedNodeType) {
-                    morphedNode.nodeValue = toNode.nodeValue;
-                    return morphedNode;
-                } else {
-                    // Text node to something else
-                    morphedNode = toNode;
-                }
-            }
-        }
-
-        if (morphedNode === toNode) {
-            // The "to node" was not compatible with the "from node" so we had to
-            // toss out the "from node" and use the "to node"
-            onNodeDiscarded(fromNode);
-        } else {
-            morphEl(morphedNode, toNode, childrenOnly);
-
-            // We now need to loop over any keyed nodes that might need to be
-            // removed. We only do the removal if we know that the keyed node
-            // never found a match. When a keyed node is matched up we remove
-            // it out of fromNodesLookup and we use fromNodesLookup to determine
-            // if a keyed node has been matched up or not
-            if (keyedRemovalList) {
-                for (var i=0, len=keyedRemovalList.length; i<len; i++) {
-                    var elToRemove = fromNodesLookup[keyedRemovalList[i]];
-                    if (elToRemove) {
-                        removeNode(elToRemove, elToRemove.parentNode, false);
-                    }
-                }
-            }
-        }
-
-        if (!childrenOnly && morphedNode !== fromNode && fromNode.parentNode) {
-            if (morphedNode.actualize) {
-                morphedNode = morphedNode.actualize(fromNode.ownerDocument || doc);
-            }
-            // If we had to swap out the from node with a new node because the old
-            // node was not compatible with the target node then we need to
-            // replace the old DOM node in the original DOM tree. This is only
-            // possible if the original DOM node was part of a DOM tree which
-            // we know is the case if it has a parent node.
-            fromNode.parentNode.replaceChild(morphedNode, fromNode);
-        }
-
-        return morphedNode;
-    };
-}
-
-var morphdom = morphdomFactory(morphAttrs);
-
-module.exports = morphdom;
+},{"./lib/morph":12,"assert":1}],11:[function(require,module,exports){
+module.exports = [
+  // attribute events (can be set with attributes)
+  'onclick',
+  'ondblclick',
+  'onmousedown',
+  'onmouseup',
+  'onmouseover',
+  'onmousemove',
+  'onmouseout',
+  'ondragstart',
+  'ondrag',
+  'ondragenter',
+  'ondragleave',
+  'ondragover',
+  'ondrop',
+  'ondragend',
+  'onkeydown',
+  'onkeypress',
+  'onkeyup',
+  'onunload',
+  'onabort',
+  'onerror',
+  'onresize',
+  'onscroll',
+  'onselect',
+  'onchange',
+  'onsubmit',
+  'onreset',
+  'onfocus',
+  'onblur',
+  'oninput',
+  // other common events
+  'oncontextmenu',
+  'onfocusin',
+  'onfocusout'
+]
 
 },{}],12:[function(require,module,exports){
+var events = require('./events')
+var eventsLength = events.length
+
+var ELEMENT_NODE = 1
+var TEXT_NODE = 3
+var COMMENT_NODE = 8
+
+module.exports = morph
+
+// diff elements and apply the resulting patch to the old node
+// (obj, obj) -> null
+function morph (newNode, oldNode) {
+  var nodeType = newNode.nodeType
+  var nodeName = newNode.nodeName
+
+  if (nodeType === ELEMENT_NODE) {
+    copyAttrs(newNode, oldNode)
+  }
+
+  if (nodeType === TEXT_NODE || nodeType === COMMENT_NODE) {
+    oldNode.nodeValue = newNode.nodeValue
+  }
+
+  // Some DOM nodes are weird
+  // https://github.com/patrick-steele-idem/morphdom/blob/master/src/specialElHandlers.js
+  if (nodeName === 'INPUT') updateInput(newNode, oldNode)
+  else if (nodeName === 'OPTION') updateOption(newNode, oldNode)
+  else if (nodeName === 'TEXTAREA') updateTextarea(newNode, oldNode)
+  else if (nodeName === 'SELECT') updateSelect(newNode, oldNode)
+
+  copyEvents(newNode, oldNode)
+}
+
+function copyAttrs (newNode, oldNode) {
+  var oldAttrs = oldNode.attributes
+  var newAttrs = newNode.attributes
+  var attrNamespaceURI = null
+  var attrValue = null
+  var fromValue = null
+  var attrName = null
+  var attr = null
+
+  for (var i = newAttrs.length - 1; i >= 0; --i) {
+    attr = newAttrs[i]
+    attrName = attr.name
+    attrNamespaceURI = attr.namespaceURI
+    attrValue = attr.value
+
+    if (attrNamespaceURI) {
+      attrName = attr.localName || attrName
+      fromValue = oldNode.getAttributeNS(attrNamespaceURI, attrName)
+
+      if (fromValue !== attrValue) {
+        oldNode.setAttributeNS(attrNamespaceURI, attrName, attrValue)
+      }
+    } else {
+      fromValue = oldNode.getAttribute(attrName)
+
+      if (fromValue !== attrValue) {
+        // apparently values are always cast to strings, ah well
+        if (attrValue === 'null' || attrValue === 'undefined') {
+          oldNode.removeAttribute(attrName)
+        } else {
+          oldNode.setAttribute(attrName, attrValue)
+        }
+      }
+    }
+  }
+
+  // Remove any extra attributes found on the original DOM element that
+  // weren't found on the target element.
+  for (var j = oldAttrs.length - 1; j >= 0; --j) {
+    attr = oldAttrs[j]
+    if (attr.specified !== false) {
+      attrName = attr.name
+      attrNamespaceURI = attr.namespaceURI
+
+      if (attrNamespaceURI) {
+        attrName = attr.localName || attrName
+        if (!newNode.hasAttributeNS(attrNamespaceURI, attrName)) {
+          oldNode.removeAttributeNS(attrNamespaceURI, attrName)
+        }
+      } else {
+        if (!newNode.hasAttributeNS(null, attrName)) {
+          oldNode.removeAttribute(attrName)
+        }
+      }
+    }
+  }
+}
+
+function copyEvents (newNode, oldNode) {
+  for (var i = 0; i < eventsLength; i++) {
+    var ev = events[i]
+    if (newNode[ev]) {           // if new element has a whitelisted attribute
+      oldNode[ev] = newNode[ev]  // update existing element
+    } else if (oldNode[ev]) {    // if existing element has it and new one doesnt
+      oldNode[ev] = undefined    // remove it from existing element
+    }
+  }
+}
+
+function updateOption (newNode, oldNode) {
+  updateAttribute(newNode, oldNode, 'selected')
+}
+
+// The "value" attribute is special for the <input> element since it sets the
+// initial value. Changing the "value" attribute without changing the "value"
+// property will have no effect since it is only used to the set the initial
+// value. Similar for the "checked" attribute, and "disabled".
+function updateInput (newNode, oldNode) {
+  var newValue = newNode.value
+  var oldValue = oldNode.value
+
+  updateAttribute(newNode, oldNode, 'checked')
+  updateAttribute(newNode, oldNode, 'disabled')
+
+  if (!newNode.hasAttributeNS(null, 'value') || newValue === 'null') {
+    oldNode.value = ''
+    oldNode.removeAttribute('value')
+  } else if (newValue !== oldValue) {
+    oldNode.setAttribute('value', newValue)
+    oldNode.value = newValue
+  } else if (oldNode.type === 'range') {
+    // this is so elements like slider move their UI thingy
+    oldNode.value = newValue
+  }
+}
+
+function updateTextarea (newNode, oldNode) {
+  var newValue = newNode.value
+  if (newValue !== oldNode.value) {
+    oldNode.value = newValue
+  }
+
+  if (oldNode.firstChild) {
+    // Needed for IE. Apparently IE sets the placeholder as the
+    // node value and vise versa. This ignores an empty update.
+    if (newValue === '' && oldNode.firstChild.nodeValue === oldNode.placeholder) {
+      return
+    }
+
+    oldNode.firstChild.nodeValue = newValue
+  }
+}
+
+function updateSelect (newNode, oldNode) {
+  if (!oldNode.hasAttributeNS(null, 'multiple')) {
+    var i = 0
+    var curChild = oldNode.firstChild
+    while (curChild) {
+      var nodeName = curChild.nodeName
+      if (nodeName && nodeName.toUpperCase() === 'OPTION') {
+        if (curChild.hasAttributeNS(null, 'selected')) break
+        i++
+      }
+      curChild = curChild.nextSibling
+    }
+
+    newNode.selectedIndex = i
+  }
+}
+
+function updateAttribute (newNode, oldNode, name) {
+  if (newNode[name] !== oldNode[name]) {
+    oldNode[name] = newNode[name]
+    if (newNode[name]) {
+      oldNode.setAttribute(name, '')
+    } else {
+      oldNode.removeAttribute(name, '')
+    }
+  }
+}
+
+},{"./events":11}],13:[function(require,module,exports){
 /* global MutationObserver */
 var document = require('global/document')
 var window = require('global/window')
@@ -1399,11 +1254,15 @@ function eachMutation (nodes, fn) {
   }
 }
 
-},{"global/document":3,"global/window":4}],13:[function(require,module,exports){
+},{"global/document":4,"global/window":5}],14:[function(require,module,exports){
 module.exports = function redeux () {
   var state = {}
   var listeners = []
   var name = ''
+  var queue = []
+  var raf = ('undefined' === typeof window) ?
+    setTimeout :
+    window.requestAnimationFrame
   var initialState
   var reducers
 
@@ -1428,7 +1287,7 @@ module.exports = function redeux () {
     return func ? func(state) : state
   }
 
-  store.subscribe = function subscribe (listener) {
+  function subscribe (listener) {
     return 'function' === typeof listener ?
       (listeners.push(listener), unsubscribe) :
       console.error('listener must be a function')
@@ -1438,8 +1297,8 @@ module.exports = function redeux () {
     return listeners.splice(listeners.indexOf(listener), 1)
   }
 
-  store.dispatch = function dispatch (action) {
-    var update
+  function dispatch () {
+    var action = queue.pop()
     action &&
     'string' !== typeof action.type &&
     console.error('action.type must be a "string"')
@@ -1447,104 +1306,682 @@ module.exports = function redeux () {
       name = r.name
       state[name] = r(state[name], action)
     })
+    queue.length ? raf(dispatch) : notify()
+  }
+
+  function notify () {
     update = store()
     listeners.forEach(function (l) {
       l(update)
     })
   }
 
+  function prequeue (action) {
+    queue.push(action)
+    raf(dispatch)
+  }
+
+  store.subscribe = subscribe
+  store.dispatch = prequeue
   return store
 }
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = require('insert-css')
 
-},{"insert-css":8}],15:[function(require,module,exports){
+},{"insert-css":7}],16:[function(require,module,exports){
 module.exports = function(a,b){for(b=a='';a++<36;b+=a*51&52?(a^15?8^Math.random()*(a^20?16:4):4).toString(16):'-');return b};
 
-},{}],16:[function(require,module,exports){
-var bel = require('bel') // turns template tag into DOM elements
-var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
-var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
+},{}],17:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
 
-module.exports = bel
+},{}],18:[function(require,module,exports){
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+},{}],19:[function(require,module,exports){
+(function (process,global){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// TODO move this + defaultEvents to a new module once we receive more feedback
-module.exports.update = function (fromNode, toNode, opts) {
-  if (!opts) opts = {}
-  if (opts.events !== false) {
-    if (!opts.onBeforeElUpdated) opts.onBeforeElUpdated = copier
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
   }
 
-  return morphdom(fromNode, toNode, opts)
-
-  // morphdom only copies attributes. we decided we also wanted to copy events
-  // that can be set via attributes
-  function copier (f, t) {
-    // copy events:
-    var events = opts.events || defaultEvents
-    for (var i = 0; i < events.length; i++) {
-      var ev = events[i]
-      if (t[ev]) { // if new element has a whitelisted attribute
-        f[ev] = t[ev] // update existing element
-      } else if (f[ev]) { // if existing element has it and new one doesnt
-        f[ev] = undefined // remove it from existing element
-      }
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
     }
-    var oldValue = f.value
-    var newValue = t.value
-    // copy values for form elements
-    if ((f.nodeName === 'INPUT' && f.type !== 'file') || f.nodeName === 'SELECT') {
-      if (!newValue) {
-        t.value = f.value
-      } else if (newValue !== oldValue) {
-        f.value = newValue
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
       }
-    } else if (f.nodeName === 'TEXTAREA') {
-      if (t.getAttribute('value') === null) f.value = t.value
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":18,"_process":3,"inherits":17}],20:[function(require,module,exports){
+module.exports = function yoyoifyAppendChild (el, childs) {
+  for (var i = 0; i < childs.length; i++) {
+    var node = childs[i]
+    if (Array.isArray(node)) {
+      yoyoifyAppendChild(el, node)
+      continue
+    }
+    if (typeof node === 'number' ||
+      typeof node === 'boolean' ||
+      node instanceof Date ||
+      node instanceof RegExp) {
+      node = node.toString()
+    }
+    if (typeof node === 'string') {
+      if (el.lastChild && el.lastChild.nodeName === '#text') {
+        el.lastChild.nodeValue += node
+        continue
+      }
+      node = document.createTextNode(node)
+    }
+    if (node && node.nodeType) {
+      el.appendChild(node)
     }
   }
 }
 
-},{"./update-events.js":17,"bel":1,"morphdom":11}],17:[function(require,module,exports){
-module.exports = [
-  // attribute events (can be set with attributes)
-  'onclick',
-  'ondblclick',
-  'onmousedown',
-  'onmouseup',
-  'onmouseover',
-  'onmousemove',
-  'onmouseout',
-  'ondragstart',
-  'ondrag',
-  'ondragenter',
-  'ondragleave',
-  'ondragover',
-  'ondrop',
-  'ondragend',
-  'onkeydown',
-  'onkeypress',
-  'onkeyup',
-  'onunload',
-  'onabort',
-  'onerror',
-  'onresize',
-  'onscroll',
-  'onselect',
-  'onchange',
-  'onsubmit',
-  'onreset',
-  'onfocus',
-  'onblur',
-  'oninput',
-  // other common events
-  'oncontextmenu',
-  'onfocusin',
-  'onfocusout'
-]
-
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var CREATE_TODO = 'CREATE_TODO'
 var UPDATE_TODO = 'UPDATE_TODO'
 var COMPLETE_ALL = 'COMPLETE_ALL'
@@ -1599,8 +2036,8 @@ module.exports = {
   DELETE_ALL: DELETE_ALL
 }
 
-},{}],19:[function(require,module,exports){
-var html = require('yo-yo')
+},{}],22:[function(require,module,exports){
+var html = {}
 var css = 0
 var actions = require('../actions/todos-actions')
 var completeAll = actions.completeAll
@@ -1614,18 +2051,19 @@ module.exports = function CompleteAllButton (opts) {
     dispatch(completeAll())
   }
 
-  return html`
-    <button
-      class=${classes}
-      onclick=${click}
-    >
-      Complete All
-    </button>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("button")
+bel0["onclick"] = arguments[0]
+bel0.setAttribute("class", arguments[1])
+ac(bel0, ["\n      Complete All\n    "])
+      return bel0
+    }(click,classes))
 }
 
-},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],20:[function(require,module,exports){
-var html = require('yo-yo')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],23:[function(require,module,exports){
+var html = {}
 var css = 0
 var actions = require('../actions/todos-actions')
 var deleteAll = actions.deleteAll
@@ -1639,18 +2077,19 @@ module.exports = function DeleteAllButton (opts) {
     dispatch(deleteAll())
   }
 
-  return html`
-    <button
-      class=${classes}
-      onclick=${click}
-    >
-      Delete All
-    </button>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("button")
+bel0["onclick"] = arguments[0]
+bel0.setAttribute("class", arguments[1])
+ac(bel0, ["\n      Delete All\n    "])
+      return bel0
+    }(click,classes))
 }
 
-},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],21:[function(require,module,exports){
-var html = require('yo-yo')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],24:[function(require,module,exports){
+var html = {}
 var css = 0
 var actions = require('../actions/todos-actions')
 var deleteTodo = actions.deleteTodo
@@ -1662,18 +2101,19 @@ module.exports = function Button (state, dispatch) {
     dispatch(deleteTodo(state))
   }
 
-  return html`
-    <button
-      class=${classes}
-      onclick=${destroy}
-    >
-      ✖︎
-    </button>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("button")
+bel0["onclick"] = arguments[0]
+bel0.setAttribute("class", arguments[1])
+ac(bel0, ["\n      ✖︎\n    "])
+      return bel0
+    }(destroy,classes))
 }
 
-},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],22:[function(require,module,exports){
-var html = require('yo-yo')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],25:[function(require,module,exports){
+var html = {}
 var css = 0
 var joinClasses = require('join-classes')
 var actions = require('../actions/todos-actions')
@@ -1699,20 +2139,23 @@ module.exports = function (state, dispatch) {
       classes
   }
 
-  return html`
-    <label class=${getClasses()}>
-      <input
-        class=${inputClasses}
-        type='checkbox'
-        onchange=${change}
-        checked=${done}
-      />
-    </label>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel1 = document.createElement("label")
+bel1.setAttribute("class", arguments[3])
+var bel0 = document.createElement("input")
+bel0.setAttribute("type", "checkbox")
+bel0["onchange"] = arguments[0]
+if (arguments[1]) bel0.setAttribute("checked", "checked")
+bel0.setAttribute("class", arguments[2])
+ac(bel1, ["\n      ",bel0,"\n    "])
+      return bel1
+    }(change,done,inputClasses,getClasses()))
 }
 
-},{"../actions/todos-actions":18,"join-classes":9,"sheetify/insert":14,"yo-yo":16}],23:[function(require,module,exports){
-var html = require('yo-yo')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"join-classes":8,"sheetify/insert":15}],26:[function(require,module,exports){
+var html = {}
 var css = 0
 var CompleteButton = require('./button-complete-all')
 var DeleteButton = require('./button-delete-all')
@@ -1729,15 +2172,18 @@ module.exports = function Footer (state, dispatch) {
     DeleteButton({dispatch: dispatch})
   }
 
-  return html`
-    <footer class=${classes}>
-      ${getButton(active && active.length)}
-    </footer>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("footer")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n      ",arguments[1],"\n    "])
+      return bel0
+    }(classes,getButton(active && active.length)))
 }
 
-},{"./button-complete-all":19,"./button-delete-all":20,"sheetify/insert":14,"yo-yo":16}],24:[function(require,module,exports){
-var html = require('yo-yo')
+},{"./button-complete-all":22,"./button-delete-all":23,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],27:[function(require,module,exports){
+var html = {}
 var createTodo = require('../actions/todos-actions').createTodo
 var css = 0
 var labelClass = ((null || true) && "_6dddc22b")
@@ -1766,25 +2212,27 @@ module.exports = function (dispatch) {
     }
   }
 
-  return html`
-    <label
-      for='title'
-      class=${labelClass}
-    >
-      <input
-        class=${inputClass}
-        autofocus
-        id='title'
-        name='title'
-        onkeyup=${keyup}
-        placeholder='Enter todo'
-      />
-    </label>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel1 = document.createElement("label")
+bel1.setAttribute("htmlFor", "title")
+bel1.setAttribute("class", arguments[2])
+var bel0 = document.createElement("input")
+bel0.setAttribute("autofocus", "autofocus")
+bel0.setAttribute("id", "title")
+bel0.setAttribute("name", "title")
+bel0["onkeyup"] = arguments[0]
+bel0.setAttribute("placeholder", "Enter todo")
+bel0.setAttribute("class", arguments[1])
+ac(bel1, ["\n      ",bel0,"\n    "])
+      return bel1
+    }(keyup,inputClass,labelClass))
 }
 
-},{"../actions/todos-actions":18,"sheetify/insert":14,"yo-yo":16}],25:[function(require,module,exports){
-var html = require('yo-yo')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],28:[function(require,module,exports){
+var html = {}
+var update = require('nanomorph')
 var css = 0
 var Todo = require('../components/todo')
 var classes = ((null || true) && "_fbf62c13")
@@ -1803,24 +2251,28 @@ module.exports = function TodoList (state, dispatch) {
   function create (state) {
     var todos = state || []
 
-    return html`
-      <ul class=${classes}>
-        ${todos.map(function (t) {
+    return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("ul")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n        ",arguments[1],"\n      "])
+      return bel0
+    }(classes,todos.map(function (t) {
           return Todo(t, dispatch)
-        })}
-      </ul>
-    `
+        })))
   }
 
   function update (state) {
-    html.update(element, create(state))
+    update(element, create(state))
   }
 
   return render(state)
 }
 
-},{"../components/todo":26,"sheetify/insert":14,"yo-yo":16}],26:[function(require,module,exports){
-var html = require('yo-yo')
+},{"../components/todo":29,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"nanomorph":10,"sheetify/insert":15}],29:[function(require,module,exports){
+var html = {}
+var update = require('nanomorph')
 var css = 0
 var joinClasses = require('join-classes')
 var Checkbox = require('./checkbox')
@@ -1901,33 +2353,31 @@ module.exports = function Todo (state, dispatch) {
     var title = state.title
     var done = state.done
     var editing = state.editing
-    return html`
-      <li
-        id=${id}
-        class=${classes}
-      >
-        ${Checkbox(state, dispatch)}
-        <input
-          class=${getClasses(done)}
-          oninput=${input}
-          onkeydown=${keydown}
-          disabled=${done}
-          value=${title}
-        >
-        ${done && editing ? Button(state, dispatch) : null}
-      </li>
-    `
+    return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel1 = document.createElement("li")
+bel1.setAttribute("id", arguments[5])
+bel1.setAttribute("class", arguments[6])
+var bel0 = document.createElement("input")
+bel0["oninput"] = arguments[0]
+bel0["onkeydown"] = arguments[1]
+if (arguments[2]) bel0.setAttribute("disabled", "disabled")
+bel0.setAttribute("value", arguments[3])
+bel0.setAttribute("class", arguments[4])
+ac(bel1, ["\n        ",arguments[7],"\n        ",bel0,"\n        ",arguments[8],"\n      "])
+      return bel1
+    }(input,keydown,done,title,getClasses(done),id,classes,Checkbox(state, dispatch),done && editing ? Button(state, dispatch) : null))
   }
 
   function update (state) {
-    html.update(element, create(state))
+    update(element, create(state))
   }
 
   return render(state)
 }
 
-},{"../actions/todos-actions":18,"./button":21,"./checkbox":22,"join-classes":9,"sheetify/insert":14,"yo-yo":16}],27:[function(require,module,exports){
-var tid = require('tiny-uuid')
+},{"../actions/todos-actions":21,"./button":24,"./checkbox":25,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"join-classes":8,"nanomorph":10,"sheetify/insert":15}],30:[function(require,module,exports){
 var createStore = require('redeux')
 var kubby = require('kubby')()
 var todos = require('./reducers/todos-reducer')
@@ -1939,7 +2389,7 @@ var store = createStore(todos, localState)
 var todoCreate = TodoCreate(store)
 document.getElementById('root').appendChild(todoCreate)
 
-},{"./reducers/todos-reducer":28,"./screens/todos-create":29,"kubby":10,"redeux":13,"tiny-uuid":15}],28:[function(require,module,exports){
+},{"./reducers/todos-reducer":31,"./screens/todos-create":32,"kubby":9,"redeux":14}],31:[function(require,module,exports){
 var tid = require('tiny-uuid')
 var hs = require('hash-switch')
 var kubby = require('kubby')()
@@ -2025,8 +2475,9 @@ function deleteAll (state, data) {
 }
 
 
-},{"../actions/todos-actions":18,"hash-switch":5,"kubby":10,"tiny-uuid":15}],29:[function(require,module,exports){
-var html = require('yo-yo')
+},{"../actions/todos-actions":21,"hash-switch":6,"kubby":9,"tiny-uuid":16}],32:[function(require,module,exports){
+var html = {}
+var morph = require('nanomorph')
 var css = 0
 var TitleInput = require('../components/title-input')
 var TodoList = require('../components/todo-list.js')
@@ -2053,19 +2504,25 @@ module.exports = function TodosCreate (store) {
   }
 
   function doneHeading () {
-    return html`
-      <h3 class=${headingClasses}>
-        Completed
-      </h3>
-    `
+    return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("h3")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n        Completed\n      "])
+      return bel0
+    }(headingClasses))
   }
 
   function congrats () {
-    return html`
-      <h1 class=${congratsClasses}>
-        Well done
-      </h1>
-    `
+    return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("h1")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n        Well done\n      "])
+      return bel0
+    }(congratsClasses))
   }
 
   function render (state) {
@@ -2083,30 +2540,31 @@ module.exports = function TodosCreate (store) {
       return t && t.done
     })
     var showFooter = todos && todos.length
-    return html`
-      <div
-        id=${classes}
-        class=${classes}
-        onload=${load}
-        onunload=${unload}
-      >
-        ${TitleInput(dispatch)}
-        <div class=${contentClasses}>
-          ${TodoList(active, dispatch)}
-          ${active && !active.length && done && done.length ? congrats() : null}
-          ${done && done.length ? doneHeading() : null}
-          ${TodoList(done, dispatch)}
-        </div>
-        ${showFooter ? Footer(todos, dispatch) : null}
-      </div>
-    `
+    return (function () {
+      var onload = require('/Users/kj/Documents/work/redeux-todos/node_modules/on-load/index.js')
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel1 = document.createElement("div")
+var args = arguments
+      onload(bel1, function bel_onload () {
+        args[5](bel1)
+      }, function bel_onunload () {
+        args[6](bel1)
+      }, "o0")
+bel1.setAttribute("id", arguments[7])
+bel1.setAttribute("class", arguments[8])
+var bel0 = document.createElement("div")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n          ",arguments[1],"\n          ",arguments[2],"\n          ",arguments[3],"\n          ",arguments[4],"\n        "])
+ac(bel1, ["\n        ",arguments[9],"\n        ",bel0,"\n        ",arguments[10],"\n      "])
+      return bel1
+    }(contentClasses,TodoList(active, dispatch),active && !active.length && done && done.length ? congrats() : null,done && done.length ? doneHeading() : null,TodoList(done, dispatch),load,unload,classes,classes,TitleInput(dispatch),showFooter ? Footer(todos, dispatch) : null))
   }
 
   function update (state) {
-    html.update(element, create(state))
+    morph(element, create(state))
   }
 
   return render(state)
 }
 
-},{"../components/button-complete-all":19,"../components/footer":23,"../components/title-input":24,"../components/todo-list.js":25,"sheetify/insert":14,"yo-yo":16}]},{},[27]);
+},{"../components/button-complete-all":22,"../components/footer":26,"../components/title-input":27,"../components/todo-list.js":28,"/Users/kj/Documents/work/redeux-todos/node_modules/on-load/index.js":13,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"nanomorph":10,"sheetify/insert":15}]},{},[30]);

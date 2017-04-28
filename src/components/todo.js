@@ -1,4 +1,5 @@
-var html = require('yo-yo')
+var html = require('bel')
+var update = require('nanomorph')
 var css = require('sheetify')
 var joinClasses = require('join-classes')
 var Checkbox = require('./checkbox')
@@ -118,7 +119,7 @@ module.exports = function Todo (state, dispatch) {
   }
 
   function update (state) {
-    html.update(element, create(state))
+    update(element, create(state))
   }
 
   return render(state)
