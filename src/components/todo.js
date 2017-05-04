@@ -41,48 +41,6 @@ module.exports = function Todo (state, dispatch) {
     return document.querySelector('.'+inputHandle)
   }
 
-  function copyTodo () {
-    return Object.assign({}, state)
-  }
-
-  function keydown (e) {
-    var newTodo
-    var keyCode = e.keyCode
-    // ESCAPE key to exit edit
-    if (keyCode === 27) {
-      newTodo = copyTodo()
-      newTodo.editing = false
-      dispatch(updateTodo(newTodo))
-    // Enter key to save
-    } else if (keyCode === 13) {
-      e.preventDefault()
-      submit()
-    }
-  }
-
-  function edit () {
-    var el = getInput()
-    el && el.focus()
-    var newTodo = copyTodo()
-    newTodo.editing = true
-    dispatch(updateTodo(newTodo))
-  }
-
-  function input (e) {
-    e &&
-    e.target &&
-    e.target.value &&
-    submit()
-  }
-
-  function submit () {
-    var el = getInput()
-    var newTodo = copyTodo()
-    newTodo.title = el.value
-    newTodo.editing = false
-    dispatch(updateTodo(newTodo))
-  }
-
   function render (state) {
     return element ?
     update(state) :
@@ -93,6 +51,12 @@ module.exports = function Todo (state, dispatch) {
     return done ?
       joinClasses(inputHandle, inputClasses, doneClasses) :
       joinClasses(inputHandle, inputClasses)
+  }
+
+  function getContent (state) {
+    state = state || {}
+    var editing = state.editing
+    return editing ? todoInput(state) : titleDisplay(state)
   }
 
   function create (state) {
@@ -106,13 +70,7 @@ module.exports = function Todo (state, dispatch) {
         class=${classes}
       >
         ${Checkbox(state, dispatch)}
-        <input
-          class=${getClasses(done)}
-          oninput=${input}
-          onkeydown=${keydown}
-          disabled=${done}
-          value=${title}
-        >
+        ${getContent(state)}
         ${done && editing ? Button(state, dispatch) : null}
       </li>
     `
