@@ -1,11 +1,11 @@
 var html = require('bel')
-var update = require('nanomorph')
+var morph = require('nanomorph')
 var css = require('sheetify')
 var joinClasses = require('join-classes')
 var Checkbox = require('./checkbox')
 var Button = require('./button')
-var actions = require('../actions/todos-actions')
-var updateTodo = actions.updateTodo
+var TodoInput = require('./todo-input')
+var TitleDisplay = require('./title-display')
 var classes = css`
 :host {
   display: flex;
@@ -43,8 +43,8 @@ module.exports = function Todo (state, dispatch) {
 
   function render (state) {
     return element ?
-    update(state) :
-    element = create(state), element
+      update(state) :
+      element = create(state), element
   }
 
   function getClasses (done) {
@@ -55,13 +55,12 @@ module.exports = function Todo (state, dispatch) {
 
   function getContent (state) {
     state = state || {}
-    var editing = state.editing
-    return editing ? todoInput(state) : titleDisplay(state)
+    var editing = state.editing || false
+    return editing ? TodoInput(state, dispatch) : TitleDisplay(state, dispatch)
   }
 
   function create (state) {
     state = state || {}
-    var title = state.title
     var done = state.done
     var editing = state.editing
     return html`
@@ -77,7 +76,7 @@ module.exports = function Todo (state, dispatch) {
   }
 
   function update (state) {
-    update(element, create(state))
+    morph(element, create(state))
   }
 
   return render(state)

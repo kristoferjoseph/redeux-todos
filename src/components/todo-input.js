@@ -1,6 +1,7 @@
 var html = require('bel')
 var morph = require('nanomorph')
-var css = require('sheeitfy')
+var css = require('sheetify')
+var joinClasses = require('join-classes')
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
 
@@ -23,7 +24,7 @@ var doneClasses = css`
 
 module.exports = function TodoInput (state, dispatch) {
   state = state || {}
-  var title = opts.title
+  var title = state.title
   var element
 
   function copyTodo () {
@@ -45,37 +46,36 @@ module.exports = function TodoInput (state, dispatch) {
     }
   }
 
-  function edit () {
-    var el = getInput()
-    el && el.focus()
-    var newTodo = copyTodo()
-    newTodo.editing = true
-    dispatch(updateTodo(newTodo))
-  }
-
   function input (e) {
     e &&
     e.target &&
     e.target.value &&
-    submit()
+    updateTitle()
+  }
+
+  function updateTitle () {
+    var el = document.querySelector('.'+inputClasses)
+    var newTodo = copyTodo()
+    newTodo.title = el.value
+    dispatch(updateTodo(newTodo))
   }
 
   function submit () {
-    var el = getInput()
     var newTodo = copyTodo()
-    newTodo.title = el.value
     newTodo.editing = false
     dispatch(updateTodo(newTodo))
   }
 
   function getClasses (done) {
     return done ?
-      joinClasses(inputHandle, inputClasses, doneClasses) :
-      joinClasses(inputHandle, inputClasses)
+      joinClasses(inputClasses, doneClasses) :
+      joinClasses(inputClasses)
   }
 
   function create (state) {
     state = state || {}
+    var done = state.done
+    var title = state.title
     return html`
       <input
         class=${getClasses(done)}
@@ -89,11 +89,14 @@ module.exports = function TodoInput (state, dispatch) {
   }
 
   function update (state) {
+    morph(element, create(state))
   }
 
   function render (state) {
-    element ?
+    return element ?
       update(state) :
-      (element = create(state), element)
+      element = create(state), element
   }
+
+  return render(state)
 }

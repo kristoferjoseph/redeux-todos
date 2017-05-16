@@ -24,10 +24,10 @@ var inputClass = css`
   outline: none;
 }
 :host::-webkit-input-placeholder {
-  color: black;
+  color: #333;
 }
 :host::-moz-placeholder {
-  color: black;
+  color: #333;
 }
 `
 

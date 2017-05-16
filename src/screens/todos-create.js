@@ -3,6 +3,8 @@ var morph = require('nanomorph')
 var css = require('sheetify')
 var TitleInput = require('../components/title-input')
 var TodoList = require('../components/todo-list.js')
+var DoneHeader = require('../components/done-header')
+var Congrats = require('../components/congrats')
 var Footer = require('../components/footer')
 var CompleteButton = require('../components/button-complete-all')
 var classes = css`
@@ -23,21 +25,6 @@ var contentClasses = css`
   -webkit-overflow-scrolling: touch;
 }
 `
-var headingClasses = css`
-:host {
-  padding: 1rem;
-  padding-top: 2rem;
-  border-bottom: 1px solid;
-}
-`
-var congratsClasses = css`
-:host {
-  margin-bottom: 1rem;
-  padding: 3rem;
-  font-size: 3.5rem;
-  text-align: center;
-}
-`
 
 module.exports = function TodosCreate (store) {
   var state = store()
@@ -52,22 +39,6 @@ module.exports = function TodosCreate (store) {
 
   function unload () {
     unsubscribe(update)
-  }
-
-  function doneHeading () {
-    return html`
-      <h3 class=${headingClasses}>
-        Completed
-      </h3>
-    `
-  }
-
-  function congrats () {
-    return html`
-      <h1 class=${congratsClasses}>
-        Well done
-      </h1>
-    `
   }
 
   function render (state) {
@@ -85,6 +56,8 @@ module.exports = function TodosCreate (store) {
       return t && t.done
     })
     var showFooter = todos && todos.length
+    var notActive = active && !active.length
+    var areDone = done && done.length
     return html`
       <div
         id=${classes}
@@ -95,8 +68,8 @@ module.exports = function TodosCreate (store) {
         ${TitleInput(dispatch)}
         <div class=${contentClasses}>
           ${TodoList(active, dispatch)}
-          ${active && !active.length && done && done.length ? congrats() : null}
-          ${done && done.length ? doneHeading() : null}
+          ${notActive && areDone ? Congrats() : null}
+          ${areDone ? DoneHeader() : null}
           ${TodoList(done, dispatch)}
         </div>
         ${showFooter ? Footer(todos, dispatch) : null}

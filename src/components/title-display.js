@@ -1,6 +1,9 @@
 var html = require('bel')
 var morph = require('nanomorph')
-var css = require('sheeitfy')
+var css = require('sheetify')
+var joinClasses = require('join-classes')
+var actions = require('../actions/todos-actions')
+var updateTodo = actions.updateTodo
 
 var inputClasses = css`
   :host {
@@ -17,37 +20,48 @@ var doneClasses = css`
   opacity: 0.5;
 }
 `
-module.exports = function TitleDisplay (opts) {
-  opts = opts || {}
+
+module.exports = function TitleDisplay (state, dispatch) {
+  state = state || {}
   var element
 
   function getClasses (done) {
     return done ?
-      joinClasses(inputHandle, inputClasses, doneClasses) :
-      joinClasses(inputHandle, inputClasses)
+      joinClasses(inputClasses, doneClasses) :
+      joinClasses(inputClasses)
   }
 
   function click (e) {
+    var newTodo = Object.assign({}, state)
+    newTodo.editing = !newTodo.editing
+    dispatch(updateTodo(newTodo))
   }
 
   function create (state) {
+    state = state || {}
+    var title = state.title
+    var done = state.done
+    var editing = state.editing
     return html`
-      <div
+      <p
         class=${getClasses(done)}
         onclick=${click}
         disabled=${done}
       >
         ${title}
-      </div>
+      </p>
     `
   }
 
   function update (state) {
+    morph(element, create(state))
   }
 
   function render (state) {
-    element ?
+    return element ?
       update(state) :
-      (element = create(state), element)
+      element = create(state), element
   }
+
+  return render(state)
 }
