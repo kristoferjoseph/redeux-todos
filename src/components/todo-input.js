@@ -5,9 +5,27 @@ var joinClasses = require('join-classes')
 var actions = require('../actions/todos-actions')
 var updateTodo = actions.updateTodo
 
-var inputClasses = css`
+var containerClasses = css`
   :host {
+    position: relative;
     width: 100%;
+    height: auto;
+    word-wrap: break-word;
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+`
+
+var textAreaClasses = css`
+  :host {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    resize: none;
+    overflow: hidden;
+    font: inherit;
     font-size: 1.5rem;
     font-weight: 300;
     border: none;
@@ -15,11 +33,14 @@ var inputClasses = css`
   }
 `
 
-var doneClasses = css`
-:host {
-  text-decoration: line-through;
-  opacity: 0.5;
-}
+var preClasses = css`
+  :host {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    border: none;
+    display: none;
+  }
 `
 
 module.exports = function TodoInput (state, dispatch) {
@@ -54,7 +75,7 @@ module.exports = function TodoInput (state, dispatch) {
   }
 
   function updateTitle () {
-    var el = document.querySelector('.'+inputClasses)
+    var el = document.querySelector('.'+textAreaClasses)
     var newTodo = copyTodo()
     newTodo.title = el.value
     dispatch(updateTodo(newTodo))
@@ -66,16 +87,21 @@ module.exports = function TodoInput (state, dispatch) {
     dispatch(updateTodo(newTodo))
   }
 
-  function getClasses (done) {
-    return done ?
-      joinClasses(inputClasses, doneClasses) :
-      joinClasses(inputClasses)
-  }
-
   function create (state) {
     state = state || {}
     var done = state.done
     var title = state.title
+    return html`
+      <div class=${containerClasses}>
+        ${title}
+        <textarea
+          class=${textAreaClasses}
+          oninput=${input}
+          onkeydown=${keydown}
+          disabled=${done}
+        >${title}</textarea>
+      </div>
+    `
     return html`
       <input
         class=${getClasses(done)}
