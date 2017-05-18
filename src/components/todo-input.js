@@ -87,12 +87,20 @@ module.exports = function TodoInput (state, dispatch) {
     dispatch(updateTodo(newTodo))
   }
 
+  function focus () {
+    var el = document.querySelector('.'+textAreaClasses)
+    el && el.focus()
+  }
+
   function create (state) {
     state = state || {}
     var done = state.done
     var title = state.title
     return html`
-      <div class=${containerClasses}>
+      <div
+        class=${containerClasses}
+        onload=${focus}
+      >
         ${title}
         <textarea
           class=${textAreaClasses}

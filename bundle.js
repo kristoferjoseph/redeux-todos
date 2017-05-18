@@ -2376,24 +2376,35 @@ module.exports = function TodoInput (state, dispatch) {
     dispatch(updateTodo(newTodo))
   }
 
+  function focus () {
+    var el = document.querySelector('.'+textAreaClasses)
+    el && el.focus()
+  }
+
   function create (state) {
     state = state || {}
     var done = state.done
     var title = state.title
     return (function () {
-      
+      var onload = require('/Users/kj/Documents/work/redeux-todos/node_modules/on-load/index.js')
       var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
       var bel1 = document.createElement("div")
-bel1.setAttribute("class", arguments[5])
+var args = arguments
+      onload(bel1, function bel_onload () {
+        args[5](bel1)
+      }, function bel_onunload () {
+        
+      }, "o1")
+bel1.setAttribute("class", arguments[6])
 var bel0 = document.createElement("textarea")
 bel0["oninput"] = arguments[0]
 bel0["onkeydown"] = arguments[1]
 if (arguments[2]) bel0.setAttribute("disabled", "disabled")
 bel0.setAttribute("class", arguments[3])
 ac(bel0, [arguments[4]])
-ac(bel1, ["\n        ",arguments[6],"\n        ",bel0,"\n      "])
+ac(bel1, ["\n        ",arguments[7],"\n        ",bel0,"\n      "])
       return bel1
-    }(input,keydown,done,textAreaClasses,title,containerClasses,title))
+    }(input,keydown,done,textAreaClasses,title,focus,containerClasses,title))
     return (function () {
       
       var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
@@ -2421,7 +2432,7 @@ bel0.setAttribute("class", arguments[4])
   return render(state)
 }
 
-},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"join-classes":8,"nanomorph":10,"sheetify/insert":15}],32:[function(require,module,exports){
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/on-load/index.js":13,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"join-classes":8,"nanomorph":10,"sheetify/insert":15}],32:[function(require,module,exports){
 var html = {}
 var update = require('nanomorph')
 var css = 0
