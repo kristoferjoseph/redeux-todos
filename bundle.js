@@ -492,162 +492,193 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":21}],2:[function(require,module,exports){
-var document = require('global/document')
-var hyperx = require('hyperx')
-var onload = require('on-load')
+},{"util/":19}],2:[function(require,module,exports){
 
-var SVGNS = 'http://www.w3.org/2000/svg'
-var XLINKNS = 'http://www.w3.org/1999/xlink'
+},{}],3:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
 
-var BOOL_PROPS = {
-  autofocus: 1,
-  checked: 1,
-  defaultchecked: 1,
-  disabled: 1,
-  formnovalidate: 1,
-  indeterminate: 1,
-  readonly: 1,
-  required: 1,
-  selected: 1,
-  willvalidate: 1
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
 }
-var COMMENT_TAG = '!--'
-var SVG_TAGS = [
-  'svg',
-  'altGlyph', 'altGlyphDef', 'altGlyphItem', 'animate', 'animateColor',
-  'animateMotion', 'animateTransform', 'circle', 'clipPath', 'color-profile',
-  'cursor', 'defs', 'desc', 'ellipse', 'feBlend', 'feColorMatrix',
-  'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting',
-  'feDisplacementMap', 'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB',
-  'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode',
-  'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting',
-  'feSpotLight', 'feTile', 'feTurbulence', 'filter', 'font', 'font-face',
-  'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri',
-  'foreignObject', 'g', 'glyph', 'glyphRef', 'hkern', 'image', 'line',
-  'linearGradient', 'marker', 'mask', 'metadata', 'missing-glyph', 'mpath',
-  'path', 'pattern', 'polygon', 'polyline', 'radialGradient', 'rect',
-  'set', 'stop', 'switch', 'symbol', 'text', 'textPath', 'title', 'tref',
-  'tspan', 'use', 'view', 'vkern'
-]
-
-function belCreateElement (tag, props, children) {
-  var el
-
-  // If an svg tag, it needs a namespace
-  if (SVG_TAGS.indexOf(tag) !== -1) {
-    props.namespace = SVGNS
-  }
-
-  // If we are using a namespace
-  var ns = false
-  if (props.namespace) {
-    ns = props.namespace
-    delete props.namespace
-  }
-
-  // Create the element
-  if (ns) {
-    el = document.createElementNS(ns, tag)
-  } else if (tag === COMMENT_TAG) {
-    return document.createComment(props.comment)
-  } else {
-    el = document.createElement(tag)
-  }
-
-  // If adding onload events
-  if (props.onload || props.onunload) {
-    var load = props.onload || function () {}
-    var unload = props.onunload || function () {}
-    onload(el, function belOnload () {
-      load(el)
-    }, function belOnunload () {
-      unload(el)
-    },
-    // We have to use non-standard `caller` to find who invokes `belCreateElement`
-    belCreateElement.caller.caller.caller)
-    delete props.onload
-    delete props.onunload
-  }
-
-  // Create the properties
-  for (var p in props) {
-    if (props.hasOwnProperty(p)) {
-      var key = p.toLowerCase()
-      var val = props[p]
-      // Normalize className
-      if (key === 'classname') {
-        key = 'class'
-        p = 'class'
-      }
-      // The for attribute gets transformed to htmlFor, but we just set as for
-      if (p === 'htmlFor') {
-        p = 'for'
-      }
-      // If a property is boolean, set itself to the key
-      if (BOOL_PROPS[key]) {
-        if (val === 'true') val = key
-        else if (val === 'false') continue
-      }
-      // If a property prefers being set directly vs setAttribute
-      if (key.slice(0, 2) === 'on') {
-        el[p] = val
-      } else {
-        if (ns) {
-          if (p === 'xlink:href') {
-            el.setAttributeNS(XLINKNS, p, val)
-          } else if (/^xmlns($|:)/i.test(p)) {
-            // skip xmlns definitions
-          } else {
-            el.setAttributeNS(null, p, val)
-          }
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
         } else {
-          el.setAttribute(p, val)
+            cachedSetTimeout = defaultSetTimout;
         }
-      }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
     }
-  }
-
-  function appendChild (childs) {
-    if (!Array.isArray(childs)) return
-    for (var i = 0; i < childs.length; i++) {
-      var node = childs[i]
-      if (Array.isArray(node)) {
-        appendChild(node)
-        continue
-      }
-
-      if (typeof node === 'number' ||
-        typeof node === 'boolean' ||
-        typeof node === 'function' ||
-        node instanceof Date ||
-        node instanceof RegExp) {
-        node = node.toString()
-      }
-
-      if (typeof node === 'string') {
-        if (el.lastChild && el.lastChild.nodeName === '#text') {
-          el.lastChild.nodeValue += node
-          continue
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
         }
-        node = document.createTextNode(node)
-      }
-
-      if (node && node.nodeType) {
-        el.appendChild(node)
-      }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
     }
-  }
-  appendChild(children)
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
 
-  return el
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
 }
 
-module.exports = hyperx(belCreateElement, {comments: true})
-module.exports.default = module.exports
-module.exports.createElement = belCreateElement
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
 
-},{"global/document":4,"hyperx":8,"on-load":15}],3:[function(require,module,exports){
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
 },{}],4:[function(require,module,exports){
 (function (global){
@@ -670,7 +701,7 @@ if (typeof document !== 'undefined') {
 module.exports = doccy;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":3}],5:[function(require,module,exports){
+},{"min-document":2}],5:[function(require,module,exports){
 (function (global){
 var win;
 
@@ -703,307 +734,6 @@ module.exports = function hashswitch (actions, defaultCallback){
 }
 
 },{}],7:[function(require,module,exports){
-module.exports = attributeToProperty
-
-var transform = {
-  'class': 'className',
-  'for': 'htmlFor',
-  'http-equiv': 'httpEquiv'
-}
-
-function attributeToProperty (h) {
-  return function (tagName, attrs, children) {
-    for (var attr in attrs) {
-      if (attr in transform) {
-        attrs[transform[attr]] = attrs[attr]
-        delete attrs[attr]
-      }
-    }
-    return h(tagName, attrs, children)
-  }
-}
-
-},{}],8:[function(require,module,exports){
-var attrToProp = require('hyperscript-attribute-to-property')
-
-var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
-var ATTR_KEY = 5, ATTR_KEY_W = 6
-var ATTR_VALUE_W = 7, ATTR_VALUE = 8
-var ATTR_VALUE_SQ = 9, ATTR_VALUE_DQ = 10
-var ATTR_EQ = 11, ATTR_BREAK = 12
-var COMMENT = 13
-
-module.exports = function (h, opts) {
-  if (!opts) opts = {}
-  var concat = opts.concat || function (a, b) {
-    return String(a) + String(b)
-  }
-  if (opts.attrToProp !== false) {
-    h = attrToProp(h)
-  }
-
-  return function (strings) {
-    var state = TEXT, reg = ''
-    var arglen = arguments.length
-    var parts = []
-
-    for (var i = 0; i < strings.length; i++) {
-      if (i < arglen - 1) {
-        var arg = arguments[i+1]
-        var p = parse(strings[i])
-        var xstate = state
-        if (xstate === ATTR_VALUE_DQ) xstate = ATTR_VALUE
-        if (xstate === ATTR_VALUE_SQ) xstate = ATTR_VALUE
-        if (xstate === ATTR_VALUE_W) xstate = ATTR_VALUE
-        if (xstate === ATTR) xstate = ATTR_KEY
-        p.push([ VAR, xstate, arg ])
-        parts.push.apply(parts, p)
-      } else parts.push.apply(parts, parse(strings[i]))
-    }
-
-    var tree = [null,{},[]]
-    var stack = [[tree,-1]]
-    for (var i = 0; i < parts.length; i++) {
-      var cur = stack[stack.length-1][0]
-      var p = parts[i], s = p[0]
-      if (s === OPEN && /^\//.test(p[1])) {
-        var ix = stack[stack.length-1][1]
-        if (stack.length > 1) {
-          stack.pop()
-          stack[stack.length-1][0][2][ix] = h(
-            cur[0], cur[1], cur[2].length ? cur[2] : undefined
-          )
-        }
-      } else if (s === OPEN) {
-        var c = [p[1],{},[]]
-        cur[2].push(c)
-        stack.push([c,cur[2].length-1])
-      } else if (s === ATTR_KEY || (s === VAR && p[1] === ATTR_KEY)) {
-        var key = ''
-        var copyKey
-        for (; i < parts.length; i++) {
-          if (parts[i][0] === ATTR_KEY) {
-            key = concat(key, parts[i][1])
-          } else if (parts[i][0] === VAR && parts[i][1] === ATTR_KEY) {
-            if (typeof parts[i][2] === 'object' && !key) {
-              for (copyKey in parts[i][2]) {
-                if (parts[i][2].hasOwnProperty(copyKey) && !cur[1][copyKey]) {
-                  cur[1][copyKey] = parts[i][2][copyKey]
-                }
-              }
-            } else {
-              key = concat(key, parts[i][2])
-            }
-          } else break
-        }
-        if (parts[i][0] === ATTR_EQ) i++
-        var j = i
-        for (; i < parts.length; i++) {
-          if (parts[i][0] === ATTR_VALUE || parts[i][0] === ATTR_KEY) {
-            if (!cur[1][key]) cur[1][key] = strfn(parts[i][1])
-            else cur[1][key] = concat(cur[1][key], parts[i][1])
-          } else if (parts[i][0] === VAR
-          && (parts[i][1] === ATTR_VALUE || parts[i][1] === ATTR_KEY)) {
-            if (!cur[1][key]) cur[1][key] = strfn(parts[i][2])
-            else cur[1][key] = concat(cur[1][key], parts[i][2])
-          } else {
-            if (key.length && !cur[1][key] && i === j
-            && (parts[i][0] === CLOSE || parts[i][0] === ATTR_BREAK)) {
-              // https://html.spec.whatwg.org/multipage/infrastructure.html#boolean-attributes
-              // empty string is falsy, not well behaved value in browser
-              cur[1][key] = key.toLowerCase()
-            }
-            break
-          }
-        }
-      } else if (s === ATTR_KEY) {
-        cur[1][p[1]] = true
-      } else if (s === VAR && p[1] === ATTR_KEY) {
-        cur[1][p[2]] = true
-      } else if (s === CLOSE) {
-        if (selfClosing(cur[0]) && stack.length) {
-          var ix = stack[stack.length-1][1]
-          stack.pop()
-          stack[stack.length-1][0][2][ix] = h(
-            cur[0], cur[1], cur[2].length ? cur[2] : undefined
-          )
-        }
-      } else if (s === VAR && p[1] === TEXT) {
-        if (p[2] === undefined || p[2] === null) p[2] = ''
-        else if (!p[2]) p[2] = concat('', p[2])
-        if (Array.isArray(p[2][0])) {
-          cur[2].push.apply(cur[2], p[2])
-        } else {
-          cur[2].push(p[2])
-        }
-      } else if (s === TEXT) {
-        cur[2].push(p[1])
-      } else if (s === ATTR_EQ || s === ATTR_BREAK) {
-        // no-op
-      } else {
-        throw new Error('unhandled: ' + s)
-      }
-    }
-
-    if (tree[2].length > 1 && /^\s*$/.test(tree[2][0])) {
-      tree[2].shift()
-    }
-
-    if (tree[2].length > 2
-    || (tree[2].length === 2 && /\S/.test(tree[2][1]))) {
-      throw new Error(
-        'multiple root elements must be wrapped in an enclosing tag'
-      )
-    }
-    if (Array.isArray(tree[2][0]) && typeof tree[2][0][0] === 'string'
-    && Array.isArray(tree[2][0][2])) {
-      tree[2][0] = h(tree[2][0][0], tree[2][0][1], tree[2][0][2])
-    }
-    return tree[2][0]
-
-    function parse (str) {
-      var res = []
-      if (state === ATTR_VALUE_W) state = ATTR
-      for (var i = 0; i < str.length; i++) {
-        var c = str.charAt(i)
-        if (state === TEXT && c === '<') {
-          if (reg.length) res.push([TEXT, reg])
-          reg = ''
-          state = OPEN
-        } else if (c === '>' && !quot(state) && state !== COMMENT) {
-          if (state === OPEN) {
-            res.push([OPEN,reg])
-          } else if (state === ATTR_KEY) {
-            res.push([ATTR_KEY,reg])
-          } else if (state === ATTR_VALUE && reg.length) {
-            res.push([ATTR_VALUE,reg])
-          }
-          res.push([CLOSE])
-          reg = ''
-          state = TEXT
-        } else if (state === COMMENT && /-$/.test(reg) && c === '-') {
-          if (opts.comments) {
-            res.push([ATTR_VALUE,reg.substr(0, reg.length - 1)],[CLOSE])
-          }
-          reg = ''
-          state = TEXT
-        } else if (state === OPEN && /^!--$/.test(reg)) {
-          if (opts.comments) {
-            res.push([OPEN, reg],[ATTR_KEY,'comment'],[ATTR_EQ])
-          }
-          reg = c
-          state = COMMENT
-        } else if (state === TEXT || state === COMMENT) {
-          reg += c
-        } else if (state === OPEN && /\s/.test(c)) {
-          res.push([OPEN, reg])
-          reg = ''
-          state = ATTR
-        } else if (state === OPEN) {
-          reg += c
-        } else if (state === ATTR && /[^\s"'=/]/.test(c)) {
-          state = ATTR_KEY
-          reg = c
-        } else if (state === ATTR && /\s/.test(c)) {
-          if (reg.length) res.push([ATTR_KEY,reg])
-          res.push([ATTR_BREAK])
-        } else if (state === ATTR_KEY && /\s/.test(c)) {
-          res.push([ATTR_KEY,reg])
-          reg = ''
-          state = ATTR_KEY_W
-        } else if (state === ATTR_KEY && c === '=') {
-          res.push([ATTR_KEY,reg],[ATTR_EQ])
-          reg = ''
-          state = ATTR_VALUE_W
-        } else if (state === ATTR_KEY) {
-          reg += c
-        } else if ((state === ATTR_KEY_W || state === ATTR) && c === '=') {
-          res.push([ATTR_EQ])
-          state = ATTR_VALUE_W
-        } else if ((state === ATTR_KEY_W || state === ATTR) && !/\s/.test(c)) {
-          res.push([ATTR_BREAK])
-          if (/[\w-]/.test(c)) {
-            reg += c
-            state = ATTR_KEY
-          } else state = ATTR
-        } else if (state === ATTR_VALUE_W && c === '"') {
-          state = ATTR_VALUE_DQ
-        } else if (state === ATTR_VALUE_W && c === "'") {
-          state = ATTR_VALUE_SQ
-        } else if (state === ATTR_VALUE_DQ && c === '"') {
-          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
-          reg = ''
-          state = ATTR
-        } else if (state === ATTR_VALUE_SQ && c === "'") {
-          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
-          reg = ''
-          state = ATTR
-        } else if (state === ATTR_VALUE_W && !/\s/.test(c)) {
-          state = ATTR_VALUE
-          i--
-        } else if (state === ATTR_VALUE && /\s/.test(c)) {
-          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
-          reg = ''
-          state = ATTR
-        } else if (state === ATTR_VALUE || state === ATTR_VALUE_SQ
-        || state === ATTR_VALUE_DQ) {
-          reg += c
-        }
-      }
-      if (state === TEXT && reg.length) {
-        res.push([TEXT,reg])
-        reg = ''
-      } else if (state === ATTR_VALUE && reg.length) {
-        res.push([ATTR_VALUE,reg])
-        reg = ''
-      } else if (state === ATTR_VALUE_DQ && reg.length) {
-        res.push([ATTR_VALUE,reg])
-        reg = ''
-      } else if (state === ATTR_VALUE_SQ && reg.length) {
-        res.push([ATTR_VALUE,reg])
-        reg = ''
-      } else if (state === ATTR_KEY) {
-        res.push([ATTR_KEY,reg])
-        reg = ''
-      }
-      return res
-    }
-  }
-
-  function strfn (x) {
-    if (typeof x === 'function') return x
-    else if (typeof x === 'string') return x
-    else if (x && typeof x === 'object') return x
-    else return concat('', x)
-  }
-}
-
-function quot (state) {
-  return state === ATTR_VALUE_SQ || state === ATTR_VALUE_DQ
-}
-
-var hasOwn = Object.prototype.hasOwnProperty
-function has (obj, key) { return hasOwn.call(obj, key) }
-
-var closeRE = RegExp('^(' + [
-  'area', 'base', 'basefont', 'bgsound', 'br', 'col', 'command', 'embed',
-  'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param',
-  'source', 'track', 'wbr', '!--',
-  // SVG TAGS
-  'animate', 'animateTransform', 'circle', 'cursor', 'desc', 'ellipse',
-  'feBlend', 'feColorMatrix', 'feComposite',
-  'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap',
-  'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR',
-  'feGaussianBlur', 'feImage', 'feMergeNode', 'feMorphology',
-  'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight', 'feTile',
-  'feTurbulence', 'font-face-format', 'font-face-name', 'font-face-uri',
-  'glyph', 'glyphRef', 'hkern', 'image', 'line', 'missing-glyph', 'mpath',
-  'path', 'polygon', 'polyline', 'rect', 'set', 'stop', 'tref', 'use', 'view',
-  'vkern'
-].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
-function selfClosing (tag) { return closeRE.test(tag) }
-
-},{"hyperscript-attribute-to-property":7}],9:[function(require,module,exports){
 var containers = []; // will store container HTMLElement references
 var styleElements = []; // will store {prepend: HTMLElement, append: HTMLElement}
 
@@ -1063,7 +793,7 @@ function createStyleElement() {
 module.exports = insertCss;
 module.exports.insertCss = insertCss;
 
-},{}],10:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var filter = Array.prototype.filter
 module.exports = function joinClasses () {
   return filter.call(arguments, function (s) {
@@ -1071,7 +801,7 @@ module.exports = function joinClasses () {
   }).join(' ').trim()
 }
 
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = function kubby(options) {
   options = options || {}
   var noop = function(){}
@@ -1127,7 +857,7 @@ module.exports = function kubby(options) {
   }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var assert = require('assert')
 var morph = require('./lib/morph')
 var rootLabelRegex = /^data-onloadid/
@@ -1222,7 +952,7 @@ function persistStatefulRoot (newNode, oldNode) {
   }
 }
 
-},{"./lib/morph":14,"assert":1}],13:[function(require,module,exports){
+},{"./lib/morph":12,"assert":1}],11:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
@@ -1260,7 +990,7 @@ module.exports = [
   'onfocusout'
 ]
 
-},{}],14:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var events = require('./events')
 var eventsLength = events.length
 
@@ -1435,7 +1165,7 @@ function updateAttribute (newNode, oldNode, name) {
   }
 }
 
-},{"./events":13}],15:[function(require,module,exports){
+},{"./events":11}],13:[function(require,module,exports){
 /* global MutationObserver */
 var document = require('global/document')
 var window = require('global/window')
@@ -1524,7 +1254,7 @@ function eachMutation (nodes, fn) {
   }
 }
 
-},{"global/document":4,"global/window":5}],16:[function(require,module,exports){
+},{"global/document":4,"global/window":5}],14:[function(require,module,exports){
 module.exports = function redeux () {
   var state = {}
   var listeners = []
@@ -1596,13 +1326,13 @@ module.exports = function redeux () {
   return store
 }
 
-},{}],17:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = require('insert-css')
 
-},{"insert-css":9}],18:[function(require,module,exports){
+},{"insert-css":7}],16:[function(require,module,exports){
 module.exports = function(a,b){for(b=a='';a++<36;b+=a*51&52?(a^15?8^Math.random()*(a^20?16:4):4).toString(16):'-');return b};
 
-},{}],19:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -1627,14 +1357,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],20:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],21:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2224,193 +1954,34 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":20,"_process":22,"inherits":19}],22:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
+},{"./support/isBuffer":18,"_process":3,"inherits":17}],20:[function(require,module,exports){
+module.exports = function yoyoifyAppendChild (el, childs) {
+  for (var i = 0; i < childs.length; i++) {
+    var node = childs[i]
+    if (Array.isArray(node)) {
+      yoyoifyAppendChild(el, node)
+      continue
     }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
+    if (typeof node === 'number' ||
+      typeof node === 'boolean' ||
+      node instanceof Date ||
+      node instanceof RegExp) {
+      node = node.toString()
     }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
+    if (typeof node === 'string') {
+      if (el.lastChild && el.lastChild.nodeName === '#text') {
+        el.lastChild.nodeValue += node
+        continue
+      }
+      node = document.createTextNode(node)
     }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
+    if (node && node.nodeType) {
+      el.appendChild(node)
     }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
+  }
 }
 
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],23:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var CREATE_TODO = 'CREATE_TODO'
 var UPDATE_TODO = 'UPDATE_TODO'
 var COMPLETE_ALL = 'COMPLETE_ALL'
@@ -2465,8 +2036,8 @@ module.exports = {
   DELETE_ALL: DELETE_ALL
 }
 
-},{}],24:[function(require,module,exports){
-var html = require('bel')
+},{}],22:[function(require,module,exports){
+var html = {}
 var css = 0
 var actions = require('../actions/todos-actions')
 var completeAll = actions.completeAll
@@ -2480,18 +2051,19 @@ module.exports = function CompleteAllButton (opts) {
     dispatch(completeAll())
   }
 
-  return html`
-    <button
-      class=${classes}
-      onclick=${click}
-    >
-      Complete All
-    </button>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("button")
+bel0["onclick"] = arguments[0]
+bel0.setAttribute("class", arguments[1])
+ac(bel0, ["\n      Complete All\n    "])
+      return bel0
+    }(click,classes))
 }
 
-},{"../actions/todos-actions":23,"bel":2,"sheetify/insert":17}],25:[function(require,module,exports){
-var html = require('bel')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],23:[function(require,module,exports){
+var html = {}
 var css = 0
 var actions = require('../actions/todos-actions')
 var deleteAll = actions.deleteAll
@@ -2505,18 +2077,19 @@ module.exports = function DeleteAllButton (opts) {
     dispatch(deleteAll())
   }
 
-  return html`
-    <button
-      class=${classes}
-      onclick=${click}
-    >
-      Delete All
-    </button>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("button")
+bel0["onclick"] = arguments[0]
+bel0.setAttribute("class", arguments[1])
+ac(bel0, ["\n      Delete All\n    "])
+      return bel0
+    }(click,classes))
 }
 
-},{"../actions/todos-actions":23,"bel":2,"sheetify/insert":17}],26:[function(require,module,exports){
-var html = require('bel')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],24:[function(require,module,exports){
+var html = {}
 var css = 0
 var actions = require('../actions/todos-actions')
 var deleteTodo = actions.deleteTodo
@@ -2528,18 +2101,19 @@ module.exports = function Button (state, dispatch) {
     dispatch(deleteTodo(state))
   }
 
-  return html`
-    <button
-      class=${classes}
-      onclick=${destroy}
-    >
-      ✖︎
-    </button>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("button")
+bel0["onclick"] = arguments[0]
+bel0.setAttribute("class", arguments[1])
+ac(bel0, ["\n      ✖︎\n    "])
+      return bel0
+    }(destroy,classes))
 }
 
-},{"../actions/todos-actions":23,"bel":2,"sheetify/insert":17}],27:[function(require,module,exports){
-var html = require('bel')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],25:[function(require,module,exports){
+var html = {}
 var css = 0
 var joinClasses = require('join-classes')
 var actions = require('../actions/todos-actions')
@@ -2565,44 +2139,53 @@ module.exports = function (state, dispatch) {
       classes
   }
 
-  return html`
-    <label class=${getClasses()}>
-      <input
-        class=${inputClasses}
-        type='checkbox'
-        onchange=${change}
-        checked=${done}
-      />
-    </label>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel1 = document.createElement("label")
+bel1.setAttribute("class", arguments[3])
+var bel0 = document.createElement("input")
+bel0.setAttribute("type", "checkbox")
+bel0["onchange"] = arguments[0]
+if (arguments[1]) bel0.setAttribute("checked", "checked")
+bel0.setAttribute("class", arguments[2])
+ac(bel1, ["\n      ",bel0,"\n    "])
+      return bel1
+    }(change,done,inputClasses,getClasses()))
 }
 
-},{"../actions/todos-actions":23,"bel":2,"join-classes":10,"sheetify/insert":17}],28:[function(require,module,exports){
-var html = require('bel')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"join-classes":8,"sheetify/insert":15}],26:[function(require,module,exports){
+var html = {}
 var css = 0
 var classes = ((null || true) && "_9cf46706")
 module.exports = function Congrats() {
-  return html`
-    <h1 class=${classes}>
-      Well done
-    </h1>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("h1")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n      Well done\n    "])
+      return bel0
+    }(classes))
 }
 
-},{"bel":2,"sheetify/insert":17}],29:[function(require,module,exports){
-var html = require('bel')
+},{"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],27:[function(require,module,exports){
+var html = {}
 var css = 0
 var classes = ((null || true) && "_3c9f36e5")
 module.exports = function DoneHeader () {
-  return html`
-    <h3 class=${classes}>
-      Completed
-    </h3>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("h3")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n      Completed\n    "])
+      return bel0
+    }(classes))
 }
 
-},{"bel":2,"sheetify/insert":17}],30:[function(require,module,exports){
-var html = require('bel')
+},{"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],28:[function(require,module,exports){
+var html = {}
 var css = 0
 var CompleteButton = require('./button-complete-all')
 var DeleteButton = require('./button-delete-all')
@@ -2619,15 +2202,18 @@ module.exports = function Footer (state, dispatch) {
     DeleteButton({dispatch: dispatch})
   }
 
-  return html`
-    <footer class=${classes}>
-      ${getButton(active && active.length)}
-    </footer>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("footer")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n      ",arguments[1],"\n    "])
+      return bel0
+    }(classes,getButton(active && active.length)))
 }
 
-},{"./button-complete-all":24,"./button-delete-all":25,"bel":2,"sheetify/insert":17}],31:[function(require,module,exports){
-var html = require('bel')
+},{"./button-complete-all":22,"./button-delete-all":23,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],29:[function(require,module,exports){
+var html = {}
 var morph = require('nanomorph')
 var css = 0
 var joinClasses = require('join-classes')
@@ -2659,15 +2245,16 @@ module.exports = function TitleDisplay (state, dispatch) {
     var title = state.title
     var done = state.done
     var editing = state.editing
-    return html`
-      <p
-        class=${getClasses(done)}
-        onclick=${click}
-        disabled=${done}
-      >
-        ${title}
-      </p>
-    `
+    return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("p")
+bel0["onclick"] = arguments[0]
+if (arguments[1]) bel0.setAttribute("disabled", "disabled")
+bel0.setAttribute("class", arguments[2])
+ac(bel0, ["\n        ",arguments[3],"\n      "])
+      return bel0
+    }(click,done,getClasses(done),title))
   }
 
   function update (state) {
@@ -2683,8 +2270,8 @@ module.exports = function TitleDisplay (state, dispatch) {
   return render(state)
 }
 
-},{"../actions/todos-actions":23,"bel":2,"join-classes":10,"nanomorph":12,"sheetify/insert":17}],32:[function(require,module,exports){
-var html = require('bel')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"join-classes":8,"nanomorph":10,"sheetify/insert":15}],30:[function(require,module,exports){
+var html = {}
 var createTodo = require('../actions/todos-actions').createTodo
 var css = 0
 var labelClass = ((null || true) && "_6dddc22b")
@@ -2713,25 +2300,26 @@ module.exports = function (dispatch) {
     }
   }
 
-  return html`
-    <label
-      for='title'
-      class=${labelClass}
-    >
-      <input
-        class=${inputClass}
-        autofocus
-        id='title'
-        name='title'
-        onkeyup=${keyup}
-        placeholder='Enter todo'
-      />
-    </label>
-  `
+  return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel1 = document.createElement("label")
+bel1.setAttribute("htmlFor", "title")
+bel1.setAttribute("class", arguments[2])
+var bel0 = document.createElement("input")
+bel0.setAttribute("autofocus", "autofocus")
+bel0.setAttribute("id", "title")
+bel0.setAttribute("name", "title")
+bel0["onkeyup"] = arguments[0]
+bel0.setAttribute("placeholder", "Enter todo")
+bel0.setAttribute("class", arguments[1])
+ac(bel1, ["\n      ",bel0,"\n    "])
+      return bel1
+    }(keyup,inputClass,labelClass))
 }
 
-},{"../actions/todos-actions":23,"bel":2,"sheetify/insert":17}],33:[function(require,module,exports){
-var html = require('bel')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"sheetify/insert":15}],31:[function(require,module,exports){
+var html = {}
 var morph = require('nanomorph')
 var css = 0
 var joinClasses = require('join-classes')
@@ -2792,26 +2380,31 @@ module.exports = function TodoInput (state, dispatch) {
     state = state || {}
     var done = state.done
     var title = state.title
-    return html`
-      <div class=${containerClasses}>
-        ${title}
-        <textarea
-          class=${textAreaClasses}
-          oninput=${input}
-          onkeydown=${keydown}
-          disabled=${done}
-        >${title}</textarea>
-      </div>
-    `
-    return html`
-      <input
-        class=${getClasses(done)}
-        oninput=${input}
-        onkeydown=${keydown}
-        disabled=${done}
-        value=${title}
-      >
-    `
+    return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel1 = document.createElement("div")
+bel1.setAttribute("class", arguments[5])
+var bel0 = document.createElement("textarea")
+bel0["oninput"] = arguments[0]
+bel0["onkeydown"] = arguments[1]
+if (arguments[2]) bel0.setAttribute("disabled", "disabled")
+bel0.setAttribute("class", arguments[3])
+ac(bel0, [arguments[4]])
+ac(bel1, ["\n        ",arguments[6],"\n        ",bel0,"\n      "])
+      return bel1
+    }(input,keydown,done,textAreaClasses,title,containerClasses,title))
+    return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("input")
+bel0["oninput"] = arguments[0]
+bel0["onkeydown"] = arguments[1]
+if (arguments[2]) bel0.setAttribute("disabled", "disabled")
+bel0.setAttribute("value", arguments[3])
+bel0.setAttribute("class", arguments[4])
+      return bel0
+    }(input,keydown,done,title,getClasses(done)))
 
   }
 
@@ -2828,8 +2421,8 @@ module.exports = function TodoInput (state, dispatch) {
   return render(state)
 }
 
-},{"../actions/todos-actions":23,"bel":2,"join-classes":10,"nanomorph":12,"sheetify/insert":17}],34:[function(require,module,exports){
-var html = require('bel')
+},{"../actions/todos-actions":21,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"join-classes":8,"nanomorph":10,"sheetify/insert":15}],32:[function(require,module,exports){
+var html = {}
 var update = require('nanomorph')
 var css = 0
 var Todo = require('../components/todo')
@@ -2849,13 +2442,16 @@ module.exports = function TodoList (state, dispatch) {
   function create (state) {
     var todos = state || []
 
-    return html`
-      <ul class=${classes}>
-        ${todos.map(function (t) {
+    return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("ul")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n        ",arguments[1],"\n      "])
+      return bel0
+    }(classes,todos.map(function (t) {
           return Todo(t, dispatch)
-        })}
-      </ul>
-    `
+        })))
   }
 
   function update (state) {
@@ -2865,8 +2461,8 @@ module.exports = function TodoList (state, dispatch) {
   return render(state)
 }
 
-},{"../components/todo":35,"bel":2,"nanomorph":12,"sheetify/insert":17}],35:[function(require,module,exports){
-var html = require('bel')
+},{"../components/todo":33,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"nanomorph":10,"sheetify/insert":15}],33:[function(require,module,exports){
+var html = {}
 var morph = require('nanomorph')
 var css = 0
 var joinClasses = require('join-classes')
@@ -2911,16 +2507,15 @@ module.exports = function Todo (state, dispatch) {
     state = state || {}
     var done = state.done
     var editing = state.editing
-    return html`
-      <li
-        id=${id}
-        class=${classes}
-      >
-        ${Checkbox(state, dispatch)}
-        ${getContent(state)}
-        ${done && editing ? Button(state, dispatch) : null}
-      </li>
-    `
+    return (function () {
+      
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel0 = document.createElement("li")
+bel0.setAttribute("id", arguments[0])
+bel0.setAttribute("class", arguments[1])
+ac(bel0, ["\n        ",arguments[2],"\n        ",arguments[3],"\n        ",arguments[4],"\n      "])
+      return bel0
+    }(id,classes,Checkbox(state, dispatch),getContent(state),done && editing ? Button(state, dispatch) : null))
   }
 
   function update (state) {
@@ -2930,7 +2525,7 @@ module.exports = function Todo (state, dispatch) {
   return render(state)
 }
 
-},{"./button":26,"./checkbox":27,"./title-display":31,"./todo-input":33,"bel":2,"join-classes":10,"nanomorph":12,"sheetify/insert":17}],36:[function(require,module,exports){
+},{"./button":24,"./checkbox":25,"./title-display":29,"./todo-input":31,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"join-classes":8,"nanomorph":10,"sheetify/insert":15}],34:[function(require,module,exports){
 var createStore = require('redeux')
 var kubby = require('kubby')()
 var todos = require('./reducers/todos-reducer')
@@ -2942,7 +2537,7 @@ var store = createStore(todos, localState)
 var todoCreate = TodoCreate(store)
 document.getElementById('root').appendChild(todoCreate)
 
-},{"./reducers/todos-reducer":37,"./screens/todos-create":38,"kubby":11,"redeux":16}],37:[function(require,module,exports){
+},{"./reducers/todos-reducer":35,"./screens/todos-create":36,"kubby":9,"redeux":14}],35:[function(require,module,exports){
 var tid = require('tiny-uuid')
 var hs = require('hash-switch')
 var kubby = require('kubby')()
@@ -3028,8 +2623,8 @@ function deleteAll (state, data) {
 }
 
 
-},{"../actions/todos-actions":23,"hash-switch":6,"kubby":11,"tiny-uuid":18}],38:[function(require,module,exports){
-var html = require('bel')
+},{"../actions/todos-actions":21,"hash-switch":6,"kubby":9,"tiny-uuid":16}],36:[function(require,module,exports){
+var html = {}
 var morph = require('nanomorph')
 var css = 0
 var TitleInput = require('../components/title-input')
@@ -3073,23 +2668,24 @@ module.exports = function TodosCreate (store) {
     var showFooter = todos && todos.length
     var notActive = active && !active.length
     var areDone = done && done.length
-    return html`
-      <div
-        id=${classes}
-        class=${classes}
-        onload=${load}
-        onunload=${unload}
-      >
-        ${TitleInput(dispatch)}
-        <div class=${contentClasses}>
-          ${TodoList(active, dispatch)}
-          ${notActive && areDone ? Congrats() : null}
-          ${areDone ? DoneHeader() : null}
-          ${TodoList(done, dispatch)}
-        </div>
-        ${showFooter ? Footer(todos, dispatch) : null}
-      </div>
-    `
+    return (function () {
+      var onload = require('/Users/kj/Documents/work/redeux-todos/node_modules/on-load/index.js')
+      var ac = require('/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js')
+      var bel1 = document.createElement("div")
+var args = arguments
+      onload(bel1, function bel_onload () {
+        args[5](bel1)
+      }, function bel_onunload () {
+        args[6](bel1)
+      }, "o0")
+bel1.setAttribute("id", arguments[7])
+bel1.setAttribute("class", arguments[8])
+var bel0 = document.createElement("div")
+bel0.setAttribute("class", arguments[0])
+ac(bel0, ["\n          ",arguments[1],"\n          ",arguments[2],"\n          ",arguments[3],"\n          ",arguments[4],"\n        "])
+ac(bel1, ["\n        ",arguments[9],"\n        ",bel0,"\n        ",arguments[10],"\n      "])
+      return bel1
+    }(contentClasses,TodoList(active, dispatch),notActive && areDone ? Congrats() : null,areDone ? DoneHeader() : null,TodoList(done, dispatch),load,unload,classes,classes,TitleInput(dispatch),showFooter ? Footer(todos, dispatch) : null))
   }
 
   function update (state) {
@@ -3099,4 +2695,4 @@ module.exports = function TodosCreate (store) {
   return render(state)
 }
 
-},{"../components/button-complete-all":24,"../components/congrats":28,"../components/done-header":29,"../components/footer":30,"../components/title-input":32,"../components/todo-list.js":34,"bel":2,"nanomorph":12,"sheetify/insert":17}]},{},[36]);
+},{"../components/button-complete-all":22,"../components/congrats":26,"../components/done-header":27,"../components/footer":28,"../components/title-input":30,"../components/todo-list.js":32,"/Users/kj/Documents/work/redeux-todos/node_modules/on-load/index.js":13,"/Users/kj/Documents/work/redeux-todos/node_modules/yo-yoify/lib/appendChild.js":20,"nanomorph":10,"sheetify/insert":15}]},{},[34]);
