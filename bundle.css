@@ -135,10 +135,11 @@
 ._2bd0bde2::-moz-placeholder {
   color: #333;
 }
-._2dadbed3 {
+._fb700fa5 {
     position: relative;
     width: 100%;
     height: auto;
+    white-space: pre-wrap;
     word-wrap: break-word;
     font-size: 1.5rem;
     font-weight: 300;

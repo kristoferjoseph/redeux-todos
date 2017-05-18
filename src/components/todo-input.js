@@ -10,6 +10,7 @@ var containerClasses = css`
     position: relative;
     width: 100%;
     height: auto;
+    white-space: pre-wrap;
     word-wrap: break-word;
     font-size: 1.5rem;
     font-weight: 300;
@@ -55,13 +56,14 @@ module.exports = function TodoInput (state, dispatch) {
   function keydown (e) {
     var newTodo
     var keyCode = e.keyCode
+    var shift = e.shiftKey
     // ESCAPE key to exit edit
     if (keyCode === 27) {
       newTodo = copyTodo()
       newTodo.editing = false
       dispatch(updateTodo(newTodo))
     // Enter key to save
-    } else if (keyCode === 13) {
+    } else if (keyCode === 13 && !shift) {
       e.preventDefault()
       submit()
     }
