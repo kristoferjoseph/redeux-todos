@@ -56,7 +56,8 @@ module.exports = function Todo (state, dispatch) {
   function getContent (state) {
     state = state || {}
     var editing = state.editing || false
-    return editing ? TodoInput(state, dispatch) : TitleDisplay(state, dispatch)
+    var done = state.done || false
+    return editing && !done ? TodoInput(state, dispatch) : TitleDisplay(state, dispatch)
   }
 
   function create (state) {

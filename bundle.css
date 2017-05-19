@@ -135,11 +135,10 @@
 ._2bd0bde2::-moz-placeholder {
   color: #333;
 }
-._fb700fa5 {
+._2dadbed3 {
     position: relative;
     width: 100%;
     height: auto;
-    white-space: pre-wrap;
     word-wrap: break-word;
     font-size: 1.5rem;
     font-weight: 300;
@@ -157,13 +156,6 @@
     font-weight: 300;
     border: none;
     text-overflow: ellipsis;
-  }
-._531c414c {
-    margin: 0;
-    padding: 0;
-    outline: none;
-    border: none;
-    display: none;
   }
 ._fbf62c13 {
   margin-top: 1rem;
