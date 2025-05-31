@@ -1,0 +1,36 @@
+<template shadowrootmode="open">
+  <style>
+    :host {
+      display: flex;
+      align-items: center;
+      padding: 0.5em;
+      border-bottom: 1px solid #eee;
+      container-type: inline-size; /* For potential container queries */
+    }
+    :host([done]) .text {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+    .text {
+      flex-grow: 1;
+      margin-left: 0.5em;
+      margin-right: 0.5em;
+    }
+    input[type="checkbox"] {
+      margin-right: 0.5em;
+    }
+    /* Basic styling for a potential input field during editing */
+    input[type="text"] {
+        flex-grow: 1;
+        border: 1px solid #ccc;
+        padding: 0.25em;
+    }
+  </style>
+  <input type="checkbox" class="toggle" \${data.done ? 'checked' : ''}>
+  <!-- Conditional rendering for text vs input for editing -->
+  \${data.editing ?
+    \`<input type="text" class="edit" value="\${data.text}">\` :
+    \`<span class="text">\${data.text}</span>\`
+  }
+  <custom-button class="delete-btn" data-id="\${data.id}">Delete</custom-button>
+</template>

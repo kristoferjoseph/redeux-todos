@@ -1,0 +1,39 @@
+<template shadowrootmode="open">
+  <style>
+    :host {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5em 1em;
+      border-top: 1px solid #e0e0e0;
+      font-size: 0.9em;
+      color: #555;
+    }
+    .count {
+      flex-grow: 1;
+    }
+    .filters custom-button {
+      margin-left: 0.5em;
+    }
+    .filters custom-button[data-active] {
+      border-color: #007bff; /* Or some other indication */
+      font-weight: bold;
+    }
+    .clear-completed {
+      /* visibility: hidden; */ /* Handled by conditional rendering in JS for now */
+    }
+    :host([hidden]) {
+        display: none;
+    }
+  </style>
+  <span class="count">\${data.activeCount} item\${data.activeCount === 1 ? '' : 's'} left</span>
+  <div class="filters">
+    <custom-button data-filter="all" \${data.filter === 'all' ? 'data-active' : ''}>All</custom-button>
+    <custom-button data-filter="active" \${data.filter === 'active' ? 'data-active' : ''}>Active</custom-button>
+    <custom-button data-filter="completed" \${data.filter === 'completed' ? 'data-active' : ''}>Completed</custom-button>
+  </div>
+  \${data.completedCount > 0 ? \`
+    <custom-button class="clear-completed">Clear completed (\${data.completedCount})</custom-button>
+  \` : '<span class="clear-completed-placeholder" style="min-width: 120px;"></span>'}
+  <!-- Placeholder ensures flex layout doesn't break too much when button disappears -->
+</template>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browser Test Runner</title>
+    <script type="importmap">
+    {
+        "imports": {
+            "tap": "/js/vendor/tap-browser-umd.js" // We'll add this library later
+        }
+    }
+    </script>
+</head>
+<body>
+    <h1>Test Results</h1>
+    <pre id="results"></pre>
+    <script type="module">
+        // This will be where we run tests and connect to WebSocket
+        console.log("Test runner script starting...");
+        const resultsElement = document.getElementById('results');
+        const ws = new WebSocket('ws://localhost:3333'); // Default Architect WS port or a custom one
+
+        ws.onopen = () => {
+            console.log('WebSocket connection established for test results.');
+            resultsElement.textContent += "WebSocket connected.\n";
+            // In a real scenario, we'd import and run tap tests here.
+            // For now, send a dummy message.
+            ws.send('TEST: Sample browser test: PASSED\n');
+            // Example of how tap might stream:
+            // const tap = await import('tap'); // This needs tap to be browser compatible
+            // tap.pipe(chunk => ws.send(chunk.toString()));
+            // tap.test('My first browser test', t => {
+            //    t.ok(true, 'true is ok');
+            //    t.end();
+            // });
+            // tap.on('end', () => ws.close());
+        };
+
+        ws.onmessage = (event) => {
+            // Messages from server (if any)
+            console.log('Message from server:', event.data);
+            resultsElement.textContent += `Server: ${event.data}\n`;
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            resultsElement.textContent += "WebSocket error. See console.\n";
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed.');
+            resultsElement.textContent += "WebSocket disconnected.\n";
+        };
+
+        // Placeholder for actual test execution
+        resultsElement.textContent += "Attempting to run tests...\n";
+        // Simulate a test result for now
+        setTimeout(() => {
+             resultsElement.textContent += "Test: My first browser test ... ok\n";
+             resultsElement.textContent += "1..1\n# pass  1\n# ok\n";
+             if(ws.readyState === WebSocket.OPEN) {
+                 ws.send("Test: My first browser test ... ok\n1..1\n# pass  1\n# ok\n");
+             }
+        }, 1000);
+
+    </script>
+</body>
+</html>

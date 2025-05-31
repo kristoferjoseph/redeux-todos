@@ -1,0 +1,25 @@
+<template shadowrootmode="open">
+  <style>
+    :host {
+      display: inline-block;
+    }
+    button {
+      padding: var(--button-padding, 0.5em 1em);
+      border: var(--button-border, 1px solid #007bff);
+      border-radius: var(--button-radius, 4px);
+      background-color: var(--button-bg-color, #007bff);
+      color: var(--button-color, white);
+      cursor: pointer;
+      font-size: var(--button-font-size, 1em);
+    }
+    button:hover {
+      background-color: var(--button-hover-bg-color, #0056b3);
+    }
+    :host([disabled]) button {
+      background-color: #ccc;
+      border-color: #aaa;
+      cursor: not-allowed;
+    }
+  </style>
+  <button type="button"><slot></slot></button>
+</template>
