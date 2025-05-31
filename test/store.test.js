@@ -1,4 +1,4 @@
-const tap = require('tap');
+import tap from 'tap';
 
 // Mock localStorage for Node.js environment
 const localStorageMock = (() => {
@@ -12,8 +12,8 @@ const localStorageMock = (() => {
 })();
 global.localStorage = localStorageMock;
 
-// Require the store module AFTER localStorage is mocked
-const store = require('../public/js/store.js');
+// Import the store module AFTER localStorage is mocked
+import * as store from '../public/js/store.js';
 
 tap.beforeEach(() => {
   store._resetState(); // Reset state and clear mock localStorage before each test

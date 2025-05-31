@@ -1,31 +1,40 @@
-const tap = require('tap');
-const sinon = require('sinon');
-const fs = require('fs');
-const path = require('path');
+import tap from 'tap';
+import sinon from 'sinon';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Path to the handler under test
-const handlerPath = '../../../src/http/get-render-elementName/index.js';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const handlerPath = '../../src/http/get-render-elementName/index.js';
 let handler;
 
 // Helper to mock templates in memory
 const mockTemplates = {};
 
-tap.beforeEach(() => {
-  delete require.cache[require.resolve(handlerPath)];
-  handler = require(handlerPath).handler;
+tap.beforeEach(async () => {
+  // ES modules don't have require.cache, so we use dynamic import with cache busting
+  const handlerModule = await import(`${handlerPath}?update=${Date.now()}`);
+  handler = handlerModule.handler;
 
-  sinon.stub(fs, 'existsSync').callsFake((filePath) => {
-    const fileName = path.basename(filePath);
-    return mockTemplates.hasOwnProperty(fileName);
-  });
+  // Only stub if not already stubbed
+  if (!fs.existsSync.restore) {
+    sinon.stub(fs, 'existsSync').callsFake((filePath) => {
+      const fileName = path.basename(filePath);
+      return mockTemplates.hasOwnProperty(fileName);
+    });
+  }
 
-  sinon.stub(fs, 'readFileSync').callsFake((filePath, encoding) => {
-    const fileName = path.basename(filePath);
-    if (mockTemplates.hasOwnProperty(fileName)) {
-      return mockTemplates[fileName];
-    }
-    throw new Error(`Mocked readFileSync: File not found ${fileName}`);
-  });
+  if (!fs.readFileSync.restore) {
+    sinon.stub(fs, 'readFileSync').callsFake((filePath, encoding) => {
+      const fileName = path.basename(filePath);
+      if (mockTemplates.hasOwnProperty(fileName)) {
+        return mockTemplates[fileName];
+      }
+      throw new Error(`Mocked readFileSync: File not found ${fileName}`);
+    });
+  }
 });
 
 tap.afterEach(() => {

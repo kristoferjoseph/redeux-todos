@@ -1,0 +1,400 @@
+{
+  "result": [
+    {
+      "scriptId": "316",
+      "url": "file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/public/js/store.js",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 4281,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "loadState",
+          "ranges": [
+            {
+              "startOffset": 191,
+              "endOffset": 616,
+              "count": 1
+            },
+            {
+              "startOffset": 308,
+              "endOffset": 488,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "saveTodos",
+          "ranges": [
+            {
+              "startOffset": 648,
+              "endOffset": 837,
+              "count": 24
+            },
+            {
+              "startOffset": 757,
+              "endOffset": 835,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "subscribe",
+          "ranges": [
+            {
+              "startOffset": 906,
+              "endOffset": 1067,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "notify",
+          "ranges": [
+            {
+              "startOffset": 1069,
+              "endOffset": 1416,
+              "count": 45
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 1326,
+              "endOffset": 1352,
+              "count": 46
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 1379,
+              "endOffset": 1412,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "getTodos",
+          "ranges": [
+            {
+              "startOffset": 1444,
+              "endOffset": 1511,
+              "count": 21
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "getFilteredTodos",
+          "ranges": [
+            {
+              "startOffset": 1520,
+              "endOffset": 1812,
+              "count": 3
+            },
+            {
+              "startOffset": 1622,
+              "endOffset": 1678,
+              "count": 1
+            },
+            {
+              "startOffset": 1678,
+              "endOffset": 1774,
+              "count": 2
+            },
+            {
+              "startOffset": 1719,
+              "endOffset": 1774,
+              "count": 1
+            },
+            {
+              "startOffset": 1774,
+              "endOffset": 1811,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 1654,
+              "endOffset": 1672,
+              "count": 3
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 1751,
+              "endOffset": 1768,
+              "count": 3
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "getActiveCount",
+          "ranges": [
+            {
+              "startOffset": 1821,
+              "endOffset": 1906,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "getCompletedCount",
+          "ranges": [
+            {
+              "startOffset": 1915,
+              "endOffset": 2002,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "getCurrentFilter",
+          "ranges": [
+            {
+              "startOffset": 2011,
+              "endOffset": 2065,
+              "count": 5
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "addTodo",
+          "ranges": [
+            {
+              "startOffset": 2104,
+              "endOffset": 2413,
+              "count": 17
+            },
+            {
+              "startOffset": 2141,
+              "endOffset": 2168,
+              "count": 16
+            },
+            {
+              "startOffset": 2169,
+              "endOffset": 2190,
+              "count": 16
+            },
+            {
+              "startOffset": 2192,
+              "endOffset": 2199,
+              "count": 1
+            },
+            {
+              "startOffset": 2199,
+              "endOffset": 2412,
+              "count": 16
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "toggleTodo",
+          "ranges": [
+            {
+              "startOffset": 2422,
+              "endOffset": 2579,
+              "count": 4
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 2480,
+              "endOffset": 2545,
+              "count": 6
+            },
+            {
+              "startOffset": 2539,
+              "endOffset": 2545,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "deleteTodo",
+          "ranges": [
+            {
+              "startOffset": 2588,
+              "endOffset": 2702,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 2649,
+              "endOffset": 2671,
+              "count": 2
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "editText",
+          "ranges": [
+            {
+              "startOffset": 2711,
+              "endOffset": 3173,
+              "count": 3
+            },
+            {
+              "startOffset": 2816,
+              "endOffset": 3021,
+              "count": 1
+            },
+            {
+              "startOffset": 3021,
+              "endOffset": 3172,
+              "count": 2
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 3054,
+              "endOffset": 3139,
+              "count": 3
+            },
+            {
+              "startOffset": 3133,
+              "endOffset": 3139,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "setEditingState",
+          "ranges": [
+            {
+              "startOffset": 3264,
+              "endOffset": 3508,
+              "count": 2
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 3338,
+              "endOffset": 3430,
+              "count": 4
+            },
+            {
+              "startOffset": 3401,
+              "endOffset": 3430,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "setFilter",
+          "ranges": [
+            {
+              "startOffset": 3518,
+              "endOffset": 3659,
+              "count": 7
+            },
+            {
+              "startOffset": 3608,
+              "endOffset": 3657,
+              "count": 6
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "clearCompleted",
+          "ranges": [
+            {
+              "startOffset": 3668,
+              "endOffset": 3864,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 3731,
+              "endOffset": 3749,
+              "count": 2
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "_resetState",
+          "ranges": [
+            {
+              "startOffset": 4044,
+              "endOffset": 4231,
+              "count": 13
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "_getRawState",
+          "ranges": [
+            {
+              "startOffset": 4239,
+              "endOffset": 4280,
+              "count": 4
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    }
+  ],
+  "timestamp": 485624.975376,
+  "source-map-cache": {}
+}

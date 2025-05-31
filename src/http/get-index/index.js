@@ -3,10 +3,14 @@
 // Architect's @static pragma handles serving assets from public/,
 // but the root path '/' needs to explicitly serve the HTML file.
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-exports.handler = async function http(req) {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const handler = async function http(req) {
   // Path to public/index.html relative to this lambda's execution context
   // Lambdas run from src/http/get-index, so path is ../../../public/index.html
   const indexPath = path.join(__dirname, '..', '..', '..', 'public', 'index.html');

@@ -5,12 +5,12 @@ if (typeof tap !== 'undefined') {
     t.teardown(() => document.body.removeChild(container));
 
     t.test('should render counts and filters', async (st) => {
-      container.innerHTML = \`
+      container.innerHTML = `
         <todo-footer
           data-active-count="2"
           data-completed-count="1"
           data-filter="all">
-        </todo-footer>\`;
+        </todo-footer>`;
       const footer = container.querySelector('todo-footer');
       await new Promise(r => setTimeout(r, 100)); // Wait for render
 
@@ -22,12 +22,12 @@ if (typeof tap !== 'undefined') {
     });
 
     t.test('should be hidden if all counts are zero', async (st) => {
-        container.innerHTML = \`
+        container.innerHTML = `
           <todo-footer
             data-active-count="0"
             data-completed-count="0"
             data-filter="all">
-          </todo-footer>\`;
+          </todo-footer>`;
         const footer = container.querySelector('todo-footer');
         await new Promise(r => setTimeout(r, 100));
         st.ok(footer.hasAttribute('hidden'), 'Footer should be hidden when no todos');
@@ -35,12 +35,12 @@ if (typeof tap !== 'undefined') {
     });
 
     t.test('should not show clear completed if completedCount is 0', async (st) => {
-        container.innerHTML = \`
+        container.innerHTML = `
           <todo-footer
             data-active-count="3"
             data-completed-count="0"
             data-filter="all">
-          </todo-footer>\`;
+          </todo-footer>`;
         const footer = container.querySelector('todo-footer');
         await new Promise(r => setTimeout(r, 100));
         st.notOk(footer.shadowRoot.querySelector('.clear-completed'), 'Clear completed button should not exist');

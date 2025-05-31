@@ -1,5 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Basic security: prevent directory traversal
 function isValidElementName(elementName) {
@@ -16,7 +20,7 @@ function interpolate(templateString, dataObject) {
     for (const key in dataObject) {
       // Regex to match ${data.key}, ${ data.key }, etc.
       // Or, if dataObject is passed directly, ${key}
-      const regex = new RegExp(\`\\$\\{data\.${key}\\}\`, 'g');
+      const regex = new RegExp(`\\$\\{data\.${key}\\}`, 'g');
       result = result.replace(regex, dataObject[key]);
     }
   }
@@ -28,14 +32,14 @@ function interpolate(templateString, dataObject) {
 
 async function renderElement(elementName, data, fetchPromises = new Set()) {
   if (!isValidElementName(elementName)) {
-    console.warn(\`[Render] Invalid element name requested: \${elementName}\`);
+    console.warn(`[Render] Invalid element name requested: ${elementName}`);
     return ''; // Or throw error
   }
 
   const templatePath = path.join(__dirname, '..', '..', '..', 'elements', `${elementName}.html`);
 
   if (!fs.existsSync(templatePath)) {
-    console.warn(\`[Render] Template not found: \${templatePath}\`);
+    console.warn(`[Render] Template not found: ${templatePath}`);
     return ''; // Or throw error for critical missing elements
   }
 
@@ -48,8 +52,7 @@ async function renderElement(elementName, data, fetchPromises = new Set()) {
   // Regex to find custom elements like <tag-name ...></tag-name> or <tag-name ... />
   // This is a simplified regex and might need refinement for complex cases.
   // It captures the tag name, attributes, and content (for slotting).
-  const nestedElementRegex = /<([a-zA-Z0-9-]+)((?:\s+[a-zA-Z0-9_-]+(?:=(?:"[^"]*"|'[^']*'|[^\s>]+))?)*)\s*>((?:.|
-)*?)<\/>/g;
+  const nestedElementRegex = /<([a-zA-Z0-9-]+)((?:\s+[a-zA-Z0-9_-]+(?:=(?:"[^"]*"|'[^']*'|[^\s>]+))?)*)\s*>((?:.|\n)*?)<\/>/g;
   let match;
 
   // Use a Promise.all to handle all nested renderings concurrently for this level
@@ -75,7 +78,7 @@ async function renderElement(elementName, data, fetchPromises = new Set()) {
       if (attributesString) {
         while ((attrMatch = attrRegex.exec(attributesString)) !== null) {
           nestedData[attrMatch[1]] = attrMatch[2] || attrMatch[3] || attrMatch[4] || true;
-          // Interpolate attribute values if they contain \${data.xxx}
+          // Interpolate attribute values if they contain ${data.xxx}
           if (typeof nestedData[attrMatch[1]] === 'string') {
             nestedData[attrMatch[1]] = interpolate(nestedData[attrMatch[1]], data);
           }
@@ -160,7 +163,7 @@ async function renderElement(elementName, data, fetchPromises = new Set()) {
         // and use their outerHTML.
         // For this iteration, named slots are NOT fully implemented beyond finding the tag.
         // We'll return a placeholder for named slots.
-        return `<!-- Content for slot '\${slotName}' from parent would go here -->`;
+        return `<!-- Content for slot '${slotName}' from parent would go here -->`;
     });
   }
   // Remove any remaining slot tags if no content was provided
@@ -170,7 +173,7 @@ async function renderElement(elementName, data, fetchPromises = new Set()) {
   return processedHtml;
 }
 
-exports.handler = async function http(req) {
+export const handler = async function http(req) {
   const elementName = req.params.elementName;
   if (!isValidElementName(elementName)) {
     return { statusCode: 400, json: { error: 'Invalid or missing elementName' } };
@@ -195,7 +198,7 @@ exports.handler = async function http(req) {
       body: renderedHtml
     };
   } catch (error) {
-    console.error(\`[Handler Error] Rendering \${elementName}:\`, error);
+    console.error(`[Handler Error] Rendering ${elementName}:`, error);
     return { statusCode: 500, json: { error: 'Failed to render template', details: error.message }};
   }
 };

@@ -1,0 +1,1118 @@
+{
+  "result": [
+    {
+      "scriptId": "585",
+      "url": "file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/src/http/get-render-elementName/index.js?update=1748720212909",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 9927,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "isValidElementName",
+          "ranges": [
+            {
+              "startOffset": 227,
+              "endOffset": 418,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "interpolate",
+          "ranges": [
+            {
+              "startOffset": 531,
+              "endOffset": 1115,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "renderElement",
+          "ranges": [
+            {
+              "startOffset": 1118,
+              "endOffset": 8762,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "http",
+          "ranges": [
+            {
+              "startOffset": 8787,
+              "endOffset": 9925,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        }
+      ]
+    },
+    {
+      "scriptId": "586",
+      "url": "file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/src/http/get-render-elementName/index.js?update=1748720212916",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 9927,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "isValidElementName",
+          "ranges": [
+            {
+              "startOffset": 227,
+              "endOffset": 418,
+              "count": 2
+            },
+            {
+              "startOffset": 325,
+              "endOffset": 338,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "interpolate",
+          "ranges": [
+            {
+              "startOffset": 531,
+              "endOffset": 1115,
+              "count": 2
+            },
+            {
+              "startOffset": 624,
+              "endOffset": 634,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "renderElement",
+          "ranges": [
+            {
+              "startOffset": 1118,
+              "endOffset": 8762,
+              "count": 1
+            },
+            {
+              "startOffset": 1235,
+              "endOffset": 1350,
+              "count": 0
+            },
+            {
+              "startOffset": 1487,
+              "endOffset": 1621,
+              "count": 0
+            },
+            {
+              "startOffset": 2491,
+              "endOffset": 4677,
+              "count": 0
+            },
+            {
+              "startOffset": 5901,
+              "endOffset": 7117,
+              "count": 0
+            },
+            {
+              "startOffset": 7295,
+              "endOffset": 8597,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 4281,
+              "endOffset": 4406,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 7852,
+              "endOffset": 8591,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "http",
+          "ranges": [
+            {
+              "startOffset": 8787,
+              "endOffset": 9925,
+              "count": 1
+            },
+            {
+              "startOffset": 8900,
+              "endOffset": 8988,
+              "count": 0
+            },
+            {
+              "startOffset": 9038,
+              "endOffset": 9043,
+              "count": 0
+            },
+            {
+              "startOffset": 9163,
+              "endOffset": 9180,
+              "count": 0
+            },
+            {
+              "startOffset": 9217,
+              "endOffset": 9235,
+              "count": 0
+            },
+            {
+              "startOffset": 9267,
+              "endOffset": 9293,
+              "count": 0
+            },
+            {
+              "startOffset": 9295,
+              "endOffset": 9325,
+              "count": 0
+            },
+            {
+              "startOffset": 9732,
+              "endOffset": 9923,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    },
+    {
+      "scriptId": "587",
+      "url": "file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/src/http/get-render-elementName/index.js?update=1748720212923",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 9927,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "isValidElementName",
+          "ranges": [
+            {
+              "startOffset": 227,
+              "endOffset": 418,
+              "count": 2
+            },
+            {
+              "startOffset": 325,
+              "endOffset": 338,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "interpolate",
+          "ranges": [
+            {
+              "startOffset": 531,
+              "endOffset": 1115,
+              "count": 2
+            },
+            {
+              "startOffset": 624,
+              "endOffset": 634,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "renderElement",
+          "ranges": [
+            {
+              "startOffset": 1118,
+              "endOffset": 8762,
+              "count": 1
+            },
+            {
+              "startOffset": 1235,
+              "endOffset": 1350,
+              "count": 0
+            },
+            {
+              "startOffset": 1487,
+              "endOffset": 1621,
+              "count": 0
+            },
+            {
+              "startOffset": 2491,
+              "endOffset": 4677,
+              "count": 0
+            },
+            {
+              "startOffset": 5901,
+              "endOffset": 7117,
+              "count": 0
+            },
+            {
+              "startOffset": 7295,
+              "endOffset": 8597,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 4281,
+              "endOffset": 4406,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 7852,
+              "endOffset": 8591,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "http",
+          "ranges": [
+            {
+              "startOffset": 8787,
+              "endOffset": 9925,
+              "count": 1
+            },
+            {
+              "startOffset": 8900,
+              "endOffset": 8988,
+              "count": 0
+            },
+            {
+              "startOffset": 9038,
+              "endOffset": 9043,
+              "count": 0
+            },
+            {
+              "startOffset": 9163,
+              "endOffset": 9180,
+              "count": 0
+            },
+            {
+              "startOffset": 9217,
+              "endOffset": 9235,
+              "count": 0
+            },
+            {
+              "startOffset": 9267,
+              "endOffset": 9293,
+              "count": 0
+            },
+            {
+              "startOffset": 9295,
+              "endOffset": 9325,
+              "count": 0
+            },
+            {
+              "startOffset": 9732,
+              "endOffset": 9923,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    },
+    {
+      "scriptId": "588",
+      "url": "file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/src/http/get-render-elementName/index.js?update=1748720212936",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 9927,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "isValidElementName",
+          "ranges": [
+            {
+              "startOffset": 227,
+              "endOffset": 418,
+              "count": 2
+            },
+            {
+              "startOffset": 325,
+              "endOffset": 338,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "interpolate",
+          "ranges": [
+            {
+              "startOffset": 531,
+              "endOffset": 1115,
+              "count": 2
+            },
+            {
+              "startOffset": 624,
+              "endOffset": 634,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "renderElement",
+          "ranges": [
+            {
+              "startOffset": 1118,
+              "endOffset": 8762,
+              "count": 1
+            },
+            {
+              "startOffset": 1235,
+              "endOffset": 1350,
+              "count": 0
+            },
+            {
+              "startOffset": 1487,
+              "endOffset": 1621,
+              "count": 0
+            },
+            {
+              "startOffset": 2491,
+              "endOffset": 4677,
+              "count": 0
+            },
+            {
+              "startOffset": 5901,
+              "endOffset": 7117,
+              "count": 0
+            },
+            {
+              "startOffset": 7295,
+              "endOffset": 8597,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 4281,
+              "endOffset": 4406,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 7852,
+              "endOffset": 8591,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "http",
+          "ranges": [
+            {
+              "startOffset": 8787,
+              "endOffset": 9925,
+              "count": 1
+            },
+            {
+              "startOffset": 8900,
+              "endOffset": 8988,
+              "count": 0
+            },
+            {
+              "startOffset": 9038,
+              "endOffset": 9043,
+              "count": 0
+            },
+            {
+              "startOffset": 9163,
+              "endOffset": 9180,
+              "count": 0
+            },
+            {
+              "startOffset": 9217,
+              "endOffset": 9235,
+              "count": 0
+            },
+            {
+              "startOffset": 9267,
+              "endOffset": 9293,
+              "count": 0
+            },
+            {
+              "startOffset": 9295,
+              "endOffset": 9325,
+              "count": 0
+            },
+            {
+              "startOffset": 9732,
+              "endOffset": 9923,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    },
+    {
+      "scriptId": "589",
+      "url": "file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/src/http/get-render-elementName/index.js?update=1748720212943",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 9927,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "isValidElementName",
+          "ranges": [
+            {
+              "startOffset": 227,
+              "endOffset": 418,
+              "count": 2
+            },
+            {
+              "startOffset": 325,
+              "endOffset": 338,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "interpolate",
+          "ranges": [
+            {
+              "startOffset": 531,
+              "endOffset": 1115,
+              "count": 2
+            },
+            {
+              "startOffset": 624,
+              "endOffset": 634,
+              "count": 0
+            },
+            {
+              "startOffset": 754,
+              "endOffset": 989,
+              "count": 4
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "renderElement",
+          "ranges": [
+            {
+              "startOffset": 1118,
+              "endOffset": 8762,
+              "count": 1
+            },
+            {
+              "startOffset": 1235,
+              "endOffset": 1350,
+              "count": 0
+            },
+            {
+              "startOffset": 1487,
+              "endOffset": 1621,
+              "count": 0
+            },
+            {
+              "startOffset": 2491,
+              "endOffset": 4677,
+              "count": 0
+            },
+            {
+              "startOffset": 5901,
+              "endOffset": 7117,
+              "count": 0
+            },
+            {
+              "startOffset": 7295,
+              "endOffset": 8597,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 4281,
+              "endOffset": 4406,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 7852,
+              "endOffset": 8591,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "http",
+          "ranges": [
+            {
+              "startOffset": 8787,
+              "endOffset": 9925,
+              "count": 1
+            },
+            {
+              "startOffset": 8900,
+              "endOffset": 8988,
+              "count": 0
+            },
+            {
+              "startOffset": 9038,
+              "endOffset": 9043,
+              "count": 0
+            },
+            {
+              "startOffset": 9106,
+              "endOffset": 9329,
+              "count": 2
+            },
+            {
+              "startOffset": 9163,
+              "endOffset": 9180,
+              "count": 0
+            },
+            {
+              "startOffset": 9217,
+              "endOffset": 9235,
+              "count": 0
+            },
+            {
+              "startOffset": 9267,
+              "endOffset": 9293,
+              "count": 0
+            },
+            {
+              "startOffset": 9295,
+              "endOffset": 9325,
+              "count": 0
+            },
+            {
+              "startOffset": 9732,
+              "endOffset": 9923,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    },
+    {
+      "scriptId": "590",
+      "url": "file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/src/http/get-render-elementName/index.js?update=1748720212951",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 9927,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "isValidElementName",
+          "ranges": [
+            {
+              "startOffset": 227,
+              "endOffset": 418,
+              "count": 2
+            },
+            {
+              "startOffset": 325,
+              "endOffset": 338,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "interpolate",
+          "ranges": [
+            {
+              "startOffset": 531,
+              "endOffset": 1115,
+              "count": 2
+            },
+            {
+              "startOffset": 624,
+              "endOffset": 634,
+              "count": 0
+            },
+            {
+              "startOffset": 754,
+              "endOffset": 989,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "renderElement",
+          "ranges": [
+            {
+              "startOffset": 1118,
+              "endOffset": 8762,
+              "count": 1
+            },
+            {
+              "startOffset": 1235,
+              "endOffset": 1350,
+              "count": 0
+            },
+            {
+              "startOffset": 1487,
+              "endOffset": 1621,
+              "count": 0
+            },
+            {
+              "startOffset": 2491,
+              "endOffset": 4677,
+              "count": 0
+            },
+            {
+              "startOffset": 5901,
+              "endOffset": 7117,
+              "count": 0
+            },
+            {
+              "startOffset": 7295,
+              "endOffset": 8597,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 4281,
+              "endOffset": 4406,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 7852,
+              "endOffset": 8591,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "http",
+          "ranges": [
+            {
+              "startOffset": 8787,
+              "endOffset": 9925,
+              "count": 1
+            },
+            {
+              "startOffset": 8900,
+              "endOffset": 8988,
+              "count": 0
+            },
+            {
+              "startOffset": 9038,
+              "endOffset": 9043,
+              "count": 0
+            },
+            {
+              "startOffset": 9106,
+              "endOffset": 9329,
+              "count": 0
+            },
+            {
+              "startOffset": 9732,
+              "endOffset": 9923,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    },
+    {
+      "scriptId": "591",
+      "url": "file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/src/http/get-render-elementName/index.js?update=1748720212957",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 9927,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "isValidElementName",
+          "ranges": [
+            {
+              "startOffset": 227,
+              "endOffset": 418,
+              "count": 2
+            },
+            {
+              "startOffset": 325,
+              "endOffset": 338,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "interpolate",
+          "ranges": [
+            {
+              "startOffset": 531,
+              "endOffset": 1115,
+              "count": 2
+            },
+            {
+              "startOffset": 624,
+              "endOffset": 634,
+              "count": 0
+            },
+            {
+              "startOffset": 754,
+              "endOffset": 989,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "renderElement",
+          "ranges": [
+            {
+              "startOffset": 1118,
+              "endOffset": 8762,
+              "count": 1
+            },
+            {
+              "startOffset": 1235,
+              "endOffset": 1350,
+              "count": 0
+            },
+            {
+              "startOffset": 1487,
+              "endOffset": 1621,
+              "count": 0
+            },
+            {
+              "startOffset": 2491,
+              "endOffset": 4677,
+              "count": 0
+            },
+            {
+              "startOffset": 5901,
+              "endOffset": 7117,
+              "count": 0
+            },
+            {
+              "startOffset": 7295,
+              "endOffset": 8597,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 4281,
+              "endOffset": 4406,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 7852,
+              "endOffset": 8591,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "http",
+          "ranges": [
+            {
+              "startOffset": 8787,
+              "endOffset": 9925,
+              "count": 1
+            },
+            {
+              "startOffset": 8900,
+              "endOffset": 8988,
+              "count": 0
+            },
+            {
+              "startOffset": 9038,
+              "endOffset": 9043,
+              "count": 0
+            },
+            {
+              "startOffset": 9106,
+              "endOffset": 9329,
+              "count": 0
+            },
+            {
+              "startOffset": 9732,
+              "endOffset": 9923,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    },
+    {
+      "scriptId": "592",
+      "url": "file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/src/http/get-render-elementName/index.js?update=1748720212970",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 9927,
+              "count": 1
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "isValidElementName",
+          "ranges": [
+            {
+              "startOffset": 227,
+              "endOffset": 418,
+              "count": 2
+            },
+            {
+              "startOffset": 325,
+              "endOffset": 338,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "interpolate",
+          "ranges": [
+            {
+              "startOffset": 531,
+              "endOffset": 1115,
+              "count": 2
+            },
+            {
+              "startOffset": 624,
+              "endOffset": 634,
+              "count": 0
+            },
+            {
+              "startOffset": 754,
+              "endOffset": 989,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "renderElement",
+          "ranges": [
+            {
+              "startOffset": 1118,
+              "endOffset": 8762,
+              "count": 1
+            },
+            {
+              "startOffset": 1235,
+              "endOffset": 1350,
+              "count": 0
+            },
+            {
+              "startOffset": 1487,
+              "endOffset": 1621,
+              "count": 0
+            },
+            {
+              "startOffset": 2491,
+              "endOffset": 4677,
+              "count": 0
+            },
+            {
+              "startOffset": 5901,
+              "endOffset": 7117,
+              "count": 0
+            },
+            {
+              "startOffset": 7295,
+              "endOffset": 8597,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 4281,
+              "endOffset": 4406,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 7852,
+              "endOffset": 8591,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "http",
+          "ranges": [
+            {
+              "startOffset": 8787,
+              "endOffset": 9925,
+              "count": 1
+            },
+            {
+              "startOffset": 8900,
+              "endOffset": 8988,
+              "count": 0
+            },
+            {
+              "startOffset": 9038,
+              "endOffset": 9043,
+              "count": 0
+            },
+            {
+              "startOffset": 9106,
+              "endOffset": 9329,
+              "count": 0
+            },
+            {
+              "startOffset": 9732,
+              "endOffset": 9923,
+              "count": 0
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    }
+  ],
+  "timestamp": 485624.627376,
+  "source-map-cache": {}
+}

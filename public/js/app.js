@@ -27,14 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Manually reconstruct HTML. A more advanced setup might use a virtual DOM or template literals for this.
-    root.innerHTML = \`
+    root.innerHTML = `
       <h1>Todos</h1>
       <todo-input id="newTodoInput"></todo-input>
       <todo-list id="mainTodoList"></todo-list>
       <todo-footer id="appFooter"></todo-footer>
       <hr>
       <p>Info Badge Example: <info-badge data-text="Store Example"></info-badge></p>
-    \`;
+    `;
 
     const todoListElement = root.querySelector('#mainTodoList');
     if (todoListElement) {

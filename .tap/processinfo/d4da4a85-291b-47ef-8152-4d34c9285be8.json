@@ -1,0 +1,242 @@
+{
+  "date": "2025-05-31T19:36:52.242Z",
+  "argv": [
+    "/Users/kristoferjoseph/.nvm/versions/node/v20.15.1/bin/node",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/test/components/todo-item.test.js"
+  ],
+  "execArgv": [
+    "--import=file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/typescript/dist/esm/import.mjs",
+    "--import=file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/import.mjs",
+    "--enable-source-maps",
+    "--import=file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/processinfo/dist/esm/import.mjs"
+  ],
+  "NODE_OPTIONS": "\"--import=file:///Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/processinfo/dist/esm/import.mjs\"",
+  "cwd": "/Users/kristoferjoseph/Developer/vibes/redeux-todos",
+  "pid": 3727,
+  "ppid": 3721,
+  "parent": null,
+  "uuid": "d4da4a85-291b-47ef-8152-4d34c9285be8",
+  "files": [
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/test/components/todo-item.test.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/typescript/dist/esm/import.mjs",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@isaacs/ts-node-temp-fork-for-pr-2009/import.mjs",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@isaacs/ts-node-temp-fork-for-pr-2009/import-loader.mjs",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/import.mjs",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/mock-service.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/dist/esm/index.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/index.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/is-relative-require.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/export-line.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/munge-mocks.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/resolve-mock-entry-point.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/service-key.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/dist/esm/require-resolve.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/dist/esm/call-site-like.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-all-conditions.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-all-conditional-values.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-unique-condition-sets.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-all-exports.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-all-local-imports.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-conditional-value.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-import.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/is-windows.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/dist/esm/parse.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-conditional-values-list.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/errors.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-named-exports-list.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/read-pkg.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-export.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/star-glob.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/to-path.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/file-exists.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/find-dep-package.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/to-file-url.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-dependency-export.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-package-import.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/read-json.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/find-star-match.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/index.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/walk-up-path/dist/esm/index.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/index.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/glob.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/has-magic.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/ignore.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/assert-valid-pattern.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/escape.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/ast.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/unescape.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/pattern.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/path-scurry/dist/esm/index.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/walker.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/lru-cache/dist/esm/index.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/minipass/dist/esm/index.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/brace-expressions.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/processor.js",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/loader.mjs",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/hooks.mjs",
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/mock-service-client.js"
+  ],
+  "sources": {
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/typescript/dist/esm/import.mjs": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/typescript/src/import.mts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/import.mjs": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/src/import.mts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/mock-service.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/src/mock-service.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/dist/esm/index.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/src/index.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/index.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/index.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/is-relative-require.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/is-relative-require.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/export-line.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/src/export-line.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/munge-mocks.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/src/munge-mocks.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/resolve-mock-entry-point.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/src/resolve-mock-entry-point.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/dist/esm/service-key.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/mock/src/service-key.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/dist/esm/require-resolve.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/src/require-resolve.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/dist/esm/call-site-like.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/src/call-site-like.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-all-conditions.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/get-all-conditions.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-all-conditional-values.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/get-all-conditional-values.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-unique-condition-sets.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/get-unique-condition-sets.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-all-exports.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/resolve-all-exports.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-all-local-imports.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/resolve-all-local-imports.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-conditional-value.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/resolve-conditional-value.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-import.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/resolve-import.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/is-windows.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/is-windows.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/dist/esm/parse.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/@tapjs/stack/src/parse.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-conditional-values-list.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/get-conditional-values-list.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/errors.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/errors.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/get-named-exports-list.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/get-named-exports-list.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/read-pkg.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/read-pkg.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-export.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/resolve-export.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/star-glob.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/star-glob.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/to-path.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/to-path.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/file-exists.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/file-exists.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/find-dep-package.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/find-dep-package.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/to-file-url.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/to-file-url.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-dependency-export.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/resolve-dependency-export.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/resolve-package-import.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/resolve-package-import.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/read-json.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/read-json.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/dist/esm/find-star-match.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/src/find-star-match.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/index.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/src/index.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/walk-up-path/dist/esm/index.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/walk-up-path/src/index.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/index.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/src/index.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/glob.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/src/glob.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/has-magic.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/src/has-magic.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/ignore.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/src/ignore.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/assert-valid-pattern.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/src/assert-valid-pattern.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/escape.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/src/escape.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/ast.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/src/ast.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/unescape.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/src/unescape.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/pattern.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/src/pattern.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/path-scurry/dist/esm/index.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/path-scurry/src/index.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/walker.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/src/walker.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/lru-cache/dist/esm/index.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/lru-cache/src/index.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/minipass/dist/esm/index.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/minipass/src/index.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/dist/esm/brace-expressions.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/minimatch/src/brace-expressions.ts"
+    ],
+    "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/dist/esm/processor.js": [
+      "/Users/kristoferjoseph/Developer/vibes/redeux-todos/node_modules/resolve-import/node_modules/glob/src/processor.ts"
+    ]
+  },
+  "root": "d4da4a85-291b-47ef-8152-4d34c9285be8",
+  "externalID": "test/components/todo-item.test.js",
+  "code": 0,
+  "signal": null,
+  "runtime": 473.000917
+}
