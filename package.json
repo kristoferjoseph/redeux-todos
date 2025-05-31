@@ -4,14 +4,8 @@
   "description": "Redeux example todo app",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && npm run serve",
-    "serve": "echo 'http://localhost:6661' && instant -p 6661",
-    "test": "node test.js",
-    "build": "browserify ./src/index.js -t [ sheetify/transform ] -p [ css-extract -o ./bundle.css ] -g yo-yoify -o ./bundle.js",
-    "watch": "watchify ./src/index.js -t [ sheetify/transform ] -p [ css-extract -o ./bundle.css ] -o ./bundle.js",
-    "dist": "browserify ./src/index.js -t [ sheetify/transform ] -p [ css-extract -o ./bundle.css ] -g yo-yoify | uglifyjs --compress --screw-ie8 > ./bundle.js",
-    "lint": "standard src/**/*.js",
-    "fix": "standard --fix src/**/*.js"
+    "start": "arc sandbox",
+    "test": "tap test/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -31,24 +25,10 @@
     "url": "https://github.com/kristoferjoseph/redeux-todo/issues"
   },
   "homepage": "https://github.com/kristoferjoseph/redeux-todo#readme",
-  "dependencies": {
-    "bel": "^4.6.0",
-    "hash-switch": "^2.1.3",
-    "join-classes": "^1.0.0",
-    "kubby": "^1.2.0",
-    "nanomorph": "^4.0.4",
-    "redeux": "^4.2.1",
-    "sheetify": "^6.0.1",
-    "tiny-uuid": "^1.0.0"
-  },
   "devDependencies": {
-    "browserify": "^13.0.1",
-    "css-extract": "^1.2.0",
+    "@architect/architect": "^11.2.2",
     "deep-freeze": "0.0.1",
-    "instant-server": "^2.0.0",
-    "standard": "^9.0.2",
-    "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
-    "watchify": "^3.7.0",
-    "yo-yoify": "^3.7.0"
+    "sinon": "^20.0.0",
+    "tap": "^21.1.0"
   }
 }

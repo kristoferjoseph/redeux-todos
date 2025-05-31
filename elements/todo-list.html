@@ -1,0 +1,20 @@
+<template shadowrootmode="open">
+  <style>
+    :host {
+      display: block;
+      margin-top: 1rem;
+    }
+    .empty-state {
+      padding: 1rem;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+  <div class="list-container">
+    <!-- Todo items will be slotted here or dynamically added -->
+    <slot></slot>
+  </div>
+  \${data.items && data.items.length === 0 ? \`
+    <p class="empty-state">\${data.emptyMessage || 'No todos yet!'}</p>
+  \` : ''}
+</template>

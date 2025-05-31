@@ -1,0 +1,20 @@
+<template shadowrootmode="open">
+  <style>
+    :host {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+    }
+    custom-button {
+      border-radius: 0 4px 4px 0;
+      /* CustomButton uses CSS vars, or we can target its ::part if it had one */
+    }
+  </style>
+  <input type="text" placeholder="What needs to be done?">
+  <custom-button class="add-btn">Add</custom-button>
+</template>

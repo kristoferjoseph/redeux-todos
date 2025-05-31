@@ -1,0 +1,21 @@
+<template shadowrootmode="open">
+  <style>
+    :host { display: block; border: 1px solid blue; padding: 10px; }
+    .content { margin-top: 5px; border-top: 1px dashed blue; padding-top: 5px; }
+  </style>
+  <h2>Parent Element: \${data.title}</h2>
+  <p>This is the parent. It will include a child element and slots.</p>
+
+  <!-- Nested Component -->
+  <!-- We need a way to pass data. Let's assume attributes are evaluated. -->
+  <!-- For simplicity, data passed to children will be stringified JSON or simple strings. -->
+  <!-- Let's try to pass data.childTitle directly from parent's data -->
+  <child-element data-child-title="\${data.childTitle}" data-message="\${data.childMessage}"></child-element>
+
+  <div class="content">
+    Default slot content will go here: <slot></slot>
+  </div>
+  <div class="named-slot-content">
+    Named slot 'details' content: <slot name="details"></slot>
+  </div>
+</template>
