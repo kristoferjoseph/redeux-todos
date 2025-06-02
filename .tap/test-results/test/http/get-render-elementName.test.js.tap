@@ -4,373 +4,48 @@ TAP version 14
         ok 1 - should be equal
         ok 2 - should match pattern
         1..2
-    ok 1 - should render a simple element without nesting or slots # time=2.917ms
+    ok 1 - should render a simple element without nesting or slots # time=2.54ms
     
     # Subtest: should render a nested component
         ok 1 - should be equal
-        not ok 2 - Parent should contain rendered child
-          ---
-          diff: >
-            --- expected
-          
-            +++ actual
-          
-            @@ -1,1 +1,1 @@
-          
-            -/Parent: <template shadowrootmode="open"><span>Child: Nested
-            Hello<\/span><\/template>/
-          
-            +"<template shadowrootmode=\"open\"><div>Parent: <child-comp
-            data-text=\"Nested Hello\"></child-comp></div></template>"
-          at:
-            fileName: test/http/get-render-elementName.test.js
-            lineNumber: 64
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/http/get-render-elementName.test.js:64:8)
-          source: >2
-                const result = await handler(request);
-                st.equal(result.statusCode, 200);
-                st.match(result.body, /Parent: <template shadowrootmode="open"><span>Child: Nested Hello<\/span><\/template>/, 'Parent should contain rendered child');
-            -------^
-                st.end();
-              });
-          ...
-        
+        ok 2 - Parent should contain rendered child
         1..2
-    not ok 2 - should render a nested component # time=10.827ms
-      ---
-      at:
-        fileName: test/http/get-render-elementName.test.js
-        lineNumber: 57
-        columnNumber: 5
-        typeName: Test
-      source: >2
-          });
-      
-          t.test('should render a nested component', async (st) => {
-        ----^
-            mockTemplates['parent-comp.html'] = '<template shadowrootmode="open"><div>Parent: <child-comp data-text="\${data.childText}"></child-comp></div></template>';
-            mockTemplates['child-comp.html'] = '<template shadowrootmode="open"><span>Child: \${data.text}</span></template>';
-      ...
+    ok 2 - should render a nested component # time=0.74ms
     
     # Subtest: should handle attributes passed to nested components
         ok 1 - should be equal
-        not ok 2 - should match pattern
-          ---
-          diff: >
-            --- expected
-          
-            +++ actual
-          
-            @@ -1,1 +1,1 @@
-          
-            -/<p>AttributeValue<\/p>/
-          
-            +"<template shadowrootmode=\"open\"><child-attr
-            data-val=\"AttributeValue\"></child-attr></template>"
-          at:
-            fileName: test/http/get-render-elementName.test.js
-            lineNumber: 74
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/http/get-render-elementName.test.js:74:8)
-          source: |2
-                const result = await handler(request);
-                st.equal(result.statusCode, 200);
-                st.match(result.body, /<p>AttributeValue<\/p>/);
-            -------^
-                st.end();
-              });
-          ...
-        
+        ok 2 - should match pattern
         1..2
-    not ok 3 - should handle attributes passed to nested components # time=3.163ms
-      ---
-      at:
-        fileName: test/http/get-render-elementName.test.js
-        lineNumber: 68
-        columnNumber: 5
-        typeName: Test
-      source: >2
-          });
-      
-          t.test('should handle attributes passed to nested components', async (st) => {
-        ----^
-            mockTemplates['parent-attr.html'] = '<template shadowrootmode="open"><child-attr data-val="\${data.val}"></child-attr></template>';
-            mockTemplates['child-attr.html'] = '<template shadowrootmode="open"><p>\${data.val}</p></template>';
-      ...
+    ok 3 - should handle attributes passed to nested components # time=0.608ms
     
     # Subtest: should recursively render multiple levels of nesting
         ok 1 - should be equal
         ok 2 - should match pattern
-        not ok 3 - should match pattern
-          ---
-          diff: >
-            --- expected
-          
-            +++ actual
-          
-            @@ -1,1 +1,1 @@
-          
-            -/<h2>Parent L1: Hello Parent<\/h2>/
-          
-            +"<template shadowrootmode=\"open\"><h1>GP</h1><parent-comp-level1
-            data-text=\"Hello Parent\"></parent-comp-level1></template>"
-          at:
-            fileName: test/http/get-render-elementName.test.js
-            lineNumber: 90
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/http/get-render-elementName.test.js:90:8)
-          source: |2
-                st.equal(result.statusCode, 200);
-                st.match(result.body, /<h1>GP<\/h1>/);
-                st.match(result.body, /<h2>Parent L1: Hello Parent<\/h2>/);
-            -------^
-                st.match(result.body, /<h3>Child L2: Hello Child<\/h3>/);
-                st.end();
-          ...
-        
-        not ok 4 - should match pattern
-          ---
-          diff: >
-            --- expected
-          
-            +++ actual
-          
-            @@ -1,1 +1,1 @@
-          
-            -/<h3>Child L2: Hello Child<\/h3>/
-          
-            +"<template shadowrootmode=\"open\"><h1>GP</h1><parent-comp-level1
-            data-text=\"Hello Parent\"></parent-comp-level1></template>"
-          at:
-            fileName: test/http/get-render-elementName.test.js
-            lineNumber: 91
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/http/get-render-elementName.test.js:91:8)
-          source: |2
-                st.match(result.body, /<h1>GP<\/h1>/);
-                st.match(result.body, /<h2>Parent L1: Hello Parent<\/h2>/);
-                st.match(result.body, /<h3>Child L2: Hello Child<\/h3>/);
-            -------^
-                st.end();
-              });
-          ...
-        
+        ok 3 - should match pattern
+        ok 4 - should match pattern
         1..4
-    not ok 4 - should recursively render multiple levels of nesting # time=5.358ms
-      ---
-      at:
-        fileName: test/http/get-render-elementName.test.js
-        lineNumber: 78
-        columnNumber: 5
-        typeName: Test
-      source: >2
-          });
-      
-          t.test('should recursively render multiple levels of nesting', async (st) => {
-        ----^
-            mockTemplates['grandparent-comp.html'] = '<template shadowrootmode="open"><h1>GP</h1><parent-comp-level1 data-text="\${data.parentText}"></parent-comp-level1></template>';
-            mockTemplates['parent-comp-level1.html'] = '<template shadowrootmode="open"><h2>Parent L1: \${data.text}</h2><child-comp-level2 data-text="\${data.childText}"></child-comp-level2></template>';
-      ...
+    ok 4 - should recursively render multiple levels of nesting # time=0.763ms
     
     # Subtest: should handle default slots
         ok 1 - should be equal
-        not ok 2 - should match pattern
-          ---
-          diff: >
-            --- expected
-          
-            +++ actual
-          
-            @@ -1,1 +1,1 @@
-          
-            -/<section>Before slot. <p>This is slotted content.<\/p> After
-            slot.<\/section>/
-          
-            +"<template shadowrootmode=\"open\"><div><p>This is slotted
-            content.</p></slot-consumer></div></template>"
-          at:
-            fileName: test/http/get-render-elementName.test.js
-            lineNumber: 103
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/http/get-render-elementName.test.js:103:8)
-          source: >2
-                st.equal(result.statusCode, 200);
-                // The current slot implementation replaces <slot> with the content.
-                st.match(result.body, /<section>Before slot. <p>This is slotted content.<\/p> After slot.<\/section>/);
-            -------^
-                st.end();
-              });
-          ...
-        
+        ok 2 - should match pattern
         1..2
-    not ok 5 - should handle default slots # time=2.79ms
-      ---
-      at:
-        fileName: test/http/get-render-elementName.test.js
-        lineNumber: 95
-        columnNumber: 5
-        typeName: Test
-      source: >2
-          });
-      
-          t.test('should handle default slots', async (st) => {
-        ----^
-            mockTemplates['slot-host.html'] = '<template shadowrootmode="open"><div><slot-consumer><p>This is slotted content.</p></slot-consumer></div></template>';
-            mockTemplates['slot-consumer.html'] = '<template shadowrootmode="open"><section>Before slot. <slot></slot> After slot.</section></template>';
-      ...
+    ok 5 - should handle default slots # time=0.714ms
     
     # Subtest: should remove slot tags if no content is provided for default slot
         ok 1 - should be equal
-        not ok 2 - Slot tag should be removed
-          ---
-          diff: |
-            --- expected
-            +++ actual
-            @@ -1,1 +1,1 @@
-            -/<section>Content: ! <\/section>/
-            +"<template shadowrootmode=\"open\"><div><empty-slot-consumer></empty-slot-consumer></div></template>"
-          at:
-            fileName: test/http/get-render-elementName.test.js
-            lineNumber: 113
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/http/get-render-elementName.test.js:113:8)
-          source: >2
-                const result = await handler(request);
-                st.equal(result.statusCode, 200);
-                st.match(result.body, /<section>Content: ! <\/section>/, "Slot tag should be removed");
-            -------^
-                st.end();
-              });
-          ...
-        
+        ok 2 - Slot tag should be removed
         1..2
-    not ok 6 - should remove slot tags if no content is provided for default slot # time=2.669ms
-      ---
-      at:
-        fileName: test/http/get-render-elementName.test.js
-        lineNumber: 107
-        columnNumber: 5
-        typeName: Test
-      source: >2
-          });
-      
-          t.test('should remove slot tags if no content is provided for default slot', async (st) => {
-        ----^
-            mockTemplates['empty-slot-host.html'] = '<template shadowrootmode="open"><div><empty-slot-consumer></empty-slot-consumer></div></template>';
-            mockTemplates['empty-slot-consumer.html'] = '<template shadowrootmode="open"><section>Content: <slot></slot>! </section></template>';
-      ...
+    ok 6 - should remove slot tags if no content is provided for default slot # time=0.545ms
     
     # Subtest: should handle named slots (basic placeholder)
         ok 1 - should be equal
-        not ok 2 - should match pattern
-          ---
-          diff: >
-            --- expected
-          
-            +++ actual
-          
-            @@ -1,1 +1,1 @@
-          
-            -/<header><!-- Content for slot 'header' from parent would go here
-            --><\/header>/
-          
-            +"<template shadowrootmode=\"open\"><named-slot-consumer><span
-            slot=\"header\">My Header</span><span slot=\"footer\">My
-            Footer</span></named-slot-consumer></template>"
-          at:
-            fileName: test/http/get-render-elementName.test.js
-            lineNumber: 127
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/http/get-render-elementName.test.js:127:8)
-          source: >2
-                st.equal(result.statusCode, 200);
-                // The current simplified implementation puts a comment placeholder for named slots
-                st.match(result.body, /<header><!-- Content for slot 'header' from parent would go here --><\/header>/);
-            -------^
-                st.match(result.body, /<footer><!-- Content for slot 'footer' from parent would go here --><\/footer>/);
-                st.end();
-          ...
-        
-        not ok 3 - should match pattern
-          ---
-          diff: >
-            --- expected
-          
-            +++ actual
-          
-            @@ -1,1 +1,1 @@
-          
-            -/<footer><!-- Content for slot 'footer' from parent would go here
-            --><\/footer>/
-          
-            +"<template shadowrootmode=\"open\"><named-slot-consumer><span
-            slot=\"header\">My Header</span><span slot=\"footer\">My
-            Footer</span></named-slot-consumer></template>"
-          at:
-            fileName: test/http/get-render-elementName.test.js
-            lineNumber: 128
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/http/get-render-elementName.test.js:128:8)
-          source: >2
-                // The current simplified implementation puts a comment placeholder for named slots
-                st.match(result.body, /<header><!-- Content for slot 'header' from parent would go here --><\/header>/);
-                st.match(result.body, /<footer><!-- Content for slot 'footer' from parent would go here --><\/footer>/);
-            -------^
-                st.end();
-              });
-          ...
-        
+        ok 2 - should match pattern
+        ok 3 - should match pattern
         1..3
-    not ok 7 - should handle named slots (basic placeholder) # time=4.694ms
-      ---
-      at:
-        fileName: test/http/get-render-elementName.test.js
-        lineNumber: 119
-        columnNumber: 5
-        typeName: Test
-      source: >2
-          // Named slots are more complex and the current implementation is basic.
-          // This test reflects the placeholder for named slots.
-          t.test('should handle named slots (basic placeholder)', async (st) => {
-        ----^
-            mockTemplates['named-slot-host.html'] = '<template shadowrootmode="open"><named-slot-consumer><span slot="header">My Header</span><span slot="footer">My Footer</span></named-slot-consumer></template>';
-            mockTemplates['named-slot-consumer.html'] = '<template shadowrootmode="open"><header><slot name="header"></slot></header><footer><slot name="footer"></slot></footer></template>';
-      ...
+    ok 7 - should handle named slots (basic placeholder) # time=0.614ms
     
     1..7
-not ok 1 - Templating Engine - Nesting and Slots # time=66.349ms
-  ---
-  at:
-    fileName: test/http/get-render-elementName.test.js
-    lineNumber: 47
-    columnNumber: 5
-    isToplevel: true
-  source: >
-    });
-  
-  
-    tap.test('Templating Engine - Nesting and Slots', async (t) => {
-  
-    ----^
-      t.test('should render a simple element without nesting or slots', async (st) => {
-        mockTemplates['simple-element.html'] = '<template shadowrootmode="open"><p>\${data.message}</p></template>';
-  ...
+ok 1 - Templating Engine - Nesting and Slots # time=28.476ms
 
 1..1

@@ -1,5 +1,8 @@
 const TODOS_STORAGE_KEY = 'architect-refactor-todos';
 
+// Counter for unique IDs
+let todoCounter = 0;
+
 // Initial state
 let state = {
   todos: [],
@@ -9,9 +12,11 @@ let state = {
 // Load initial state from localStorage
 function loadState() {
   try {
-    const storedTodos = localStorage.getItem(TODOS_STORAGE_KEY);
-    if (storedTodos) {
-      state.todos = JSON.parse(storedTodos);
+    if (typeof localStorage !== 'undefined') {
+      const storedTodos = localStorage.getItem(TODOS_STORAGE_KEY);
+      if (storedTodos) {
+        state.todos = JSON.parse(storedTodos);
+      }
     }
     // Filter state is not typically persisted, but could be.
     // For now, it resets on load.
@@ -25,7 +30,9 @@ function loadState() {
 // Save todos to localStorage
 function saveTodos() {
   try {
-    localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify(state.todos));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify(state.todos));
+    }
   } catch (e) {
     console.error('Failed to save todos to localStorage:', e);
   }
@@ -79,7 +86,7 @@ export function getCurrentFilter() {
 export function addTodo(text) {
   if (!text || typeof text !== 'string' || text.trim() === '') return;
   const newTodo = {
-    id: `todo-${Date.now()}`,
+    id: `todo-${Date.now()}-${++todoCounter}`,
     text: text.trim(),
     done: false,
     editing: false // Default editing to false
@@ -135,8 +142,6 @@ export function setFilter(newFilter) {
 
 export function clearCompleted() {
   state.todos = state.todos.filter(todo => !todo.done);
-  // Optionally, set filter back to 'all' after clearing
-  // state.filter = 'all';
   saveTodos();
   notify();
 }
@@ -151,7 +156,10 @@ export { subscribe };
 export function _resetState() { // Underscore to indicate for testing/internal use
     state.todos = [];
     state.filter = 'all';
-    localStorage.removeItem(TODOS_STORAGE_KEY);
+    todoCounter = 0; // Reset counter as well
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(TODOS_STORAGE_KEY);
+    }
     notify();
 }
 export function _getRawState() { return state; }

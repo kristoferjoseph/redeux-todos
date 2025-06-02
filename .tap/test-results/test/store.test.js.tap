@@ -4,7 +4,7 @@ TAP version 14
         ok 1 - should start with an empty todo list
         ok 2 - initial filter should be "all"
         1..2
-    ok 1 - initial state # time=1.787ms
+    ok 1 - initial state # time=2.265ms
     
     # Subtest: addTodo
         ok 1 - should add a todo
@@ -14,146 +14,34 @@ TAP version 14
         ok 5 - should be equal
         ok 6 - should not add empty or whitespace-only todos
         1..6
-    ok 2 - addTodo # time=0.495ms
+    ok 2 - addTodo # time=2.17ms
     
     # Subtest: toggleTodo
         ok 1 - todo should be marked as done
         ok 2 - todo should be marked as not done again
         1..2
-    ok 3 - toggleTodo # time=0.258ms
+    ok 3 - toggleTodo # time=0.319ms
     
     # Subtest: deleteTodo
-        not ok 1 - should have one todo left
-          ---
-          compare: ===
-          at:
-            fileName: test/store.test.js
-            lineNumber: 65
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/store.test.js:65:8)
-            Test.<anonymous> (test/store.test.js:57:5)
-            test/store.test.js:22:5
-          source: |2
-                store.deleteTodo(todoIdToDelete);
-                const todos = store.getTodos();
-                st.equal(todos.length, 1, 'should have one todo left');
-            -------^
-                st.equal(todos[0].id, otherTodoId, 'correct todo should be deleted');
-                st.end();
-          diff: |
-            --- expected
-            +++ actual
-            @@ -1,1 +1,1 @@
-            -1
-            +0
-          ...
-        
-        not ok 2 - Cannot read properties of undefined (reading 'id')
-          ---
-          stack: |
-            Test.<anonymous> (test/store.test.js:66:23)
-          at:
-            fileName: test/store.test.js
-            lineNumber: 66
-            columnNumber: 23
-            typeName: Test
-            methodName: <anonymous>
-            functionName: Test.<anonymous>
-          type: TypeError
-          tapCaught: testFunctionThrow
-          source: |2
-                const todos = store.getTodos();
-                st.equal(todos.length, 1, 'should have one todo left');
-                st.equal(todos[0].id, otherTodoId, 'correct todo should be deleted');
-            ----------------------^
-                st.end();
-              });
-          ...
-        
+        ok 1 - should have one todo left
+        ok 2 - correct todo should be deleted
         1..2
-    not ok 4 - deleteTodo # time=15.07ms
-      ---
-      at:
-        fileName: test/store.test.js
-        lineNumber: 57
-        columnNumber: 5
-        typeName: Test
-      source: |2
-          });
-      
-          t.test('deleteTodo', (st) => {
-        ----^
-            store.addTodo('Todo 1');
-            store.addTodo('Todo 2');
-      ...
+    ok 4 - deleteTodo # time=0.252ms
     
     # Subtest: editText
         ok 1 - todo text should be updated
         ok 2 - todo text should not update to empty/whitespace
         1..2
-    ok 5 - editText # time=0.432ms
+    ok 5 - editText # time=0.247ms
     
     # Subtest: setEditingState (visual helper, not persisted through editText)
         ok 1 - Todo A should be in editing state
-        not ok 2 - Todo B should not be in editing state
-          ---
-          at:
-            fileName: test/store.test.js
-            lineNumber: 91
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/store.test.js:91:8)
-            Test.<anonymous> (test/store.test.js:82:5)
-            test/store.test.js:22:5
-          source: >2
-                let todos = store._getRawState().todos; // Check internal state for editing flag
-                st.ok(todos.find(t => t.id === idA).editing, 'Todo A should be in editing state');
-                st.notOk(todos.find(t => t.id === idB).editing, 'Todo B should not be in editing state');
-            -------^
-          
-                store.setEditingState(idB, true);
-          ...
-        
-        not ok 3 - Todo A should exit editing state
-          ---
-          at:
-            fileName: test/store.test.js
-            lineNumber: 95
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/store.test.js:95:8)
-            Test.<anonymous> (test/store.test.js:82:5)
-            test/store.test.js:22:5
-          source: >2
-                store.setEditingState(idB, true);
-                todos = store._getRawState().todos;
-                st.notOk(todos.find(t => t.id === idA).editing, 'Todo A should exit editing state');
-            -------^
-                st.ok(todos.find(t => t.id === idB).editing, 'Todo B should enter editing state');
-          ...
-        
+        ok 2 - Todo B should not be in editing state
+        ok 3 - Todo A should exit editing state
         ok 4 - Todo B should enter editing state
         ok 5 - Editing state should be cleared after editText
         1..5
-    not ok 6 - setEditingState (visual helper, not persisted through editText) # time=4.13ms
-      ---
-      at:
-        fileName: test/store.test.js
-        lineNumber: 82
-        columnNumber: 5
-        typeName: Test
-      source: >2
-          });
-      
-          t.test('setEditingState (visual helper, not persisted through editText)', (st) => {
-        ----^
-            store.addTodo('Todo A');
-            store.addTodo('Todo B');
-      ...
+    ok 6 - setEditingState (visual helper, not persisted through editText) # time=0.445ms
     
     # Subtest: setFilter
         ok 1 - filter should be set to active
@@ -161,148 +49,22 @@ TAP version 14
         ok 3 - filter should be set to all
         ok 4 - filter should not change for invalid value
         1..4
-    ok 7 - setFilter # time=0.305ms
+    ok 7 - setFilter # time=0.302ms
     
     # Subtest: clearCompleted
-        not ok 1 - should only have active todos left
-          ---
-          compare: ===
-          at:
-            fileName: test/store.test.js
-            lineNumber: 127
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/store.test.js:127:8)
-            Test.<anonymous> (test/store.test.js:120:5)
-            test/store.test.js:22:5
-          source: |2
-                store.clearCompleted();
-                const todos = store.getTodos();
-                st.equal(todos.length, 1, 'should only have active todos left');
-            -------^
-                st.equal(todos[0].text, 'Active todo', 'the active todo should remain');
-                st.end();
-          diff: |
-            --- expected
-            +++ actual
-            @@ -1,1 +1,1 @@
-            -1
-            +0
-          ...
-        
-        not ok 2 - Cannot read properties of undefined (reading 'text')
-          ---
-          stack: |
-            Test.<anonymous> (test/store.test.js:128:23)
-          at:
-            fileName: test/store.test.js
-            lineNumber: 128
-            columnNumber: 23
-            typeName: Test
-            methodName: <anonymous>
-            functionName: Test.<anonymous>
-          type: TypeError
-          tapCaught: testFunctionThrow
-          source: |2
-                const todos = store.getTodos();
-                st.equal(todos.length, 1, 'should only have active todos left');
-                st.equal(todos[0].text, 'Active todo', 'the active todo should remain');
-            ----------------------^
-                st.end();
-              });
-          ...
-        
+        ok 1 - should only have active todos left
+        ok 2 - the active todo should remain
         1..2
-    not ok 8 - clearCompleted # time=4.238ms
-      ---
-      at:
-        fileName: test/store.test.js
-        lineNumber: 120
-        columnNumber: 5
-        typeName: Test
-      source: |2
-          });
-      
-          t.test('clearCompleted', (st) => {
-        ----^
-            store.addTodo('Active todo');
-            store.addTodo('Completed todo');
-      ...
+    ok 8 - clearCompleted # time=0.224ms
     
     # Subtest: getFilteredTodos
         ok 1 - should return all todos for "all" filter
-        not ok 2 - should return only active todos for "active" filter
-          ---
-          compare: ===
-          at:
-            fileName: test/store.test.js
-            lineNumber: 143
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/store.test.js:143:8)
-            Test.<anonymous> (test/store.test.js:132:5)
-            test/store.test.js:22:5
-          source: >2
-                store.setFilter('active');
-                const activeTodos = store.getFilteredTodos();
-                st.equal(activeTodos.length, 2, 'should return only active todos for "active" filter');
-            -------^
-                st.ok(activeTodos.every(todo => !todo.done), 'all returned active todos should not be done');
-          diff: |
-            --- expected
-            +++ actual
-            @@ -1,1 +1,1 @@
-            -2
-            +1
-          ...
-        
+        ok 2 - should return only active todos for "active" filter
         ok 3 - all returned active todos should not be done
-        not ok 4 - should return only completed todos for "completed" filter
-          ---
-          compare: ===
-          at:
-            fileName: test/store.test.js
-            lineNumber: 148
-            columnNumber: 8
-            typeName: Test
-          stack: |
-            Test.<anonymous> (test/store.test.js:148:8)
-            Test.<anonymous> (test/store.test.js:132:5)
-            test/store.test.js:22:5
-          source: >2
-                store.setFilter('completed');
-                const completedTodos = store.getFilteredTodos();
-                st.equal(completedTodos.length, 1, 'should return only completed todos for "completed" filter');
-            -------^
-                st.ok(completedTodos.every(todo => todo.done), 'all returned completed todos should be done');
-                st.end();
-          diff: |
-            --- expected
-            +++ actual
-            @@ -1,1 +1,1 @@
-            -1
-            +2
-          ...
-        
+        ok 4 - should return only completed todos for "completed" filter
         ok 5 - all returned completed todos should be done
         1..5
-    not ok 9 - getFilteredTodos # time=4.24ms
-      ---
-      at:
-        fileName: test/store.test.js
-        lineNumber: 132
-        columnNumber: 5
-        typeName: Test
-      source: |2
-          });
-      
-          t.test('getFilteredTodos', (st) => {
-        ----^
-            store.addTodo('Active 1');
-            store.addTodo('Completed 1');
-      ...
+    ok 9 - getFilteredTodos # time=0.408ms
     
     # Subtest: localStorage persistence
         ok 1 - State should be empty after reset
@@ -311,23 +73,9 @@ TAP version 14
         ok 4 - should be equal
         ok 5 - should be equal
         1..5
-    ok 10 - localStorage persistence # time=0.572ms
+    ok 10 - localStorage persistence # time=0.516ms
     
     1..10
-not ok 1 - Todo Store # time=40.666ms
-  ---
-  at:
-    fileName: test/store.test.js
-    lineNumber: 22
-    columnNumber: 5
-    isToplevel: true
-  source: |
-    });
-  
-    tap.test('Todo Store', (t) => {
-    ----^
-      t.test('initial state', (st) => {
-        st.same(store.getTodos(), [], 'should start with an empty todo list');
-  ...
+ok 1 - Todo Store # time=12.728ms
 
 1..1
